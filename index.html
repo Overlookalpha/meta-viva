@@ -81,30 +81,15 @@ button{
 <!-- LANDING -->
 <div id="landing" style="position:relative;">
 
-  <h1 style="
-      font-size:80px;
-      margin-bottom:15px;
-      letter-spacing:3px;
-      font-weight:800;
-  ">
+  <h1 style="font-size:80px; margin-bottom:15px; letter-spacing:3px; font-weight:800;">
     Meta Viva
   </h1>
 
-  <p style="
-      font-size:22px;
-      margin-bottom:10px;
-      font-weight:300;
-  ">
+  <p style="font-size:22px; margin-bottom:10px; font-weight:300;">
     Transforme seus sonhos em metas alcançáveis.
   </p>
 
-  <p style="
-      font-size:16px;
-      opacity:0.85;
-      max-width:420px;
-      margin:0 auto 35px auto;
-      line-height:1.5;
-  ">
+  <p style="font-size:16px; opacity:0.85; max-width:420px; margin:0 auto 35px auto; line-height:1.5;">
     Planeje sua vida financeira, crie objetivos reais,
     acompanhe sua evolução e conquiste estabilidade
     com clareza e direção.
@@ -112,27 +97,16 @@ button{
 
   <button class="primary"
       onclick="start()"
-      style="
-        font-size:18px;
-        padding:16px 32px;
-        border-radius:10px;
-        box-shadow:0 4px 20px rgba(0,0,0,0.3);
-      ">
+      style="font-size:18px; padding:16px 32px; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
       Criar Meu Plano Gratuito
   </button>
 
-  <div style="
-      position:absolute;
-      bottom:-80px;
-      left:0;
-      right:0;
-      font-size:12px;
-      opacity:0.5;
-  ">
+  <div style="position:absolute; bottom:-80px; left:0; right:0; font-size:12px; opacity:0.5;">
       Produzido por <strong>Overlock</strong> (Isaías Rodrigues)
   </div>
 
 </div>
+
 <!-- QUIZ -->
 <div id="quiz" class="hidden">
 
@@ -164,11 +138,11 @@ button{
     ✔ Estratégia de crescimento consistente
   </div>
 
- <button class="primary"
+  <button class="primary"
         style="margin-top:35px; font-size:18px; padding:14px 30px;"
         onclick="goToLogin()">
   Ir para Meu Painel
-</button>
+  </button>
 
 </div>
 
@@ -177,11 +151,14 @@ button{
 
   <h2>Crie sua conta para acessar seu painel</h2>
 
-  <input type="text" id="name" placeholder="Seu nome" style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;">
+  <input type="text" id="name" placeholder="Seu nome"
+    style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;">
 
-  <input type="email" id="email" placeholder="Seu e-mail" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
+  <input type="email" id="email" placeholder="Seu e-mail"
+    style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
 
-  <input type="password" id="password" placeholder="Sua senha" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
+  <input type="password" id="password" placeholder="Sua senha"
+    style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
 
   <button class="primary" style="margin-top:20px;" onclick="createAccount()">
     Criar Conta e Acessar Painel
@@ -196,16 +173,11 @@ button{
     Seu Painel Financeiro
   </h1>
 
-  <div id="panelContent" style="
-      margin-top:20px;
-      font-size:18px;
-      line-height:1.6;
-      opacity:0.9;
-  ">
+  <div id="panelContent" style="margin-top:20px; font-size:18px; line-height:1.6; opacity:0.9;">
   </div>
 
 </div>
-  
+
 </div>
 
 <script>
@@ -226,7 +198,6 @@ const questions = [
     "Ter maior estabilidade financeira"
   ]
 },
-
 {
   question: "Como está sua organização hoje?",
   multi: false,
@@ -237,7 +208,6 @@ const questions = [
     "Tenho controle total"
   ]
 },
-
 {
   question: "Você controla seus gastos mensalmente?",
   multi: false,
@@ -248,7 +218,6 @@ const questions = [
     "Controlo tudo detalhadamente"
   ]
 },
-
 {
   question: "Você possui dívidas atualmente?",
   multi: false,
@@ -259,7 +228,6 @@ const questions = [
     "Nenhuma"
   ]
 },
-
 {
   question: "Quanto você consegue guardar por mês?",
   multi: false,
@@ -308,11 +276,8 @@ function loadQuestion(){
     optionsDiv.appendChild(label);
   });
 
-  if(currentQuestion === questions.length - 1){
-    document.getElementById("nextBtn").innerText = "Gerar Plano";
-  } else {
-    document.getElementById("nextBtn").innerText = "Próximo";
-  }
+  document.getElementById("nextBtn").innerText =
+    currentQuestion === questions.length - 1 ? "Gerar Plano" : "Próximo";
 
 }
 
@@ -326,10 +291,7 @@ function nextQuestion(){
   }
 
   answers[currentQuestion] = [];
-
-  selected.forEach(el => {
-    answers[currentQuestion].push(el.value);
-  });
+  selected.forEach(el => answers[currentQuestion].push(el.value));
 
   if(currentQuestion < questions.length - 1){
     currentQuestion++;
@@ -348,20 +310,13 @@ function previousQuestion(){
 }
 
 function showResult(){
-
   document.getElementById("quiz").classList.add("hidden");
   document.getElementById("result").classList.remove("hidden");
-
-  
-    "Plano criado com base nas suas respostas. Agora vamos estruturar sua vida financeira passo a passo.";
-
 }
-  
-function goToLogin(){
 
+function goToLogin(){
   document.getElementById("result").classList.add("hidden");
   document.getElementById("login").classList.remove("hidden");
-
 }
 
 function createAccount(){
@@ -380,34 +335,36 @@ function createAccount(){
   document.getElementById("login").classList.add("hidden");
   document.getElementById("panel").classList.remove("hidden");
 
-}  
+  generatePanel();
+
+}
 
 function generatePanel(){
 
   const panel = document.getElementById("panelContent");
   panel.innerHTML = "";
 
-  const objetivos = answers[0] || [];
+  const goals = answers[0] || [];
 
-  panel.innerHTML += "Bem-vindo ao seu plano personalizado:<br><br>";
+  panel.innerHTML += "<h3>📊 Seu Plano Personalizado</h3><br>";
 
-  if(objetivos.includes("Quitar dívidas")){
+  if(goals.includes("Quitar dívidas")){
     panel.innerHTML += "✔ Área de controle de dívidas ativada<br>";
   }
 
-  if(objetivos.includes("Ter maior estabilidade financeira")){
+  if(goals.includes("Ter maior estabilidade financeira")){
     panel.innerHTML += "✔ Módulo de organização financeira ativado<br>";
   }
 
-  if(objetivos.includes("Criar reserva de emergência")){
+  if(goals.includes("Criar reserva de emergência")){
     panel.innerHTML += "✔ Plano de reserva de emergência ativado<br>";
   }
 
-  if(objetivos.includes("Fazer uma viagem")){
+  if(goals.includes("Fazer uma viagem")){
     panel.innerHTML += "✔ Meta de viagem ativada<br>";
   }
 
-  if(objetivos.includes("Comprar um carro")){
+  if(goals.includes("Comprar um carro")){
     panel.innerHTML += "✔ Planejamento para compra de carro ativado<br>";
   }
 
