@@ -1,52 +1,76 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meta Viva</title>
 
 <style>
+
 body{
-    margin:0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    color:white;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-    text-align:center;
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
 
 .container{
-    width:90%;
-    max-width:600px;
+  width:90%;
+  max-width:500px;
+  text-align:center;
 }
 
 h1{
-    font-size:64px;
-    margin-bottom:20px;
+  font-size:60px;
+  margin-bottom:10px;
 }
 
 h2{
-    font-weight:400;
-    margin-bottom:40px;
+  margin-top:20px;
 }
 
 button{
-    width:100%;
-    padding:18px;
-    border:none;
-    border-radius:8px;
-    font-size:18px;
-    cursor:pointer;
-    background:linear-gradient(90deg,#43cea2,#185a9d);
-    color:white;
+  padding:12px 25px;
+  border:none;
+  border-radius:8px;
+  margin-top:20px;
+  cursor:pointer;
+  font-size:16px;
+}
+
+.primary{
+  background:#00c896;
+  color:white;
+}
+
+.secondary{
+  background:#444;
+  color:white;
+  margin-left:10px;
 }
 
 .hidden{
-    display:none;
+  display:none;
 }
+
+.optionItem{
+  display:block;
+  margin:10px 0;
+  text-align:left;
+  background:rgba(255,255,255,0.1);
+  padding:10px;
+  border-radius:6px;
+}
+
+#progressText{
+  font-size:14px;
+  opacity:0.7;
+}
+
 </style>
 </head>
 
@@ -56,25 +80,27 @@ button{
 
 <!-- LANDING -->
 <div id="landing">
-    <h1>Meta Viva</h1>
-    <h2>Controle seu dinheiro.<br>Construa sua liberdade.</h2>
-    <button onclick="start()">Criar Meu Plano Gratuito</button>
+  <h1>Meta Viva</h1>
+  <p>Transforme seus sonhos em metas alcançáveis.</p>
+  <button class="primary" onclick="start()">Criar Meu Plano Gratuito</button>
 </div>
 
 <!-- QUIZ -->
 <div id="quiz" class="hidden">
-    <h2>Qual seu maior objetivo financeiro?</h2>
 
-    <button onclick="showResult()">Criar reserva de emergência</button><br><br>
-    <button onclick="showResult()">Fazer uma viagem</button><br><br>
-    <button onclick="showResult()">Comprar um carro</button><br><br>
+  <div id="progressText"></div>
+  <h2 id="questionText"></h2>
+  <div id="options"></div>
+
+  <button class="primary" id="nextBtn" onclick="nextQuestion()">Próximo</button>
+  <button class="secondary" onclick="previousQuestion()">Anterior</button>
 
 </div>
 
 <!-- RESULTADO -->
 <div id="result" class="hidden">
-    <h2>Plano criado para você 🎯</h2>
-    <p>Recomendamos começar organizando seus gastos e separar 20% da sua renda.</p>
+  <h2>Plano Criado 🎯</h2>
+  <p id="resultText"></p>
 </div>
 
 </div>
@@ -179,7 +205,6 @@ function loadQuestion(){
     optionsDiv.appendChild(label);
   });
 
-  // Atualiza botão
   if(currentQuestion === questions.length - 1){
     document.getElementById("nextBtn").innerText = "Gerar Plano";
   } else {
