@@ -188,6 +188,23 @@ button{
   </button>
 
 </div>
+
+<!-- PAINEL -->
+<div id="panel" class="hidden">
+
+  <h1 style="font-size:38px; margin-bottom:20px;">
+    Seu Painel Financeiro
+  </h1>
+
+  <div id="panelContent" style="
+      margin-top:20px;
+      font-size:18px;
+      line-height:1.6;
+      opacity:0.9;
+  ">
+  </div>
+
+</div>
   
 </div>
 
@@ -358,10 +375,41 @@ function createAccount(){
     return;
   }
 
-  // Simulação de criação de conta
   alert("Conta criada com sucesso!");
 
-  // Aqui depois vamos conectar com backend
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("panel").classList.remove("hidden");
+
+}  
+
+function generatePanel(){
+
+  const panel = document.getElementById("panelContent");
+  panel.innerHTML = "";
+
+  const objetivos = answers[0] || [];
+
+  panel.innerHTML += "Bem-vindo ao seu plano personalizado:<br><br>";
+
+  if(objetivos.includes("Quitar dívidas")){
+    panel.innerHTML += "✔ Área de controle de dívidas ativada<br>";
+  }
+
+  if(objetivos.includes("Ter maior estabilidade financeira")){
+    panel.innerHTML += "✔ Módulo de organização financeira ativado<br>";
+  }
+
+  if(objetivos.includes("Criar reserva de emergência")){
+    panel.innerHTML += "✔ Plano de reserva de emergência ativado<br>";
+  }
+
+  if(objetivos.includes("Fazer uma viagem")){
+    panel.innerHTML += "✔ Meta de viagem ativada<br>";
+  }
+
+  if(objetivos.includes("Comprar um carro")){
+    panel.innerHTML += "✔ Planejamento para compra de carro ativado<br>";
+  }
 
 }
 
