@@ -5,127 +5,163 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meta Viva</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
 <style>
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
 body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: white;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.app {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
+.screen {
+  display: none;
+  height: 100vh;
+  padding: 40px 20px;
+}
+
+.active {
+  display: block;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
 }
 
 h1 {
-    font-size: 22px;
-    margin-bottom: 10px;
+  font-size: 32px;
+  margin-bottom: 15px;
 }
 
-.card {
-    background: #1e293b;
-    padding: 20px;
-    border-radius: 20px;
-    margin-bottom: 15px;
-}
-
-.valor {
-    font-size: 26px;
-    font-weight: bold;
-}
-
-.progresso {
-    height: 8px;
-    background: #334155;
-    border-radius: 10px;
-    margin-top: 8px;
-}
-
-.progresso-barra {
-    height: 8px;
-    background: #22c55e;
-    border-radius: 10px;
-    width: 60%;
+p {
+  opacity: 0.8;
+  margin-bottom: 25px;
 }
 
 button {
-    padding: 12px;
-    border-radius: 12px;
-    border: none;
-    margin-top: 10px;
-    font-weight: bold;
-    cursor: pointer;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  font-weight: 600;
 }
 
-.botao-principal {
-    background: #22c55e;
-    color: black;
+.primary {
+  background: #22c55e;
+  color: white;
 }
 
-.botao-secundario {
-    background: #334155;
-    color: white;
+.secondary {
+  background: #334155;
+  color: white;
 }
 
-.navbar {
-    display: flex;
-    justify-content: space-around;
-    background: #0f172a;
-    padding: 12px 0;
-    border-top: 1px solid #334155;
+input {
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  margin-bottom: 15px;
+  font-size: 16px;
 }
 
-.nav-item {
-    text-align: center;
-    font-size: 12px;
-    cursor: pointer;
+.progress-bar {
+  height: 10px;
+  background: #334155;
+  border-radius: 6px;
+  margin-top: 10px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #22c55e;
+  width: 60%;
+  border-radius: 6px;
 }
 </style>
 </head>
-
 <body>
 
-<div class="app" id="tela-home">
-
-    <h1>Meta Viva</h1>
-
-    <div class="card">
-        <div>Saldo Atual</div>
-        <div class="valor">R$ 2.450</div>
-    </div>
-
-    <div class="card">
-        <div>Meta: Viagem</div>
-        <div class="valor">R$ 600 / R$ 1.000</div>
-        <div class="progresso">
-            <div class="progresso-barra"></div>
-        </div>
-    </div>
-
-    <button class="botao-principal">+ Adicionar Receita</button>
-    <button class="botao-secundario">+ Adicionar Despesa</button>
-
+<!-- LANDING -->
+<div id="landing" class="screen active">
+  <div class="center">
+    <h1>Transforme seus sonhos em metas alcançáveis</h1>
+    <p>Organize sua vida financeira com clareza, leveza e propósito.</p>
+    <button class="primary" onclick="goTo('questions')">Começar</button>
+  </div>
 </div>
 
-<div class="navbar">
-    <div class="nav-item">🏠<br>Home</div>
-    <div class="nav-item">🎯<br>Metas</div>
-    <div class="nav-item">💰<br>Desafios</div>
-    <div class="nav-item">👤<br>Perfil</div>
+<!-- PERGUNTAS -->
+<div id="questions" class="screen">
+  <div class="center">
+    <h1>Qual seu maior objetivo hoje?</h1>
+    <input type="text" id="goal" placeholder="Ex: Viagem, Reserva, Carro">
+    <button class="primary" onclick="generatePlan()">Criar meu plano</button>
+  </div>
 </div>
+
+<!-- RESULTADO -->
+<div id="result" class="screen">
+  <div class="center">
+    <h1>Plano criado para você 🎯</h1>
+    <p>Meta principal: <span id="goalName"></span></p>
+    <p>Recomendação: Guardar 20% da sua renda mensal.</p>
+    <button class="primary" onclick="goTo('home')">Ir para meu painel</button>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="screen">
+  <h1>Meta Viva</h1>
+  <p>Saldo Atual</p>
+  <h2>R$ 2.450</h2>
+
+  <br><br>
+
+  <p>Meta: <span id="homeGoal"></span></p>
+  <h2>R$ 600 / R$ 1.000</h2>
+
+  <div class="progress-bar">
+    <div class="progress-fill"></div>
+  </div>
+
+  <br><br>
+
+  <button class="primary">+ Adicionar Receita</button>
+  <button class="secondary">+ Adicionar Despesa</button>
+</div>
+
+<script>
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+}
+
+function generatePlan() {
+  const goal = document.getElementById('goal').value;
+  if(goal.trim() === "") {
+    alert("Digite seu objetivo primeiro.");
+    return;
+  }
+
+  document.getElementById('goalName').innerText = goal;
+  document.getElementById('homeGoal').innerText = goal;
+
+  goTo('result');
+}
+</script>
 
 </body>
 </html>
-
-
-
