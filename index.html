@@ -4,192 +4,228 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meta Viva</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:'Poppins',sans-serif;
-}
-
 body{
-    background:linear-gradient(135deg,#0f172a,#1e293b,#0f172a);
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
     color:white;
     display:flex;
     justify-content:center;
     align-items:center;
     height:100vh;
-    overflow:hidden;
 }
 
-.screen{
-    display:none;
+.container{
     width:90%;
-    max-width:700px;
+    max-width:600px;
     text-align:center;
-}
-
-.screen.active{
-    display:block;
 }
 
 h1{
-    font-size:32px;
+    font-size:48px;
+    font-weight:800;
+    margin-bottom:10px;
+}
+
+h2{
+    font-size:26px;
     margin-bottom:20px;
 }
 
-p{
-    opacity:0.8;
-    margin-bottom:25px;
-}
-
-button{
-    background:linear-gradient(90deg,#22c55e,#16a34a);
-    border:none;
-    padding:15px 25px;
-    border-radius:8px;
-    color:white;
-    font-weight:600;
-    cursor:pointer;
-    width:100%;
-    margin-top:10px;
-    transition:0.3s;
-}
-
-button:hover{
-    opacity:0.9;
-    transform:scale(1.02);
+.progress{
+    font-size:14px;
+    opacity:0.7;
+    margin-bottom:20px;
 }
 
 .option{
-    background:#1e293b;
-    margin:10px 0;
-    padding:12px;
-    border-radius:8px;
+    background:rgba(255,255,255,0.08);
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
     cursor:pointer;
-    transition:0.2s;
+    transition:0.3s;
 }
 
 .option:hover{
-    background:#334155;
+    background:rgba(255,255,255,0.18);
 }
 
-.option.selected{
-    background:#22c55e;
+.selected{
+    background:#4CAF50;
 }
 
+button{
+    margin-top:20px;
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    background:linear-gradient(90deg,#4CAF50,#66BB6A);
+    color:white;
+    transition:0.3s;
+}
+
+button:disabled{
+    opacity:0.4;
+    cursor:not-allowed;
+}
+.hidden{
+    display:none;
+}
 .footer{
-    position:absolute;
-    bottom:20px;
+    margin-top:30px;
     font-size:12px;
     opacity:0.5;
-    text-align:center;
 }
 </style>
 </head>
-
 <body>
 
-<!-- TELA 1 -->
-<div class="screen active" id="tela1">
+<div class="container">
+
+<!-- LANDING -->
+<div id="landing">
     <h1>Meta Viva</h1>
     <h2>Controle seu dinheiro.<br>Construa sua liberdade.</h2>
-    <p>Um plano simples. Uma meta clara. Uma vida organizada.</p>
-    <button onclick="nextScreen(2)">Criar Meu Plano Gratuito</button>
+    <button onclick="start()">Criar Meu Plano Gratuito</button>
+    <div class="footer">Produzido por Overlock & Isaías © 2026</div>
 </div>
 
-<!-- TELA 2 -->
-<div class="screen" id="tela2">
-    <h1>Qual seu maior objetivo financeiro?</h1>
-
-    <div class="option" onclick="selectOption(this,'Reserva de emergência')">💰 Criar reserva de emergência</div>
-    <div class="option" onclick="selectOption(this,'Viagem')">✈️ Fazer uma viagem</div>
-    <div class="option" onclick="selectOption(this,'Carro')">🚗 Comprar um carro</div>
-    <div class="option" onclick="selectOption(this,'Casa')">🏠 Comprar casa</div>
-    <div class="option" onclick="selectOption(this,'Investir')">📈 Investir dinheiro</div>
-    <div class="option" onclick="selectOption(this,'Quitar dívidas')">🎯 Quitar dívidas</div>
-
-    <button onclick="nextScreen(3)">Continuar</button>
+<!-- QUIZ -->
+<div id="quiz" class="hidden">
+    <div class="progress" id="progressText"></div>
+    <h2 id="questionText"></h2>
+    <div id="options"></div>
+    <button id="nextBtn" disabled onclick="nextQuestion()">Próximo</button>
 </div>
 
-<!-- TELA 3 -->
-<div class="screen" id="tela3">
-    <h1>Como está sua organização hoje?</h1>
-
-    <div class="option" onclick="selectNivel(this,'Não guarda nada')">🔴 Não consigo guardar nada</div>
-    <div class="option" onclick="selectNivel(this,'Guarda pouco')">🟡 Guardo pouco, mas sem método</div>
-    <div class="option" onclick="selectNivel(this,'Guarda organizado')">🟢 Já guardo, mas quero melhorar</div>
-    <div class="option" onclick="selectNivel(this,'Investe')">🔵 Já invisto e quero evoluir</div>
-
-    <button onclick="gerarPlano()">Gerar Meu Plano</button>
-</div>
-
-<!-- TELA 4 -->
-<div class="screen" id="tela4">
+<!-- RESULTADO -->
+<div id="result" class="hidden">
     <h1>Plano criado para você 🎯</h1>
-    <p id="resultado"></p>
-    <button onclick="nextScreen(5)">Ir para meu painel</button>
+    <p id="finalText"></p>
+    <button onclick="location.reload()">Recomeçar</button>
 </div>
 
-<!-- TELA 5 -->
-<div class="screen" id="tela5">
-    <h1>Meta Viva</h1>
-    <p>Seu painel será desenvolvido na próxima etapa.</p>
-</div>
-
-<div class="footer">
-Produzido por Overlock & Isaías © 2026
 </div>
 
 <script>
 
-let objetivo = "";
-let nivel = "";
+const questions = [
+{
+    question:"Como está sua organização hoje?",
+    options:[
+        "Não consigo guardar nada",
+        "Guardo pouco, mas sem método",
+        "Já guardo, mas quero melhorar",
+        "Já invisto e quero evoluir"
+    ]
+},
+{
+    question:"Qual seu maior objetivo financeiro?",
+    options:[
+        "Criar reserva de emergência",
+        "Fazer uma viagem",
+        "Comprar um carro",
+        "Comprar casa",
+        "Investir dinheiro",
+        "Quitar dívidas"
+    ]
+},
+{
+    question:"Qual sua renda mensal média?",
+    options:[
+        "Até R$2.000",
+        "R$2.000 – R$5.000",
+        "R$5.000 – R$10.000",
+        "Acima de R$10.000"
+    ]
+},
+{
+    question:"Você possui dívidas?",
+    options:[
+        "Não",
+        "Sim, pequenas",
+        "Sim, altas"
+    ]
+},
+{
+    question:"Quanto você está disposto a guardar por mês?",
+    options:[
+        "5%",
+        "10%",
+        "20%",
+        "O máximo possível"
+    ]
+}
+];
 
-function nextScreen(num){
-    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-    document.getElementById('tela'+num).classList.add('active');
+let currentQuestion = 0;
+let answers = [];
+
+function start(){
+    document.getElementById("landing").classList.add("hidden");
+    document.getElementById("quiz").classList.remove("hidden");
+    loadQuestion();
 }
 
-function selectOption(element,value){
-    document.querySelectorAll('#tela2 .option').forEach(el => el.classList.remove('selected'));
-    element.classList.add('selected');
-    objetivo = value;
-}
+function loadQuestion(){
+    document.getElementById("progressText").innerText = 
+    Pergunta ${currentQuestion+1} de ${questions.length};
 
-function selectNivel(element,value){
-    document.querySelectorAll('#tela3 .option').forEach(el => el.classList.remove('selected'));
-    element.classList.add('selected');
-    nivel = value;
-}
+    document.getElementById("questionText").innerText = 
+    questions[currentQuestion].question;
 
-function gerarPlano(){
-    if(!objetivo || !nivel){
-        alert("Selecione uma opção antes de continuar.");
-        return;
+    const optionsDiv = document.getElementById("options");
+    optionsDiv.innerHTML = "";
+
+    questions[currentQuestion].options.forEach(option=>{
+        const div = document.createElement("div");
+        div.classList.add("option");
+        div.innerText = option;
+
+        div.onclick = ()=>{
+            document.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+            div.classList.add("selected");
+            answers[currentQuestion] = option;
+            document.getElementById("nextBtn").disabled = false;
+        }
+
+        optionsDiv.appendChild(div);
+    });
+
+    document.getElementById("nextBtn").disabled = true;
+
+    if(currentQuestion === questions.length-1){
+        document.getElementById("nextBtn").innerText = "Gerar Meu Plano";
+    } else{
+        document.getElementById("nextBtn").innerText = "Próximo";
     }
+}
 
-    let recomendacao = "";
-
-    if(nivel === "Não guarda nada"){
-        recomendacao = "Comece guardando 5% da sua renda mensal.";
-    }else if(nivel === "Guarda pouco"){
-        recomendacao = "Ajuste para 10-15% da sua renda mensal.";
-    }else if(nivel === "Guarda organizado"){
-        recomendacao = "Aumente para 20% e automatize depósitos.";
-    }else{
-        recomendacao = "Diversifique seus investimentos e aumente aportes.";
+function nextQuestion(){
+    if(currentQuestion < questions.length-1){
+        currentQuestion++;
+        loadQuestion();
+    } else{
+        showResult();
     }
+}
 
-    document.getElementById("resultado").innerHTML =
-    "<strong>Objetivo:</strong> "+objetivo+"<br><br>"+
-    "<strong>Nível Atual:</strong> "+nivel+"<br><br>"+
-    "<strong>Recomendação:</strong> "+recomendacao;
+function showResult(){
+    document.getElementById("quiz").classList.add("hidden");
+    document.getElementById("result").classList.remove("hidden");
 
-    nextScreen(4);
+    document.getElementById("finalText").innerText =
+    `Com base nas suas respostas, seu foco principal será:
+    ${answers[1]}.
+    Vamos montar uma estratégia personalizada para você evoluir financeiramente.`;
 }
 
 </script>
