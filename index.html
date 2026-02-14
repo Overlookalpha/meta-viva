@@ -8,95 +8,190 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
 }
 
-body {
-    background: linear-gradient(135deg, #0f172a, #1e293b);
-    color: white;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+body{
+    background:linear-gradient(135deg,#0f172a,#1e293b,#0f172a);
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    overflow:hidden;
 }
 
-.container {
-    max-width: 600px;
-    padding: 40px;
-    text-align: center;
+.screen{
+    display:none;
+    width:90%;
+    max-width:700px;
+    text-align:center;
 }
 
-.logo {
-    font-size: 32px;
-    font-weight: 700;
-    margin-bottom: 30px;
+.screen.active{
+    display:block;
 }
 
-h1 {
-    font-size: 28px;
-    margin-bottom: 20px;
+h1{
+    font-size:32px;
+    margin-bottom:20px;
 }
 
-p {
-    font-size: 16px;
-    opacity: 0.8;
-    margin-bottom: 40px;
-    line-height: 1.6;
+p{
+    opacity:0.8;
+    margin-bottom:25px;
 }
 
-button {
-    background: linear-gradient(90deg, #22c55e, #16a34a);
-    border: none;
-    padding: 15px 30px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-    width: 100%;
+button{
+    background:linear-gradient(90deg,#22c55e,#16a34a);
+    border:none;
+    padding:15px 25px;
+    border-radius:8px;
+    color:white;
+    font-weight:600;
+    cursor:pointer;
+    width:100%;
+    margin-top:10px;
+    transition:0.3s;
 }
 
-button:hover {
-    transform: scale(1.03);
+button:hover{
+    opacity:0.9;
+    transform:scale(1.02);
 }
 
-.hidden {
-    display: none;
+.option{
+    background:#1e293b;
+    margin:10px 0;
+    padding:12px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:0.2s;
+}
+
+.option:hover{
+    background:#334155;
+}
+
+.option.selected{
+    background:#22c55e;
+}
+
+.footer{
+    position:absolute;
+    bottom:20px;
+    font-size:12px;
+    opacity:0.5;
+    text-align:center;
 }
 </style>
 </head>
 
 <body>
 
-<div id="tela1" class="container">
-    <div class="logo">Meta Viva</div>
-
-    <h1>Transforme seus sonhos em metas financeiras reais</h1>
-
-    <p>
-        Organize sua vida financeira com clareza, estratégia e propósito.
-        Crie planos, acompanhe metas e construa sua liberdade financeira.
-    </p>
-
-    <button onclick="irParaTela2()">Começar Agora</button>
+<!-- TELA 1 -->
+<div class="screen active" id="tela1">
+    <h1>Meta Viva</h1>
+    <h2>Controle seu dinheiro.<br>Construa sua liberdade.</h2>
+    <p>Um plano simples. Uma meta clara. Uma vida organizada.</p>
+    <button onclick="nextScreen(2)">Criar Meu Plano Gratuito</button>
 </div>
 
+<!-- TELA 2 -->
+<div class="screen" id="tela2">
+    <h1>Qual seu maior objetivo financeiro?</h1>
 
-<div id="tela2" class="container hidden">
-    <h1>Etapa 2 (em construção)</h1>
-    <p>Aqui entraremos na definição da meta.</p>
+    <div class="option" onclick="selectOption(this,'Reserva de emergência')">💰 Criar reserva de emergência</div>
+    <div class="option" onclick="selectOption(this,'Viagem')">✈️ Fazer uma viagem</div>
+    <div class="option" onclick="selectOption(this,'Carro')">🚗 Comprar um carro</div>
+    <div class="option" onclick="selectOption(this,'Casa')">🏠 Comprar casa</div>
+    <div class="option" onclick="selectOption(this,'Investir')">📈 Investir dinheiro</div>
+    <div class="option" onclick="selectOption(this,'Quitar dívidas')">🎯 Quitar dívidas</div>
+
+    <button onclick="nextScreen(3)">Continuar</button>
+</div>
+
+<!-- TELA 3 -->
+<div class="screen" id="tela3">
+    <h1>Como está sua organização hoje?</h1>
+
+    <div class="option" onclick="selectNivel(this,'Não guarda nada')">🔴 Não consigo guardar nada</div>
+    <div class="option" onclick="selectNivel(this,'Guarda pouco')">🟡 Guardo pouco, mas sem método</div>
+    <div class="option" onclick="selectNivel(this,'Guarda organizado')">🟢 Já guardo, mas quero melhorar</div>
+    <div class="option" onclick="selectNivel(this,'Investe')">🔵 Já invisto e quero evoluir</div>
+
+    <button onclick="gerarPlano()">Gerar Meu Plano</button>
+</div>
+
+<!-- TELA 4 -->
+<div class="screen" id="tela4">
+    <h1>Plano criado para você 🎯</h1>
+    <p id="resultado"></p>
+    <button onclick="nextScreen(5)">Ir para meu painel</button>
+</div>
+
+<!-- TELA 5 -->
+<div class="screen" id="tela5">
+    <h1>Meta Viva</h1>
+    <p>Seu painel será desenvolvido na próxima etapa.</p>
+</div>
+
+<div class="footer">
+Produzido por Overlock & Isaías © 2026
 </div>
 
 <script>
-function irParaTela2() {
-    document.getElementById("tela1").classList.add("hidden");
-    document.getElementById("tela2").classList.remove("hidden");
+
+let objetivo = "";
+let nivel = "";
+
+function nextScreen(num){
+    document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+    document.getElementById('tela'+num).classList.add('active');
 }
+
+function selectOption(element,value){
+    document.querySelectorAll('#tela2 .option').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    objetivo = value;
+}
+
+function selectNivel(element,value){
+    document.querySelectorAll('#tela3 .option').forEach(el => el.classList.remove('selected'));
+    element.classList.add('selected');
+    nivel = value;
+}
+
+function gerarPlano(){
+    if(!objetivo || !nivel){
+        alert("Selecione uma opção antes de continuar.");
+        return;
+    }
+
+    let recomendacao = "";
+
+    if(nivel === "Não guarda nada"){
+        recomendacao = "Comece guardando 5% da sua renda mensal.";
+    }else if(nivel === "Guarda pouco"){
+        recomendacao = "Ajuste para 10-15% da sua renda mensal.";
+    }else if(nivel === "Guarda organizado"){
+        recomendacao = "Aumente para 20% e automatize depósitos.";
+    }else{
+        recomendacao = "Diversifique seus investimentos e aumente aportes.";
+    }
+
+    document.getElementById("resultado").innerHTML =
+    "<strong>Objetivo:</strong> "+objetivo+"<br><br>"+
+    "<strong>Nível Atual:</strong> "+nivel+"<br><br>"+
+    "<strong>Recomendação:</strong> "+recomendacao;
+
+    nextScreen(4);
+}
+
 </script>
 
 </body>
