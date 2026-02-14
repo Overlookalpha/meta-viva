@@ -164,12 +164,31 @@ button{
     ✔ Estratégia de crescimento consistente
   </div>
 
-  <button class="primary" style="margin-top:35px; font-size:18px; padding:14px 30px;">
-    Ir para Meu Painel
-  </button>
+ <button class="primary"
+        style="margin-top:35px; font-size:18px; padding:14px 30px;"
+        onclick="goToLogin()">
+  Ir para Meu Painel
+</button>
 
 </div>
 
+<!-- LOGIN -->
+<div id="login" class="hidden">
+
+  <h2>Crie sua conta para acessar seu painel</h2>
+
+  <input type="text" id="name" placeholder="Seu nome" style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;">
+
+  <input type="email" id="email" placeholder="Seu e-mail" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
+
+  <input type="password" id="password" placeholder="Sua senha" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
+
+  <button class="primary" style="margin-top:20px;" onclick="createAccount()">
+    Criar Conta e Acessar Painel
+  </button>
+
+</div>
+  
 </div>
 
 <script>
@@ -316,8 +335,33 @@ function showResult(){
   document.getElementById("quiz").classList.add("hidden");
   document.getElementById("result").classList.remove("hidden");
 
-  document.getElementById("resultText").innerText =
+  
     "Plano criado com base nas suas respostas. Agora vamos estruturar sua vida financeira passo a passo.";
+
+}
+  
+function goToLogin(){
+
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("login").classList.remove("hidden");
+
+}
+
+function createAccount(){
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if(!name || !email || !password){
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  // Simulação de criação de conta
+  alert("Conta criada com sucesso!");
+
+  // Aqui depois vamos conectar com backend
 
 }
 
