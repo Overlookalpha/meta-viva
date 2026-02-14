@@ -71,6 +71,18 @@ button{
   opacity:0.7;
 }
 
+.card{
+  background:rgba(255,255,255,0.1);
+  padding:15px;
+  border-radius:10px;
+  margin-top:15px;
+  text-align:left;
+}
+
+.card h4{
+  margin-top:0;
+}
+
 </style>
 </head>
 
@@ -173,8 +185,7 @@ button{
     Seu Painel Financeiro
   </h1>
 
-  <div id="panelContent" style="margin-top:20px; font-size:18px; line-height:1.6; opacity:0.9;">
-  </div>
+  <div id="panelContent"></div>
 
 </div>
 
@@ -186,7 +197,6 @@ let currentQuestion = 0;
 let answers = [];
 
 const questions = [
-
 {
   question: "Qual seu maior objetivo financeiro?",
   multi: true,
@@ -238,7 +248,6 @@ const questions = [
     "Mais de 20%"
   ]
 }
-
 ];
 
 function start(){
@@ -345,28 +354,24 @@ function generatePanel(){
   panel.innerHTML = "";
 
   const goals = answers[0] || [];
+  const debts = answers[3] ? answers[3][0] : "";
+  const saving = answers[4] ? answers[4][0] : "";
 
-  panel.innerHTML += "<h3>📊 Seu Plano Personalizado</h3><br>";
+  let level = "🔴 Nível Inicial";
 
-  if(goals.includes("Quitar dívidas")){
-    panel.innerHTML += "✔ Área de controle de dívidas ativada<br>";
+  if(saving === "Entre 10% e 20%" || saving === "Mais de 20%"){
+    level = "🟢 Nível Organizado";
   }
 
-  if(goals.includes("Ter maior estabilidade financeira")){
-    panel.innerHTML += "✔ Módulo de organização financeira ativado<br>";
+  panel.innerHTML += <div class="card"><h4>🏆 Seu Nível Financeiro</h4>${level}</div>;
+
+  if(debts === "Sim, muitas"){
+    panel.innerHTML += <div class="card"><h4>🔴 Prioridade Máxima</h4>Quitar dívidas imediatamente.</div>;
   }
 
-  if(goals.includes("Criar reserva de emergência")){
-    panel.innerHTML += "✔ Plano de reserva de emergência ativado<br>";
-  }
-
-  if(goals.includes("Fazer uma viagem")){
-    panel.innerHTML += "✔ Meta de viagem ativada<br>";
-  }
-
-  if(goals.includes("Comprar um carro")){
-    panel.innerHTML += "✔ Planejamento para compra de carro ativado<br>";
-  }
+  goals.forEach(goal=>{
+    panel.innerHTML += <div class="card"><h4>📌 Meta Ativada</h4>${goal}</div>;
+  });
 
 }
 
