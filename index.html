@@ -9,157 +9,93 @@
 
 <style>
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
 }
 
 body {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  color: white;
-  height: 100vh;
-  overflow: hidden;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.screen {
-  display: none;
-  height: 100vh;
-  padding: 40px 20px;
+.container {
+    max-width: 600px;
+    padding: 40px;
+    text-align: center;
 }
 
-.active {
-  display: block;
-}
-
-.center {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 30px;
 }
 
 h1 {
-  font-size: 32px;
-  margin-bottom: 15px;
+    font-size: 28px;
+    margin-bottom: 20px;
 }
 
 p {
-  opacity: 0.8;
-  margin-bottom: 25px;
+    font-size: 16px;
+    opacity: 0.8;
+    margin-bottom: 40px;
+    line-height: 1.6;
 }
 
 button {
-  padding: 14px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-bottom: 12px;
-  font-weight: 600;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
 }
 
-.primary {
-  background: #22c55e;
-  color: white;
+button:hover {
+    transform: scale(1.03);
 }
 
-.secondary {
-  background: #334155;
-  color: white;
-}
-
-input {
-  padding: 14px;
-  border-radius: 8px;
-  border: none;
-  margin-bottom: 15px;
-  font-size: 16px;
-}
-
-.progress-bar {
-  height: 10px;
-  background: #334155;
-  border-radius: 6px;
-  margin-top: 10px;
-}
-
-.progress-fill {
-  height: 100%;
-  background: #22c55e;
-  width: 60%;
-  border-radius: 6px;
+.hidden {
+    display: none;
 }
 </style>
 </head>
+
 <body>
 
-<!-- LANDING -->
-<div id="landing" class="screen active">
-  <div class="center">
-    <h1>Transforme seus sonhos em metas alcançáveis</h1>
-    <p>Organize sua vida financeira com clareza, leveza e propósito.</p>
-    <button class="primary" onclick="goTo('questions')">Começar</button>
-  </div>
+<div id="tela1" class="container">
+    <div class="logo">Meta Viva</div>
+
+    <h1>Transforme seus sonhos em metas financeiras reais</h1>
+
+    <p>
+        Organize sua vida financeira com clareza, estratégia e propósito.
+        Crie planos, acompanhe metas e construa sua liberdade financeira.
+    </p>
+
+    <button onclick="irParaTela2()">Começar Agora</button>
 </div>
 
-<!-- PERGUNTAS -->
-<div id="questions" class="screen">
-  <div class="center">
-    <h1>Qual seu maior objetivo hoje?</h1>
-    <input type="text" id="goal" placeholder="Ex: Viagem, Reserva, Carro">
-    <button class="primary" onclick="generatePlan()">Criar meu plano</button>
-  </div>
-</div>
 
-<!-- RESULTADO -->
-<div id="result" class="screen">
-  <div class="center">
-    <h1>Plano criado para você 🎯</h1>
-    <p>Meta principal: <span id="goalName"></span></p>
-    <p>Recomendação: Guardar 20% da sua renda mensal.</p>
-    <button class="primary" onclick="goTo('home')">Ir para meu painel</button>
-  </div>
-</div>
-
-<!-- HOME -->
-<div id="home" class="screen">
-  <h1>Meta Viva</h1>
-  <p>Saldo Atual</p>
-  <h2>R$ 2.450</h2>
-
-  <br><br>
-
-  <p>Meta: <span id="homeGoal"></span></p>
-  <h2>R$ 600 / R$ 1.000</h2>
-
-  <div class="progress-bar">
-    <div class="progress-fill"></div>
-  </div>
-
-  <br><br>
-
-  <button class="primary">+ Adicionar Receita</button>
-  <button class="secondary">+ Adicionar Despesa</button>
+<div id="tela2" class="container hidden">
+    <h1>Etapa 2 (em construção)</h1>
+    <p>Aqui entraremos na definição da meta.</p>
 </div>
 
 <script>
-function goTo(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(screenId).classList.add('active');
-}
-
-function generatePlan() {
-  const goal = document.getElementById('goal').value;
-  if(goal.trim() === "") {
-    alert("Digite seu objetivo primeiro.");
-    return;
-  }
-
-  document.getElementById('goalName').innerText = goal;
-  document.getElementById('homeGoal').innerText = goal;
-
-  goTo('result');
+function irParaTela2() {
+    document.getElementById("tela1").classList.add("hidden");
+    document.getElementById("tela2").classList.remove("hidden");
 }
 </script>
 
