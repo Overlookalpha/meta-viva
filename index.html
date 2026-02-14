@@ -5,105 +5,127 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meta Viva</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
-body{
-background: linear-gradient(135deg,#0f172a,#1e293b);
-color:white;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-overflow:hidden;
+body {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-.hero{
-text-align:center;
-padding:40px;
-max-width:500px;
-animation: fadeIn 1.2s ease;
+.app {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
 }
 
-.hero h1{
-font-size:32px;
-margin-bottom:15px;
-font-weight:700;
+h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
 }
 
-.hero p{
-font-size:16px;
-opacity:0.85;
-margin-bottom:30px;
+.card {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 15px;
 }
 
-.btn{
-display:block;
-width:100%;
-padding:15px;
-border-radius:12px;
-border:none;
-font-size:16px;
-font-weight:600;
-cursor:pointer;
-margin-bottom:15px;
-transition:0.3s;
+.valor {
+    font-size: 26px;
+    font-weight: bold;
 }
 
-.btn-primary{
-background:#22c55e;
-color:#0f172a;
+.progresso {
+    height: 8px;
+    background: #334155;
+    border-radius: 10px;
+    margin-top: 8px;
 }
 
-.btn-primary:hover{
-background:#16a34a;
+.progresso-barra {
+    height: 8px;
+    background: #22c55e;
+    border-radius: 10px;
+    width: 60%;
 }
 
-.btn-secondary{
-background:transparent;
-border:2px solid #22c55e;
-color:#22c55e;
+button {
+    padding: 12px;
+    border-radius: 12px;
+    border: none;
+    margin-top: 10px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
-.btn-secondary:hover{
-background:#22c55e;
-color:#0f172a;
+.botao-principal {
+    background: #22c55e;
+    color: black;
 }
 
-footer{
-position:absolute;
-bottom:15px;
-font-size:12px;
-opacity:0.6;
+.botao-secundario {
+    background: #334155;
+    color: white;
 }
 
-@keyframes fadeIn{
-from{opacity:0;transform:translateY(20px);}
-to{opacity:1;transform:translateY(0);}
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    background: #0f172a;
+    padding: 12px 0;
+    border-top: 1px solid #334155;
+}
+
+.nav-item {
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
 }
 </style>
 </head>
 
 <body>
 
-<div class="hero">
-<h1>Transforme seus sonhos em metas alcançáveis</h1>
-<p>Organize sua vida financeira de forma leve, inteligente e visual.</p>
+<div class="app" id="tela-home">
 
-<button class="btn btn-primary">Começar Agora</button>
-<button class="btn btn-secondary">Já tenho conta</button>
+    <h1>Meta Viva</h1>
+
+    <div class="card">
+        <div>Saldo Atual</div>
+        <div class="valor">R$ 2.450</div>
+    </div>
+
+    <div class="card">
+        <div>Meta: Viagem</div>
+        <div class="valor">R$ 600 / R$ 1.000</div>
+        <div class="progresso">
+            <div class="progresso-barra"></div>
+        </div>
+    </div>
+
+    <button class="botao-principal">+ Adicionar Receita</button>
+    <button class="botao-secundario">+ Adicionar Despesa</button>
+
 </div>
 
-<footer>
-Produzido por Overlock (Isaias Rodrigues)
-</footer>
+<div class="navbar">
+    <div class="nav-item">🏠<br>Home</div>
+    <div class="nav-item">🎯<br>Metas</div>
+    <div class="nav-item">💰<br>Desafios</div>
+    <div class="nav-item">👤<br>Perfil</div>
+</div>
 
 </body>
 </html>
+
+
+
