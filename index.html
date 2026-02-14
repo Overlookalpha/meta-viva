@@ -6,7 +6,6 @@
 <title>Meta Viva</title>
 
 <style>
-
 body{
   margin:0;
   font-family: Arial, sans-serif;
@@ -16,7 +15,6 @@ body{
   justify-content:center;
   align-items:flex-start;
   min-height:100vh;
-  overflow-y:auto;
   padding-top:40px;
 }
 
@@ -24,15 +22,6 @@ body{
   width:90%;
   max-width:500px;
   text-align:center;
-}
-
-h1{
-  font-size:60px;
-  margin-bottom:10px;
-}
-
-h2{
-  margin-top:20px;
 }
 
 button{
@@ -67,24 +56,6 @@ button{
   padding:10px;
   border-radius:6px;
 }
-
-#progressText{
-  font-size:14px;
-  opacity:0.7;
-}
-
-.card{
-  background:rgba(255,255,255,0.1);
-  padding:15px;
-  border-radius:10px;
-  margin-top:15px;
-  text-align:left;
-}
-
-.card h4{
-  margin-top:0;
-}
-
 </style>
 </head>
 
@@ -92,81 +63,32 @@ button{
 
 <div class="container">
 
-<!-- LANDING -->
 <div id="landing">
-
-  <h1 style="font-size:80px; margin-bottom:15px; letter-spacing:3px; font-weight:800;">
-    Meta Viva
-  </h1>
-
-  <p style="font-size:22px; margin-bottom:10px; font-weight:300;">
-    Transforme seus sonhos em metas alcançáveis.
-  </p>
-
-  <p style="font-size:16px; opacity:0.85; max-width:420px; margin:0 auto 35px auto; line-height:1.5;">
-    Planeje sua vida financeira, crie objetivos reais,
-    acompanhe sua evolução e conquiste estabilidade
-    com clareza e direção.
-  </p>
-
-  <button class="primary"
-      onclick="start()"
-      style="font-size:18px; padding:16px 32px; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-      Criar Meu Plano Gratuito
-  </button>
-
-  <div style="margin-top:40px; font-size:12px; opacity:0.5;">
-      Produzido por <strong>Overlock</strong> (Isaías Rodrigues)
-  </div>
-
+  <h1 style="font-size:70px;">Meta Viva</h1>
+  <p>Transforme seus sonhos em metas alcançáveis.</p>
+  <button class="primary" id="startBtn">Criar Meu Plano Gratuito</button>
 </div>
 
-<!-- QUIZ -->
 <div id="quiz" class="hidden">
-  <div id="progressText"></div>
   <h2 id="questionText"></h2>
   <div id="options"></div>
-
-  <button class="primary" id="nextBtn" onclick="nextQuestion()">Próximo</button>
-  <button class="secondary" onclick="previousQuestion()">Anterior</button>
+  <button class="primary" id="nextBtn">Próximo</button>
 </div>
 
-<!-- RESULTADO -->
 <div id="result" class="hidden">
-  <h1 style="font-size:42px;">Seu Plano Está Pronto 🎯</h1>
-
-  <p style="font-size:20px; opacity:0.9;">
-    Analisamos suas respostas e criamos uma estratégia personalizada.
-  </p>
-
-  <button class="primary"
-        style="margin-top:30px;"
-        onclick="goToLogin()">
-  Ir para Meu Painel
-  </button>
+  <h2>Plano Gerado 🎯</h2>
+  <button class="primary" id="loginBtn">Ir para Login</button>
 </div>
 
-<!-- LOGIN -->
 <div id="login" class="hidden">
-  <h2>Crie sua conta para acessar seu painel</h2>
-
-  <input type="text" id="name" placeholder="Seu nome"
-    style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;">
-
-  <input type="email" id="email" placeholder="Seu e-mail"
-    style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
-
-  <input type="password" id="password" placeholder="Sua senha"
-    style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
-
-  <button class="primary" onclick="createAccount()">
-    Criar Conta e Acessar Painel
-  </button>
+  <input type="text" id="name" placeholder="Nome"><br>
+  <input type="email" id="email" placeholder="Email"><br>
+  <input type="password" id="password" placeholder="Senha"><br>
+  <button class="primary" id="createBtn">Criar Conta</button>
 </div>
 
-<!-- PAINEL -->
 <div id="panel" class="hidden">
-  <h1>Seu Painel Financeiro</h1>
+  <h2>Seu Painel</h2>
   <div id="panelContent"></div>
 </div>
 
@@ -174,167 +96,67 @@ button{
 
 <script>
 
+document.addEventListener("DOMContentLoaded", function(){
+
 let currentQuestion = 0;
 let answers = [];
 
 const questions = [
-{
-  question: "Qual seu maior objetivo financeiro?",
-  multi: true,
-  options: [
-    "Criar reserva de emergência",
-    "Fazer uma viagem",
-    "Comprar um carro",
-    "Quitar dívidas",
-    "Ter maior estabilidade financeira"
-  ]
-},
-{
-  question: "Como está sua organização hoje?",
-  multi: false,
-  options: [
-    "Não consigo guardar nada",
-    "Guardo pouco, mas sem método",
-    "Já guardo, mas quero melhorar",
-    "Tenho controle total"
-  ]
-},
-{
-  question: "Você controla seus gastos mensalmente?",
-  multi: false,
-  options: [
-    "Não controlo",
-    "Controlo às vezes",
-    "Controlo quase tudo",
-    "Controlo tudo detalhadamente"
-  ]
-},
-{
-  question: "Você possui dívidas atualmente?",
-  multi: false,
-  options: [
-    "Sim, muitas",
-    "Algumas",
-    "Poucas",
-    "Nenhuma"
-  ]
-},
-{
-  question: "Quanto você consegue guardar por mês?",
-  multi: false,
-  options: [
-    "Nada",
-    "Até 5%",
-    "Entre 10% e 20%",
-    "Mais de 20%"
-  ]
-}
+  {
+    question: "Qual seu maior objetivo financeiro?",
+    options: ["Reserva", "Viajar", "Carro", "Quitar dívidas"]
+  }
 ];
 
-function start(){
-  document.getElementById("landing").classList.add("hidden");
-  document.getElementById("quiz").classList.remove("hidden");
-  currentQuestion = 0;
+const landing = document.getElementById("landing");
+const quiz = document.getElementById("quiz");
+const result = document.getElementById("result");
+const login = document.getElementById("login");
+const panel = document.getElementById("panel");
+
+document.getElementById("startBtn").addEventListener("click", function(){
+  landing.classList.add("hidden");
+  quiz.classList.remove("hidden");
   loadQuestion();
-}
+});
+
+document.getElementById("nextBtn").addEventListener("click", function(){
+  showResult();
+});
+
+document.getElementById("loginBtn").addEventListener("click", function(){
+  result.classList.add("hidden");
+  login.classList.remove("hidden");
+});
+
+document.getElementById("createBtn").addEventListener("click", function(){
+  login.classList.add("hidden");
+  panel.classList.remove("hidden");
+  document.getElementById("panelContent").innerText = "Conta criada com sucesso.";
+});
 
 function loadQuestion(){
   const q = questions[currentQuestion];
-
-  document.getElementById("progressText").innerText =
-    "Pergunta " + (currentQuestion + 1) + " de " + questions.length;
-
   document.getElementById("questionText").innerText = q.question;
-
   const optionsDiv = document.getElementById("options");
   optionsDiv.innerHTML = "";
-
-  q.options.forEach(option => {
-    const label = document.createElement("label");
-    label.className = "optionItem";
-
-    const input = document.createElement("input");
-    input.type = q.multi ? "checkbox" : "radio";
-    input.name = "option";
-    input.value = option;
-
-    label.appendChild(input);
-    label.appendChild(document.createTextNode(" " + option));
-    optionsDiv.appendChild(label);
+  q.options.forEach(function(opt){
+    const btn = document.createElement("button");
+    btn.className = "primary";
+    btn.innerText = opt;
+    btn.onclick = function(){
+      answers.push(opt);
+    };
+    optionsDiv.appendChild(btn);
   });
-
-  document.getElementById("nextBtn").innerText =
-    currentQuestion === questions.length - 1 ? "Gerar Plano" : "Próximo";
-}
-
-function nextQuestion(){
-  const selected = document.querySelectorAll("input[name='option']:checked");
-
-  if(selected.length === 0){
-    alert("Selecione pelo menos uma opção.");
-    return;
-  }
-
-  answers[currentQuestion] = [];
-  selected.forEach(el => answers[currentQuestion].push(el.value));
-
-  if(currentQuestion < questions.length - 1){
-    currentQuestion++;
-    loadQuestion();
-  } else {
-    showResult();
-  }
-}
-
-function previousQuestion(){
-  if(currentQuestion > 0){
-    currentQuestion--;
-    loadQuestion();
-  }
 }
 
 function showResult(){
-  document.getElementById("quiz").classList.add("hidden");
-  document.getElementById("result").classList.remove("hidden");
+  quiz.classList.add("hidden");
+  result.classList.remove("hidden");
 }
 
-function goToLogin(){
-  document.getElementById("result").classList.add("hidden");
-  document.getElementById("login").classList.remove("hidden");
-}
-
-function createAccount(){
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  if(!name || !email || !password){
-    alert("Preencha todos os campos.");
-    return;
-  }
-
-  alert("Conta criada com sucesso!");
-
-  document.getElementById("login").classList.add("hidden");
-  document.getElementById("panel").classList.remove("hidden");
-
-  generatePanel();
-}
-
-function generatePanel(){
-
-  const panel = document.getElementById("panelContent");
-  panel.innerHTML = "";
-
-  const goals = answers[0] || [];
-
-  panel.innerHTML += "<div class='card'><h4>📊 Seu Plano Personalizado</h4></div>";
-
-  goals.forEach(goal=>{
-    panel.innerHTML += <div class="card">${goal}</div>;
-  });
-
-}
+});
 
 </script>
 
