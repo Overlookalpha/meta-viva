@@ -93,11 +93,8 @@ const questions = [
     "Criar reserva de emergência",
     "Fazer uma viagem",
     "Comprar um carro",
-    "Comprar uma casa",
-    "Investir dinheiro",
     "Quitar dívidas",
-    "Sair da instabilidade financeira",
-    "Organizar minhas finanças"
+    "Ter maior estabilidade financeira"
   ]
 },
 
@@ -108,7 +105,7 @@ const questions = [
     "Não consigo guardar nada",
     "Guardo pouco, mas sem método",
     "Já guardo, mas quero melhorar",
-    "Já invisto e quero evoluir"
+    "Tenho controle total"
   ]
 },
 
@@ -119,7 +116,7 @@ const questions = [
     "Não controlo",
     "Controlo às vezes",
     "Controlo quase tudo",
-    "Tenho controle total"
+    "Controlo tudo detalhadamente"
   ]
 },
 
@@ -150,6 +147,7 @@ const questions = [
 function start(){
   document.getElementById("landing").classList.add("hidden");
   document.getElementById("quiz").classList.remove("hidden");
+  currentQuestion = 0;
   loadQuestion();
 }
 
@@ -158,7 +156,7 @@ function loadQuestion(){
   const q = questions[currentQuestion];
 
   document.getElementById("progressText").innerText =
-  "Pergunta " + (currentQuestion + 1) + " de " + questions.length;
+    "Pergunta " + (currentQuestion + 1) + " de " + questions.length;
 
   document.getElementById("questionText").innerText = q.question;
 
@@ -176,11 +174,12 @@ function loadQuestion(){
     input.value = option;
 
     label.appendChild(input);
-    label.appendChild(document.createTextNode(option));
+    label.appendChild(document.createTextNode(" " + option));
 
     optionsDiv.appendChild(label);
   });
 
+  // Atualiza botão
   if(currentQuestion === questions.length - 1){
     document.getElementById("nextBtn").innerText = "Gerar Plano";
   } else {
@@ -226,7 +225,7 @@ function showResult(){
   document.getElementById("result").classList.remove("hidden");
 
   document.getElementById("resultText").innerText =
-  "Plano personalizado gerado com base nas suas respostas. Agora vamos organizar sua vida financeira passo a passo.";
+    "Plano criado com base nas suas respostas. Agora vamos estruturar sua vida financeira passo a passo.";
 
 }
 
