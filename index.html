@@ -6,159 +6,426 @@
 <title>Meta Viva</title>
 
 <style>
+
 body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family:'Segoe UI', Arial, sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:white;
   display:flex;
   justify-content:center;
   align-items:flex-start;
   min-height:100vh;
-  padding-top:40px;
+  padding:40px 0;
 }
 
 .container{
-  width:90%;
-  max-width:500px;
+  width:95%;
+  max-width:1000px;
   text-align:center;
 }
 
+.hidden{ display:none; }
+
+h1{ font-size:48px; margin-bottom:10px; }
+h2{ margin-top:20px; }
+
 button{
-  padding:12px 25px;
+  padding:14px 28px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   margin-top:20px;
   cursor:pointer;
   font-size:16px;
+  transition:0.3s;
 }
 
-.primary{
-  background:#00c896;
-  color:white;
+button:hover{ transform:scale(1.05); }
+
+.primary{ background:#00c896; color:white; }
+.secondary{ background:#444; color:white; }
+
+.card{
+  background:rgba(255,255,255,0.08);
+  padding:20px;
+  border-radius:15px;
+  margin-top:20px;
+  text-align:left;
 }
 
-.secondary{
-  background:#444;
-  color:white;
-  margin-left:10px;
-}
-
-.hidden{
-  display:none;
+input{
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border-radius:10px;
+  border:none;
+  font-size:14px;
 }
 
 .optionItem{
   display:block;
   margin:10px 0;
-  text-align:left;
   background:rgba(255,255,255,0.1);
   padding:10px;
-  border-radius:6px;
+  border-radius:8px;
+  cursor:pointer;
 }
+
+.challenge-ball{
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  background:#444;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin:5px;
+  cursor:pointer;
+}
+
+.challenge-ball.done{
+  background:#00c896;
+}
+
+.tab{
+  display:inline-block;
+  margin:10px;
+  padding:10px 20px;
+  border-radius:20px;
+  background:#444;
+  cursor:pointer;
+}
+
+.tab.active{
+  background:#00c896;
+}
+
+.section{ display:none; }
+.section.active{ display:block; }
+
 </style>
 </head>
-
 <body>
 
 <div class="container">
 
+<!-- LANDING -->
 <div id="landing">
-  <h1 style="font-size:70px;">Meta Viva</h1>
-  <p>Transforme seus sonhos em metas alcançáveis.</p>
-  <button class="primary" id="startBtn">Criar Meu Plano Gratuito</button>
+  <h1>Meta Viva</h1>
+  <p style="font-size:20px;">Transforme seus sonhos em metas alcançáveis.</p>
+  <button class="primary" onclick="startQuiz()">Criar Meu Plano Gratuito</button>
 </div>
 
+<!-- QUIZ -->
 <div id="quiz" class="hidden">
+  <div id="progressText"></div>
   <h2 id="questionText"></h2>
   <div id="options"></div>
-  <button class="primary" id="nextBtn">Próximo</button>
+  <button class="primary" onclick="nextQuestion()">Próximo</button>
+  <button class="secondary" onclick="previousQuestion()">Anterior</button>
 </div>
 
-<div id="result" class="hidden">
-  <h2>Plano Gerado 🎯</h2>
-  <button class="primary" id="loginBtn">Ir para Login</button>
+<!-- PERFIL -->
+<div id="profileResult" class="hidden">
+  <div class="card">
+    <h3>📊 Seu Perfil Financeiro</h3>
+    <div id="profileContent"></div>
+  </div>
+  <button class="primary" onclick="goToLogin()">Continuar</button>
 </div>
 
+<!-- LOGIN -->
 <div id="login" class="hidden">
-  <input type="text" id="name" placeholder="Nome"><br>
-  <input type="email" id="email" placeholder="Email"><br>
-  <input type="password" id="password" placeholder="Senha"><br>
-  <button class="primary" id="createBtn">Criar Conta</button>
+  <div class="card">
+    <h3>🔐 Criar Conta</h3>
+    <input type="text" id="username" placeholder="Usuário">
+    <input type="password" id="password" placeholder="Senha">
+    <button class="primary" onclick="createAccount()">Entrar</button>
+  </div>
 </div>
 
+<!-- PAINEL -->
 <div id="panel" class="hidden">
-  <h2>Seu Painel</h2>
-  <div id="panelContent"></div>
-</div>
+
+  <h2>📊 Painel Financeiro</h2>
+
+  <div id="tabs">
+    <span class="tab active" onclick="showSection('dashboard')">Dashboard</span>
+    <span class="tab" onclick="showSection('metas')">Metas</span>
+    <span class="tab" onclick="showSection('desafios')">Desafios</span>
+  </div>
+
+  <div id="dashboard" class="section active"></div>
+  <div id="metas" class="section"></div>
+  <div id="desafios" class="section"></div>
 
 </div>
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function(){
+let currentQuestion=0;
+let answers=[];
+let userProfile="";
+let balance=0;
+let reserves=0;
 
-let currentQuestion = 0;
-let answers = [];
-
-const questions = [
-  {
-    question: "Qual seu maior objetivo financeiro?",
-    options: ["Reserva", "Viajar", "Carro", "Quitar dívidas"]
-  }
+const questions=[
+{
+  question:"Qual seu maior objetivo financeiro?",
+  multi:true,
+  options:["Criar reserva","Viajar","Comprar carro","Quitar dívidas","Estabilidade"]
+},
+{
+  question:"Como está sua organização?",
+  multi:false,
+  options:["Nada organizada","Pouco organizada","Organizada","Total controle"]
+},
+{
+  question:"Você tem dívidas?",
+  multi:false,
+  options:["Muitas","Algumas","Poucas","Nenhuma"]
+},
+{
+  question:"Quanto guarda por mês?",
+  multi:false,
+  options:["Nada","5%","10-20%","20%+"]
+}
 ];
 
-const landing = document.getElementById("landing");
-const quiz = document.getElementById("quiz");
-const result = document.getElementById("result");
-const login = document.getElementById("login");
-const panel = document.getElementById("panel");
-
-document.getElementById("startBtn").addEventListener("click", function(){
+function startQuiz(){
   landing.classList.add("hidden");
   quiz.classList.remove("hidden");
   loadQuestion();
-});
-
-document.getElementById("nextBtn").addEventListener("click", function(){
-  showResult();
-});
-
-document.getElementById("loginBtn").addEventListener("click", function(){
-  result.classList.add("hidden");
-  login.classList.remove("hidden");
-});
-
-document.getElementById("createBtn").addEventListener("click", function(){
-  login.classList.add("hidden");
-  panel.classList.remove("hidden");
-  document.getElementById("panelContent").innerText = "Conta criada com sucesso.";
-});
+}
 
 function loadQuestion(){
-  const q = questions[currentQuestion];
-  document.getElementById("questionText").innerText = q.question;
-  const optionsDiv = document.getElementById("options");
-  optionsDiv.innerHTML = "";
-  q.options.forEach(function(opt){
-    const btn = document.createElement("button");
-    btn.className = "primary";
-    btn.innerText = opt;
-    btn.onclick = function(){
-      answers.push(opt);
-    };
-    optionsDiv.appendChild(btn);
+  const q=questions[currentQuestion];
+  progressText.innerText="Pergunta "+(currentQuestion+1)+" de "+questions.length;
+  questionText.innerText=q.question;
+  options.innerHTML="";
+  q.options.forEach(opt=>{
+    options.innerHTML+=`
+      <label class="optionItem">
+        <input type="${q.multi?"checkbox":"radio"}" name="opt" value="${opt}">
+        ${opt}
+      </label>
+    `;
   });
 }
 
-function showResult(){
-  quiz.classList.add("hidden");
-  result.classList.remove("hidden");
+function nextQuestion(){
+  const selected=document.querySelectorAll("input[name='opt']:checked");
+  if(selected.length===0){ alert("Selecione uma opção"); return; }
+  answers[currentQuestion]=[];
+  selected.forEach(s=>answers[currentQuestion].push(s.value));
+  if(currentQuestion<questions.length-1){
+    currentQuestion++; loadQuestion();
+  }else{
+    calculateProfile();
+    quiz.classList.add("hidden");
+    profileResult.classList.remove("hidden");
+  }
 }
 
-});
+function previousQuestion(){
+  if(currentQuestion>0){ currentQuestion--; loadQuestion(); }
+}
+
+function calculateProfile(){
+  const debts=answers[2][0];
+  const save=answers[3][0];
+  if(debts==="Muitas") userProfile="🔴 Perfil Recuperação";
+  else if(save==="10-20%"||save==="20%+") userProfile="🟢 Perfil Organizado";
+  else userProfile="🟡 Perfil Construção";
+  profileContent.innerHTML=<strong>${userProfile}</strong>;
+}
+
+function goToLogin(){
+  profileResult.classList.add("hidden");
+  login.classList.remove("hidden");
+}
+
+<!-- ================== PAINEL COMPLETO ================== -->
+
+<div id="mainPanel" class="hidden">
+
+  <!-- MENU ABAS -->
+  <div style="display:flex; justify-content:center; gap:15px; margin-bottom:25px; flex-wrap:wrap;">
+    <button class="secondary" onclick="showTab('dashboard')">🏠 Dashboard</button>
+    <button class="secondary" onclick="showTab('metas')">🎯 Metas</button>
+    <button class="secondary" onclick="showTab('desafios')">🔥 Desafios</button>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="tab-dashboard" class="tabSection">
+
+    <div class="card">
+      <h3>👤 Perfil Financeiro</h3>
+      <div id="perfilUsuario"></div>
+    </div>
+
+    <div class="card">
+      <h3>💰 Saldo Atual</h3>
+      <input type="number" id="saldoInput" placeholder="Digite seu saldo atual">
+      <button class="primary" onclick="salvarSaldo()">Salvar Saldo</button>
+      <div id="saldoExibido" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>🏦 Reservas</h3>
+      <input type="number" id="reservaInput" placeholder="Valor da reserva">
+      <button class="primary" onclick="salvarReserva()">Adicionar Reserva</button>
+      <div id="reservaExibida" style="margin-top:10px;"></div>
+    </div>
+
+  </div>
+
+  <!-- METAS -->
+  <div id="tab-metas" class="tabSection hidden">
+
+    <div class="card">
+      <h3>✨ Criar Nova Meta</h3>
+
+      <input type="text" id="metaNome" placeholder="Nome da meta (ex: Viagem ✈️)">
+      <input type="number" id="metaValor" placeholder="Valor total">
+      <input type="number" id="metaMeses" placeholder="Quantidade de meses">
+
+      <button class="primary" onclick="criarMeta()">Criar Meta</button>
+    </div>
+
+    <div id="listaMetas"></div>
+
+  </div>
+
+  <!-- DESAFIOS -->
+  <div id="tab-desafios" class="tabSection hidden">
+
+    <div class="card">
+      <h3>🔥 Criar Desafio</h3>
+
+      <input type="text" id="desafioNome" placeholder="Nome do desafio">
+      <input type="number" id="desafioValor" placeholder="Valor alvo">
+
+      <button class="primary" onclick="criarDesafio()">Criar Desafio</button>
+    </div>
+
+    <div id="listaDesafios"></div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* ================= SISTEMA DE ABAS ================= */
+
+function showTab(tab) {
+
+  document.querySelectorAll(".tabSection").forEach(el => el.classList.add("hidden"));
+  document.getElementById("tab-" + tab).classList.remove("hidden");
+
+}
+
+/* ================= ATIVAÇÃO PAINEL ================= */
+
+function ativarPainelCompleto() {
+  document.getElementById("panel").classList.add("hidden");
+  document.getElementById("mainPanel").classList.remove("hidden");
+  document.getElementById("perfilUsuario").innerText = userProfile;
+}
+
+/* Substitui chamada antiga */
+function generatePanel(){
+  ativarPainelCompleto();
+}
+
+/* ================= SALDO ================= */
+
+function salvarSaldo(){
+  const valor = document.getElementById("saldoInput").value;
+  if(!valor) return;
+  document.getElementById("saldoExibido").innerHTML = "Saldo atual: <strong>R$ " + valor + "</strong>";
+}
+
+/* ================= RESERVA ================= */
+
+function salvarReserva(){
+  const valor = document.getElementById("reservaInput").value;
+  if(!valor) return;
+  document.getElementById("reservaExibida").innerHTML = "Reserva total: <strong>R$ " + valor + "</strong>";
+}
+
+/* ================= METAS ================= */
+
+function criarMeta(){
+
+  const nome = document.getElementById("metaNome").value;
+  const valor = document.getElementById("metaValor").value;
+  const meses = document.getElementById("metaMeses").value;
+
+  if(!nome || !valor || !meses){
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  const porMes = (valor / meses).toFixed(2);
+
+  let html = `
+    <div class="card">
+      <h3>${nome}</h3>
+      <p>Valor total: R$ ${valor}</p>
+      <p>Guardar por mês: <strong>R$ ${porMes}</strong></p>
+      <div>
+  `;
+
+  for(let i=0; i<meses; i++){
+    html += <span class="challenge-ball" onclick="this.classList.toggle('done')">💰</span>;
+  }
+
+  html += `
+      </div>
+    </div>
+  `;
+
+  document.getElementById("listaMetas").innerHTML += html;
+
+  document.getElementById("metaNome").value = "";
+  document.getElementById("metaValor").value = "";
+  document.getElementById("metaMeses").value = "";
+}
+
+/* ================= DESAFIOS ================= */
+
+function criarDesafio(){
+
+  const nome = document.getElementById("desafioNome").value;
+  const valor = document.getElementById("desafioValor").value;
+
+  if(!nome || !valor){
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  let html = `
+    <div class="card">
+      <h3>${nome}</h3>
+      <p>Meta: R$ ${valor}</p>
+      <div>
+  `;
+
+  for(let i=0; i<10; i++){
+    html += <span class="challenge-ball" onclick="this.classList.toggle('done')">🔥</span>;
+  }
+
+  html += `
+      </div>
+    </div>
+  `;
+
+  document.getElementById("listaDesafios").innerHTML += html;
+
+  document.getElementById("desafioNome").value = "";
+  document.getElementById("desafioValor").value = "";
+}
 
 </script>
-
-</body>
-</html>
