@@ -14,10 +14,10 @@ body{
   color:white;
   display:flex;
   justify-content:center;
-  align-items:flex-start; /* corrigido */
-  min-height:100vh;       /* corrigido */
-  overflow-y:auto;        /* corrigido */
-  padding-top:40px;       /* corrigido */
+  align-items:flex-start;
+  min-height:100vh;
+  overflow-y:auto;
+  padding-top:40px;
 }
 
 .container{
@@ -93,7 +93,7 @@ button{
 <div class="container">
 
 <!-- LANDING -->
-<div id="landing" style="position:relative;">
+<div id="landing">
 
   <h1 style="font-size:80px; margin-bottom:15px; letter-spacing:3px; font-weight:800;">
     Meta Viva
@@ -111,13 +111,9 @@ button{
 
   <button class="primary"
       onclick="start()"
-      style="font-size:18px; padding:16px 32px; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.3); position:relative; z-index:2;">
+      style="font-size:18px; padding:16px 32px; border-radius:10px; box-shadow:0 4px 20px rgba(0,0,0,0.3);">
       Criar Meu Plano Gratuito
   </button>
-
-  <div style="position:absolute; bottom:-80px; left:0; right:0; font-size:12px; opacity:0.5; pointer-events:none;">
-      Produzido por <strong>Overlock</strong> (Isaías Rodrigues)
-  </div>
 
 </div>
 
@@ -139,16 +135,8 @@ button{
   </h1>
 
   <p style="font-size:20px; opacity:0.9; margin-bottom:20px;">
-    Analisamos suas respostas e criamos uma estratégia personalizada
-    para transformar sua situação financeira passo a passo.
+    Analisamos suas respostas e criamos uma estratégia personalizada.
   </p>
-
-  <div style="margin-top:30px; font-size:18px; line-height:1.6; opacity:0.85;">
-    ✔ Organização financeira clara<br>
-    ✔ Método de economia adaptado ao seu perfil<br>
-    ✔ Plano para sair da instabilidade<br>
-    ✔ Estratégia de crescimento consistente
-  </div>
 
   <button class="primary"
         style="margin-top:35px; font-size:18px; padding:14px 30px;"
@@ -180,13 +168,10 @@ button{
 
 <!-- PAINEL -->
 <div id="panel" class="hidden">
-
   <h1 style="font-size:38px; margin-bottom:20px;">
     Seu Painel Financeiro
   </h1>
-
   <div id="panelContent"></div>
-
 </div>
 
 </div>
@@ -341,7 +326,6 @@ function createAccount(){
 }
 
 function generatePanel(){
-
   const panel = document.getElementById("panelContent");
   panel.innerHTML = "";
 
@@ -364,7 +348,6 @@ function generatePanel(){
   goals.forEach(goal=>{
     panel.innerHTML += <div class="card"><h4>📌 Meta Ativada</h4>${goal}</div>;
   });
-
 }
 
 </script>
