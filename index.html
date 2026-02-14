@@ -14,8 +14,10 @@ body{
   color:white;
   display:flex;
   justify-content:center;
-  align-items:center;
-  height:100vh;
+  align-items:flex-start; /* corrigido */
+  min-height:100vh;       /* corrigido */
+  overflow-y:auto;        /* corrigido */
+  padding-top:40px;       /* corrigido */
 }
 
 .container{
@@ -121,14 +123,12 @@ button{
 
 <!-- QUIZ -->
 <div id="quiz" class="hidden">
-
   <div id="progressText"></div>
   <h2 id="questionText"></h2>
   <div id="options"></div>
 
   <button class="primary" id="nextBtn" onclick="nextQuestion()">Próximo</button>
   <button class="secondary" onclick="previousQuestion()">Anterior</button>
-
 </div>
 
 <!-- RESULTADO -->
@@ -258,7 +258,6 @@ function start(){
 }
 
 function loadQuestion(){
-
   const q = questions[currentQuestion];
 
   document.getElementById("progressText").innerText =
@@ -270,7 +269,6 @@ function loadQuestion(){
   optionsDiv.innerHTML = "";
 
   q.options.forEach(option => {
-
     const label = document.createElement("label");
     label.className = "optionItem";
 
@@ -281,17 +279,14 @@ function loadQuestion(){
 
     label.appendChild(input);
     label.appendChild(document.createTextNode(" " + option));
-
     optionsDiv.appendChild(label);
   });
 
   document.getElementById("nextBtn").innerText =
     currentQuestion === questions.length - 1 ? "Gerar Plano" : "Próximo";
-
 }
 
 function nextQuestion(){
-
   const selected = document.querySelectorAll("input[name='option']:checked");
 
   if(selected.length === 0){
@@ -308,7 +303,6 @@ function nextQuestion(){
   } else {
     showResult();
   }
-
 }
 
 function previousQuestion(){
@@ -329,7 +323,6 @@ function goToLogin(){
 }
 
 function createAccount(){
-
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -345,7 +338,6 @@ function createAccount(){
   document.getElementById("panel").classList.remove("hidden");
 
   generatePanel();
-
 }
 
 function generatePanel(){
