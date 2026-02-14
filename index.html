@@ -80,15 +80,156 @@ button{
 </div>
 
 <script>
+
+let currentQuestion = 0;
+let answers = [];
+
+const questions = [
+
+{
+  question: "Qual seu maior objetivo financeiro?",
+  multi: true,
+  options: [
+    "Criar reserva de emergência",
+    "Fazer uma viagem",
+    "Comprar um carro",
+    "Comprar uma casa",
+    "Investir dinheiro",
+    "Quitar dívidas",
+    "Sair da instabilidade financeira",
+    "Organizar minhas finanças"
+  ]
+},
+
+{
+  question: "Como está sua organização hoje?",
+  multi: false,
+  options: [
+    "Não consigo guardar nada",
+    "Guardo pouco, mas sem método",
+    "Já guardo, mas quero melhorar",
+    "Já invisto e quero evoluir"
+  ]
+},
+
+{
+  question: "Você controla seus gastos mensalmente?",
+  multi: false,
+  options: [
+    "Não controlo",
+    "Controlo às vezes",
+    "Controlo quase tudo",
+    "Tenho controle total"
+  ]
+},
+
+{
+  question: "Você possui dívidas atualmente?",
+  multi: false,
+  options: [
+    "Sim, muitas",
+    "Algumas",
+    "Poucas",
+    "Nenhuma"
+  ]
+},
+
+{
+  question: "Quanto você consegue guardar por mês?",
+  multi: false,
+  options: [
+    "Nada",
+    "Até 5%",
+    "Entre 10% e 20%",
+    "Mais de 20%"
+  ]
+}
+
+];
+
 function start(){
-    document.getElementById("landing").classList.add("hidden");
-    document.getElementById("quiz").classList.remove("hidden");
+  document.getElementById("landing").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  loadQuestion();
+}
+
+function loadQuestion(){
+
+  const q = questions[currentQuestion];
+
+  document.getElementById("progressText").innerText =
+  "Pergunta " + (currentQuestion + 1) + " de " + questions.length;
+
+  document.getElementById("questionText").innerText = q.question;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+
+  q.options.forEach(option => {
+
+    const label = document.createElement("label");
+    label.className = "optionItem";
+
+    const input = document.createElement("input");
+    input.type = q.multi ? "checkbox" : "radio";
+    input.name = "option";
+    input.value = option;
+
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(option));
+
+    optionsDiv.appendChild(label);
+  });
+
+  if(currentQuestion === questions.length - 1){
+    document.getElementById("nextBtn").innerText = "Gerar Plano";
+  } else {
+    document.getElementById("nextBtn").innerText = "Próximo";
+  }
+
+}
+
+function nextQuestion(){
+
+  const selected = document.querySelectorAll("input[name='option']:checked");
+
+  if(selected.length === 0){
+    alert("Selecione pelo menos uma opção.");
+    return;
+  }
+
+  answers[currentQuestion] = [];
+
+  selected.forEach(el => {
+    answers[currentQuestion].push(el.value);
+  });
+
+  if(currentQuestion < questions.length - 1){
+    currentQuestion++;
+    loadQuestion();
+  } else {
+    showResult();
+  }
+
+}
+
+function previousQuestion(){
+  if(currentQuestion > 0){
+    currentQuestion--;
+    loadQuestion();
+  }
 }
 
 function showResult(){
-    document.getElementById("quiz").classList.add("hidden");
-    document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("resultText").innerText =
+  "Plano personalizado gerado com base nas suas respostas. Agora vamos organizar sua vida financeira passo a passo.";
+
 }
+
 </script>
 
 </body>
