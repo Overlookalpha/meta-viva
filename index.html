@@ -189,6 +189,31 @@ button{
   </button>
 
 </div>
+
+  <!-- HOME -->
+<div id="home" class="hidden">
+
+  <h2 style="margin-bottom:20px;">Seu Painel</h2>
+
+  <div style="margin-bottom:15px;">
+    <strong>Saldo Atual:</strong> € <span id="homeSaldo">0</span>
+  </div>
+
+  <div style="margin-bottom:15px;">
+    <strong>Entradas:</strong> € <span id="homeEntradas">0</span><br>
+    <strong>Saídas:</strong> € <span id="homeSaidas">0</span>
+  </div>
+
+  <div style="margin-bottom:15px;">
+    <strong>Reserva:</strong> € <span id="homeReserva">0</span>
+  </div>
+
+  <div>
+    <strong>Desafio Ativo:</strong>
+    <div id="homeDesafio" style="margin-top:5px; opacity:0.8;"></div>
+  </div>
+
+</div>
   
 </div>
 
@@ -388,6 +413,46 @@ function goToLogin(){
 
   document.getElementById("result").classList.add("hidden");
   document.getElementById("login").classList.remove("hidden");
+
+}
+
+function goToHome(){
+
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("home").classList.remove("hidden");
+
+  // Valores padrão
+  let saldo = 0;
+  let entradas = 0;
+  let saidas = 0;
+  let reserva = 0;
+  let desafio = "";
+
+  if(userProfile === "Crítico"){
+    desafio = "Anotar todos os gastos por 7 dias.";
+  }
+
+  else if(userProfile === "Iniciante"){
+    desafio = "Guardar 5% da sua renda por 30 dias.";
+  }
+
+  else if(userProfile === "Intermediário"){
+    desafio = "Criar reserva de 3 meses.";
+  }
+
+  else if(userProfile === "Estável"){
+    desafio = "Investir para crescimento.";
+  }
+
+  else{
+    desafio = "Organizar despesas fixas.";
+  }
+
+  document.getElementById("homeSaldo").innerText = saldo;
+  document.getElementById("homeEntradas").innerText = entradas;
+  document.getElementById("homeSaidas").innerText = saidas;
+  document.getElementById("homeReserva").innerText = reserva;
+  document.getElementById("homeDesafio").innerText = desafio;
 
 }
 
