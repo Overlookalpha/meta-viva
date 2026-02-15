@@ -409,6 +409,15 @@ function goToHome(){
   let objetivo = answers[0][0];
   let desafio = "";
   let estrategia = "";
+  if(objetivo === "Comprar um carro"){
+    estrategia = "Criar fundo específico para o carro e guardar 15% mensalmente.";
+  }
+  else if(objetivo === "Quitar dívidas"){
+    estrategia = "Priorizar pagamento das dívidas antes de iniciar novos objetivos.";
+  }
+  else if(objetivo === "Criar reserva de emergência"){
+    estrategia = "Construir reserva equivalente a 6 meses de despesas.";
+  }
   
 
   if(userProfile === "Crítico"){
@@ -461,17 +470,7 @@ function goToHome(){
       <p><strong>Desafio:</strong> ${desafio}</p>
     `;
   }
-  if(objetivo === "Comprar um carro"){
-  estrategia = "Criar fundo específico para o carro e guardar 15% mensalmente.";
-}
-
-else if(objetivo === "Quitar dívidas"){
-  estrategia = "Priorizar pagamento das dívidas antes de iniciar novos objetivos.";
-}
-
-else if(objetivo === "Criar reserva de emergência"){
-  estrategia = "Construir reserva equivalente a 6 meses de despesas.";
-}
+  
 }
 
 function createAccount(){
