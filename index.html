@@ -468,10 +468,11 @@ function createAccount(){
   }
 
   alert("Conta criada com sucesso!");
-  goToHome();
+
+  document.getElementById("login").classList.add("hidden");  // ESCONDE LOGIN
+  goToHome();  // MOSTRA HOME
 
 }
-
 </script>
 
 </body>
