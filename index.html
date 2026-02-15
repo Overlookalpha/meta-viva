@@ -9,423 +9,363 @@
 
 body{
   margin:0;
-  font-family:'Segoe UI', Arial, sans-serif;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:white;
   display:flex;
   justify-content:center;
-  align-items:flex-start;
-  min-height:100vh;
-  padding:40px 0;
+  align-items:center;
+  height:100vh;
 }
 
 .container{
-  width:95%;
-  max-width:1000px;
+  width:90%;
+  max-width:500px;
   text-align:center;
 }
 
-.hidden{ display:none; }
+h1{
+  font-size:60px;
+  margin-bottom:10px;
+}
 
-h1{ font-size:48px; margin-bottom:10px; }
-h2{ margin-top:20px; }
+h2{
+  margin-top:20px;
+}
 
 button{
-  padding:14px 28px;
+  padding:12px 25px;
   border:none;
-  border-radius:10px;
+  border-radius:8px;
   margin-top:20px;
   cursor:pointer;
   font-size:16px;
-  transition:0.3s;
 }
 
-button:hover{ transform:scale(1.05); }
-
-.primary{ background:#00c896; color:white; }
-.secondary{ background:#444; color:white; }
-
-.card{
-  background:rgba(255,255,255,0.08);
-  padding:20px;
-  border-radius:15px;
-  margin-top:20px;
-  text-align:left;
+.primary{
+  background:#00c896;
+  color:white;
 }
 
-input{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:10px;
-  border:none;
-  font-size:14px;
+.secondary{
+  background:#444;
+  color:white;
+  margin-left:10px;
+}
+
+.hidden{
+  display:none;
 }
 
 .optionItem{
   display:block;
   margin:10px 0;
+  text-align:left;
   background:rgba(255,255,255,0.1);
   padding:10px;
-  border-radius:8px;
-  cursor:pointer;
+  border-radius:6px;
 }
 
-.challenge-ball{
-  width:35px;
-  height:35px;
-  border-radius:50%;
-  background:#444;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  margin:5px;
-  cursor:pointer;
+#progressText{
+  font-size:14px;
+  opacity:0.7;
 }
-
-.challenge-ball.done{
-  background:#00c896;
-}
-
-.tab{
-  display:inline-block;
-  margin:10px;
-  padding:10px 20px;
-  border-radius:20px;
-  background:#444;
-  cursor:pointer;
-}
-
-.tab.active{
-  background:#00c896;
-}
-
-.section{ display:none; }
-.section.active{ display:block; }
 
 </style>
 </head>
+
 <body>
 
 <div class="container">
 
 <!-- LANDING -->
-<div id="landing">
-  <h1>Meta Viva</h1>
-  <p style="font-size:20px;">Transforme seus sonhos em metas alcançáveis.</p>
-  <button class="primary" onclick="startQuiz()">Criar Meu Plano Gratuito</button>
-</div>
+<div id="landing" style="position:relative;">
 
+  <h1 style="
+      font-size:80px;
+      margin-bottom:15px;
+      letter-spacing:3px;
+      font-weight:800;
+  ">
+    Meta Viva
+  </h1>
+
+  <p style="
+      font-size:22px;
+      margin-bottom:10px;
+      font-weight:300;
+  ">
+    Transforme seus sonhos em metas alcançáveis.
+  </p>
+
+  <p style="
+      font-size:16px;
+      opacity:0.85;
+      max-width:420px;
+      margin:0 auto 35px auto;
+      line-height:1.5;
+  ">
+    Planeje sua vida financeira, crie objetivos reais,
+    acompanhe sua evolução e conquiste estabilidade
+    com clareza e direção.
+  </p>
+
+  <button class="primary"
+      onclick="start()"
+      style="
+        font-size:18px;
+        padding:16px 32px;
+        border-radius:10px;
+        box-shadow:0 4px 20px rgba(0,0,0,0.3);
+      ">
+      Criar Meu Plano Gratuito
+  </button>
+
+  <div style="
+      position:absolute;
+      bottom:-80px;
+      left:0;
+      right:0;
+      font-size:12px;
+      opacity:0.5;
+  ">
+      Produzido por <strong>Overlock</strong> (Isaías Rodrigues)
+  </div>
+
+</div>
 <!-- QUIZ -->
 <div id="quiz" class="hidden">
+
   <div id="progressText"></div>
   <h2 id="questionText"></h2>
   <div id="options"></div>
-  <button class="primary" onclick="nextQuestion()">Próximo</button>
+
+  <button class="primary" id="nextBtn" onclick="nextQuestion()">Próximo</button>
   <button class="secondary" onclick="previousQuestion()">Anterior</button>
+
 </div>
 
-<!-- PERFIL -->
-<div id="profileResult" class="hidden">
-  <div class="card">
-    <h3>📊 Seu Perfil Financeiro</h3>
-    <div id="profileContent"></div>
+<!-- RESULTADO -->
+<div id="result" class="hidden">
+
+  <h1 style="font-size:42px; margin-bottom:10px;">
+    Seu Plano Está Pronto 🎯
+  </h1>
+
+  <p style="font-size:20px; opacity:0.9; margin-bottom:20px;">
+    Analisamos suas respostas e criamos uma estratégia personalizada
+    para transformar sua situação financeira passo a passo.
+  </p>
+
+  <div style="margin-top:30px; font-size:18px; line-height:1.6; opacity:0.85;">
+    ✔ Organização financeira clara<br>
+    ✔ Método de economia adaptado ao seu perfil<br>
+    ✔ Plano para sair da instabilidade<br>
+    ✔ Estratégia de crescimento consistente
   </div>
-  <button class="primary" onclick="goToLogin()">Continuar</button>
+
+ <button class="primary"
+        style="margin-top:35px; font-size:18px; padding:14px 30px;"
+        onclick="goToLogin()">
+  Ir para Meu Painel
+</button>
+
 </div>
 
 <!-- LOGIN -->
 <div id="login" class="hidden">
-  <div class="card">
-    <h3>🔐 Criar Conta</h3>
-    <input type="text" id="username" placeholder="Usuário">
-    <input type="password" id="password" placeholder="Senha">
-    <button class="primary" onclick="createAccount()">Entrar</button>
-  </div>
+
+  <h2>Crie sua conta para acessar seu painel</h2>
+
+  <input type="text" id="name" placeholder="Seu nome" style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;">
+
+  <input type="email" id="email" placeholder="Seu e-mail" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
+
+  <input type="password" id="password" placeholder="Sua senha" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
+
+  <button class="primary" style="margin-top:20px;" onclick="createAccount()">
+    Criar Conta e Acessar Painel
+  </button>
+
 </div>
-
-<!-- PAINEL -->
-<div id="panel" class="hidden">
-
-  <h2>📊 Painel Financeiro</h2>
-
-  <div id="tabs">
-    <span class="tab active" onclick="showSection('dashboard')">Dashboard</span>
-    <span class="tab" onclick="showSection('metas')">Metas</span>
-    <span class="tab" onclick="showSection('desafios')">Desafios</span>
-  </div>
-
-  <div id="dashboard" class="section active"></div>
-  <div id="metas" class="section"></div>
-  <div id="desafios" class="section"></div>
-
+  
 </div>
 
 <script>
 
-let currentQuestion=0;
-let answers=[];
-let userProfile="";
-let balance=0;
-let reserves=0;
+let currentQuestion = 0;
+let answers = [];
 
-const questions=[
+const questions = [
+
 {
-  question:"Qual seu maior objetivo financeiro?",
-  multi:true,
-  options:["Criar reserva","Viajar","Comprar carro","Quitar dívidas","Estabilidade"]
+  question: "Qual seu maior objetivo financeiro?",
+  multi: true,
+  options: [
+    "Criar reserva de emergência",
+    "Fazer uma viagem",
+    "Comprar um carro",
+    "Quitar dívidas",
+    "Ter maior estabilidade financeira"
+  ]
 },
+
 {
-  question:"Como está sua organização?",
-  multi:false,
-  options:["Nada organizada","Pouco organizada","Organizada","Total controle"]
+  question: "Como está sua organização hoje?",
+  multi: false,
+  options: [
+    "Não consigo guardar nada",
+    "Guardo pouco, mas sem método",
+    "Já guardo, mas quero melhorar",
+    "Tenho controle total"
+  ]
 },
+
 {
-  question:"Você tem dívidas?",
-  multi:false,
-  options:["Muitas","Algumas","Poucas","Nenhuma"]
+  question: "Você controla seus gastos mensalmente?",
+  multi: false,
+  options: [
+    "Não controlo",
+    "Controlo às vezes",
+    "Controlo quase tudo",
+    "Controlo tudo detalhadamente"
+  ]
 },
+
 {
-  question:"Quanto guarda por mês?",
-  multi:false,
-  options:["Nada","5%","10-20%","20%+"]
+  question: "Você possui dívidas atualmente?",
+  multi: false,
+  options: [
+    "Sim, muitas",
+    "Algumas",
+    "Poucas",
+    "Nenhuma"
+  ]
+},
+
+{
+  question: "Quanto você consegue guardar por mês?",
+  multi: false,
+  options: [
+    "Nada",
+    "Até 5%",
+    "Entre 10% e 20%",
+    "Mais de 20%"
+  ]
 }
+
 ];
 
-function startQuiz(){
-  landing.classList.add("hidden");
-  quiz.classList.remove("hidden");
+function start(){
+  document.getElementById("landing").classList.add("hidden");
+  document.getElementById("quiz").classList.remove("hidden");
+  currentQuestion = 0;
   loadQuestion();
 }
 
 function loadQuestion(){
-  const q=questions[currentQuestion];
-  progressText.innerText="Pergunta "+(currentQuestion+1)+" de "+questions.length;
-  questionText.innerText=q.question;
-  options.innerHTML="";
-  q.options.forEach(opt=>{
-    options.innerHTML+=`
-      <label class="optionItem">
-        <input type="${q.multi?"checkbox":"radio"}" name="opt" value="${opt}">
-        ${opt}
-      </label>
-    `;
+
+  const q = questions[currentQuestion];
+
+  document.getElementById("progressText").innerText =
+    "Pergunta " + (currentQuestion + 1) + " de " + questions.length;
+
+  document.getElementById("questionText").innerText = q.question;
+
+  const optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+
+  q.options.forEach(option => {
+
+    const label = document.createElement("label");
+    label.className = "optionItem";
+
+    const input = document.createElement("input");
+    input.type = q.multi ? "checkbox" : "radio";
+    input.name = "option";
+    input.value = option;
+
+    label.appendChild(input);
+    label.appendChild(document.createTextNode(" " + option));
+
+    optionsDiv.appendChild(label);
   });
+
+  if(currentQuestion === questions.length - 1){
+    document.getElementById("nextBtn").innerText = "Gerar Plano";
+  } else {
+    document.getElementById("nextBtn").innerText = "Próximo";
+  }
+
 }
 
 function nextQuestion(){
-  const selected=document.querySelectorAll("input[name='opt']:checked");
-  if(selected.length===0){ alert("Selecione uma opção"); return; }
-  answers[currentQuestion]=[];
-  selected.forEach(s=>answers[currentQuestion].push(s.value));
-  if(currentQuestion<questions.length-1){
-    currentQuestion++; loadQuestion();
-  }else{
-    calculateProfile();
-    quiz.classList.add("hidden");
-    profileResult.classList.remove("hidden");
+
+  const selected = document.querySelectorAll("input[name='option']:checked");
+
+  if(selected.length === 0){
+    alert("Selecione pelo menos uma opção.");
+    return;
   }
+
+  answers[currentQuestion] = [];
+
+  selected.forEach(el => {
+    answers[currentQuestion].push(el.value);
+  });
+
+  if(currentQuestion < questions.length - 1){
+    currentQuestion++;
+    loadQuestion();
+  } else {
+    showResult();
+  }
+
 }
 
 function previousQuestion(){
-  if(currentQuestion>0){ currentQuestion--; loadQuestion(); }
+  if(currentQuestion > 0){
+    currentQuestion--;
+    loadQuestion();
+  }
 }
 
-function calculateProfile(){
-  const debts=answers[2][0];
-  const save=answers[3][0];
-  if(debts==="Muitas") userProfile="🔴 Perfil Recuperação";
-  else if(save==="10-20%"||save==="20%+") userProfile="🟢 Perfil Organizado";
-  else userProfile="🟡 Perfil Construção";
-  profileContent.innerHTML=<strong>${userProfile}</strong>;
-}
+function showResult(){
 
+  document.getElementById("quiz").classList.add("hidden");
+  document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("resultText").innerText =
+    "Plano criado com base nas suas respostas. Agora vamos estruturar sua vida financeira passo a passo.";
+
+}
+  
 function goToLogin(){
-  profileResult.classList.add("hidden");
-  login.classList.remove("hidden");
-}
 
-<!-- ================== PAINEL COMPLETO ================== -->
-
-<div id="mainPanel" class="hidden">
-
-  <!-- MENU ABAS -->
-  <div style="display:flex; justify-content:center; gap:15px; margin-bottom:25px; flex-wrap:wrap;">
-    <button class="secondary" onclick="showTab('dashboard')">🏠 Dashboard</button>
-    <button class="secondary" onclick="showTab('metas')">🎯 Metas</button>
-    <button class="secondary" onclick="showTab('desafios')">🔥 Desafios</button>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div id="tab-dashboard" class="tabSection">
-
-    <div class="card">
-      <h3>👤 Perfil Financeiro</h3>
-      <div id="perfilUsuario"></div>
-    </div>
-
-    <div class="card">
-      <h3>💰 Saldo Atual</h3>
-      <input type="number" id="saldoInput" placeholder="Digite seu saldo atual">
-      <button class="primary" onclick="salvarSaldo()">Salvar Saldo</button>
-      <div id="saldoExibido" style="margin-top:10px;"></div>
-    </div>
-
-    <div class="card">
-      <h3>🏦 Reservas</h3>
-      <input type="number" id="reservaInput" placeholder="Valor da reserva">
-      <button class="primary" onclick="salvarReserva()">Adicionar Reserva</button>
-      <div id="reservaExibida" style="margin-top:10px;"></div>
-    </div>
-
-  </div>
-
-  <!-- METAS -->
-  <div id="tab-metas" class="tabSection hidden">
-
-    <div class="card">
-      <h3>✨ Criar Nova Meta</h3>
-
-      <input type="text" id="metaNome" placeholder="Nome da meta (ex: Viagem ✈️)">
-      <input type="number" id="metaValor" placeholder="Valor total">
-      <input type="number" id="metaMeses" placeholder="Quantidade de meses">
-
-      <button class="primary" onclick="criarMeta()">Criar Meta</button>
-    </div>
-
-    <div id="listaMetas"></div>
-
-  </div>
-
-  <!-- DESAFIOS -->
-  <div id="tab-desafios" class="tabSection hidden">
-
-    <div class="card">
-      <h3>🔥 Criar Desafio</h3>
-
-      <input type="text" id="desafioNome" placeholder="Nome do desafio">
-      <input type="number" id="desafioValor" placeholder="Valor alvo">
-
-      <button class="primary" onclick="criarDesafio()">Criar Desafio</button>
-    </div>
-
-    <div id="listaDesafios"></div>
-
-  </div>
-
-</div>
-
-<script>
-
-/* ================= SISTEMA DE ABAS ================= */
-
-function showTab(tab) {
-
-  document.querySelectorAll(".tabSection").forEach(el => el.classList.add("hidden"));
-  document.getElementById("tab-" + tab).classList.remove("hidden");
+  document.getElementById("result").classList.add("hidden");
+  document.getElementById("login").classList.remove("hidden");
 
 }
 
-/* ================= ATIVAÇÃO PAINEL ================= */
+function createAccount(){
 
-function ativarPainelCompleto() {
-  document.getElementById("panel").classList.add("hidden");
-  document.getElementById("mainPanel").classList.remove("hidden");
-  document.getElementById("perfilUsuario").innerText = userProfile;
-}
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-/* Substitui chamada antiga */
-function generatePanel(){
-  ativarPainelCompleto();
-}
-
-/* ================= SALDO ================= */
-
-function salvarSaldo(){
-  const valor = document.getElementById("saldoInput").value;
-  if(!valor) return;
-  document.getElementById("saldoExibido").innerHTML = "Saldo atual: <strong>R$ " + valor + "</strong>";
-}
-
-/* ================= RESERVA ================= */
-
-function salvarReserva(){
-  const valor = document.getElementById("reservaInput").value;
-  if(!valor) return;
-  document.getElementById("reservaExibida").innerHTML = "Reserva total: <strong>R$ " + valor + "</strong>";
-}
-
-/* ================= METAS ================= */
-
-function criarMeta(){
-
-  const nome = document.getElementById("metaNome").value;
-  const valor = document.getElementById("metaValor").value;
-  const meses = document.getElementById("metaMeses").value;
-
-  if(!nome || !valor || !meses){
+  if(!name || !email || !password){
     alert("Preencha todos os campos.");
     return;
   }
 
-  const porMes = (valor / meses).toFixed(2);
+  // Simulação de criação de conta
+  alert("Conta criada com sucesso!");
 
-  let html = `
-    <div class="card">
-      <h3>${nome}</h3>
-      <p>Valor total: R$ ${valor}</p>
-      <p>Guardar por mês: <strong>R$ ${porMes}</strong></p>
-      <div>
-  `;
+  // Aqui depois vamos conectar com backend
 
-  for(let i=0; i<meses; i++){
-    html += <span class="challenge-ball" onclick="this.classList.toggle('done')">💰</span>;
-  }
-
-  html += `
-      </div>
-    </div>
-  `;
-
-  document.getElementById("listaMetas").innerHTML += html;
-
-  document.getElementById("metaNome").value = "";
-  document.getElementById("metaValor").value = "";
-  document.getElementById("metaMeses").value = "";
-}
-
-/* ================= DESAFIOS ================= */
-
-function criarDesafio(){
-
-  const nome = document.getElementById("desafioNome").value;
-  const valor = document.getElementById("desafioValor").value;
-
-  if(!nome || !valor){
-    alert("Preencha todos os campos.");
-    return;
-  }
-
-  let html = `
-    <div class="card">
-      <h3>${nome}</h3>
-      <p>Meta: R$ ${valor}</p>
-      <div>
-  `;
-
-  for(let i=0; i<10; i++){
-    html += <span class="challenge-ball" onclick="this.classList.toggle('done')">🔥</span>;
-  }
-
-  html += `
-      </div>
-    </div>
-  `;
-
-  document.getElementById("listaDesafios").innerHTML += html;
-
-  document.getElementById("desafioNome").value = "";
-  document.getElementById("desafioValor").value = "";
 }
 
 </script>
+
+</body>
+</html>
