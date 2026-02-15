@@ -418,10 +418,11 @@ function goToLogin(){
 
 function goToHome(){
 
+  generateProfile(); // ← ADICIONA ESTA LINHA
+
   document.getElementById("result").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
 
-  // Valores padrão
   let saldo = 0;
   let entradas = 0;
   let saidas = 0;
@@ -455,7 +456,6 @@ function goToHome(){
   document.getElementById("homeDesafio").innerText = desafio;
 
 }
-
 function createAccount(){
 
   const name = document.getElementById("name").value;
