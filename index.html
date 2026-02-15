@@ -403,6 +403,12 @@ function goToHome(){
 
   document.getElementById("result").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
+  let saldo = 0;
+  let entradas = 0;
+  let saidas = 0;
+  let reserva = 0;
+  let desafio = "";
+
   let painel = document.getElementById("painelContent");
 
   if(userProfile === "Crítico"){
@@ -434,12 +440,7 @@ function goToHome(){
     `;
 
   }
-  let saldo = 0;
-  let entradas = 0;
-  let saidas = 0;
-  let reserva = 0;
-  let desafio = "";
-
+  
   if(userProfile === "Crítico"){
     desafio = "Anotar todos os gastos por 7 dias.";
   }
