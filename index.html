@@ -163,6 +163,7 @@ button{
     ✔ Plano para sair da instabilidade<br>
     ✔ Estratégia de crescimento consistente
   </div>
+<div id="profileResult" style="margin-top:20px; font-size:18px;"></div>
 
  <button class="primary"
         style="margin-top:35px; font-size:18px; padding:14px 30px;"
@@ -195,6 +196,7 @@ button{
 
 let currentQuestion = 0;
 let answers = [];
+let userProfile = "";
 
 const questions = [
 
@@ -330,10 +332,54 @@ function previousQuestion(){
   }
 }
 
+function generateProfile() {
+
+  const dividas = answers[3]?.[0] || "";
+  const guardar = answers[4]?.[0] || "";
+  const controle = answers[2]?.[0] || "";
+
+  if (
+    dividas === "Sim, muitas" &&
+    guardar === "Nada" &&
+    controle === "Não controlo"
+  ) {
+    userProfile = "Crítico";
+  }
+
+  else if (
+    dividas === "Algumas" &&
+    (guardar === "Nada" || guardar === "Até 5%")
+  ) {
+    userProfile = "Iniciante";
+  }
+
+  else if (
+    guardar === "Entre 10% e 20%"
+  ) {
+    userProfile = "Intermediário";
+  }
+
+  else if (
+    guardar === "Mais de 20%" &&
+    dividas === "Nenhuma"
+  ) {
+    userProfile = "Estável";
+  }
+
+  else {
+    userProfile = "Em Evolução";
+  }
+
+}
+
 function showResult(){
 
+  generateProfile();
   document.getElementById("quiz").classList.add("hidden");
   document.getElementById("result").classList.remove("hidden");
+
+  document.getElementById("profileResult").innerHTML =
+    "<strong>Seu Perfil:</strong> " + userProfile;
 
   document.getElementById("resultText").innerText =
     "Plano criado com base nas suas respostas. Agora vamos estruturar sua vida financeira passo a passo.";
