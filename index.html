@@ -399,6 +399,7 @@ function goToLogin(){
 function goToHome(){
 
   generateProfile(); // ← ADICIONA ESTA LINHA
+  console.log("Perfil gerado:", userProfile);
 
   document.getElementById("result").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
