@@ -399,86 +399,65 @@ function goToLogin(){
 
 function goToHome(){
 
-  generateProfile(); // ← ADICIONA ESTA LINHA
+  generateProfile();
   console.log("Perfil gerado:", userProfile);
 
   document.getElementById("result").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
-  let saldo = 0;
-  let entradas = 0;
-  let saidas = 0;
-  let reserva = 0;
-  let desafio = "";
 
   let painel = document.getElementById("painelContent");
+  let desafio = "";
 
   if(userProfile === "Crítico"){
+    desafio = "Anotar todos os gastos por 7 dias.";
 
     painel.innerHTML = `
       <h2>Plano Emergencial</h2>
       <p>Você precisa organizar suas finanças com urgência.</p>
-      <p><strong>Desafio:</strong> Anotar todos os gastos por 7 dias.</p>
+      <p><strong>Desafio:</strong> ${desafio}</p>
     `;
+  }
 
+  else if(userProfile === "Iniciante"){
+    desafio = "Guardar 5% da sua renda por 30 dias.";
+
+    painel.innerHTML = `
+      <h2>Fase Inicial 💡</h2>
+      <p>Hora de começar a estruturar sua organização financeira.</p>
+      <p><strong>Desafio:</strong> ${desafio}</p>
+    `;
+  }
+
+  else if(userProfile === "Intermediário"){
+    desafio = "Criar reserva de 3 meses.";
+
+    painel.innerHTML = `
+      <h2>Fase de Consolidação 📈</h2>
+      <p>Você já está guardando dinheiro. Agora é hora de estruturar crescimento.</p>
+      <p><strong>Desafio:</strong> ${desafio}</p>
+    `;
   }
 
   else if(userProfile === "Estável"){
+    desafio = "Investir para crescimento.";
 
     painel.innerHTML = `
       <h2>Modo Crescimento 🚀</h2>
       <p>Sua base está sólida. Hora de investir.</p>
-      <p><strong>Desafio:</strong> Investir para crescimento.</p>
+      <p><strong>Desafio:</strong> ${desafio}</p>
     `;
-
   }
 
   else{
+    desafio = "Organizar despesas fixas.";
 
     painel.innerHTML = `
       <h2>Plano Personalizado</h2>
       <p>Seu plano está em evolução.</p>
       <p><strong>Desafio:</strong> ${desafio}</p>
     `;
-
-  }
-  
-  if(userProfile === "Crítico"){
-    desafio = "Anotar todos os gastos por 7 dias.";
   }
 
-  else if(userProfile === "Iniciante"){
-    desafio = "Guardar 5% da sua renda por 30 dias.";
-  }
-
-  else if(userProfile === "Intermediário"){
-    desafio = "Criar reserva de 3 meses.";
-  }
-
-  else if(userProfile === "Estável"){
-    desafio = "Investir para crescimento.";
-  }
-
-  else if(userProfile === "Intermediário"){
-
-    painel.innerHTML = `
-      <h2>Fase de Consolidação 📈</h2>
-      <p>Você já está guardando dinheiro. Agora é hora de estruturar crescimento.</p>
-      <p><strong>Desafio:</strong> Criar reserva de 3 meses.</p>
-    `;
-
-  }
-
-  else{
-    desafio = "Organizar despesas fixas.";
-  }
-
-  document.getElementById("homeSaldo").innerText = saldo;
-  document.getElementById("homeEntradas").innerText = entradas;
-  document.getElementById("homeSaidas").innerText = saidas;
-  document.getElementById("homeReserva").innerText = reserva;
-  document.getElementById("homeDesafio").innerText = desafio;
-
-}
 function createAccount(){
 
   const name = document.getElementById("name").value;
