@@ -406,7 +406,10 @@ function goToHome(){
   document.getElementById("home").classList.remove("hidden");
 
   let painel = document.getElementById("painelContent");
+  let objetivo = answers[0][0];
   let desafio = "";
+  let estrategia = "";
+  
 
   if(userProfile === "Crítico"){
     desafio = "Anotar todos os gastos por 7 dias.";
@@ -415,6 +418,7 @@ function goToHome(){
       <h2>Plano Emergencial</h2>
       <p>Você precisa organizar suas finanças com urgência.</p>
       <p><strong>Desafio:</strong> ${desafio}</p>
+      <p><strong>Estratégia:</strong> ${estrategia}</p>
     `;
   }
 
@@ -457,7 +461,17 @@ function goToHome(){
       <p><strong>Desafio:</strong> ${desafio}</p>
     `;
   }
+  if(objetivo === "Comprar um carro"){
+  estrategia = "Criar fundo específico para o carro e guardar 15% mensalmente.";
+}
 
+else if(objetivo === "Quitar dívidas"){
+  estrategia = "Priorizar pagamento das dívidas antes de iniciar novos objetivos.";
+}
+
+else if(objetivo === "Criar reserva de emergência"){
+  estrategia = "Construir reserva equivalente a 6 meses de despesas.";
+}
 }
 
 function createAccount(){
