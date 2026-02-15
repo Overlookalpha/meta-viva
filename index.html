@@ -192,7 +192,44 @@ button{
 
   <!-- HOME -->
 <div id="home" class="hidden">
+  <div style="width:100%; max-width:900px;">
 
+  <h2 style="margin-bottom:30px;">Painel Financeiro</h2>
+
+  <!-- RESUMO -->
+  <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-bottom:40px;">
+
+    <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; width:180px;">
+      <p>Saldo</p>
+      <h3 id="saldoValor">€ 0</h3>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; width:180px;">
+      <p>Entradas</p>
+      <h3 id="entradaValor">€ 0</h3>
+    </div>
+
+    <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; width:180px;">
+      <p>Saídas</p>
+      <h3 id="saidaValor">€ 0</h3>
+    </div>
+
+  </div>
+
+  <!-- DESAFIO ATIVO -->
+  <div style="background:rgba(255,255,255,0.08); padding:25px; border-radius:12px;">
+
+    <h3 id="homeTituloPlano"></h3>
+    <p id="homeDescricaoPlano"></p>
+
+    <p style="margin-top:15px;">
+      <strong>Desafio:</strong>
+      <span id="homeDesafioTexto"></span>
+    </p>
+
+  </div>
+
+</div>
   <div id="painelContent"></div>
 
   <div style="margin-top:25px;">
@@ -444,54 +481,30 @@ function goToHome(){
   if(userProfile === "Crítico"){
     desafio = "Anotar todos os gastos por 7 dias.";
 
-    painel.innerHTML = `
-      <h2>Plano Emergencial</h2>
-      <p>Você precisa organizar suas finanças com urgência.</p>
-      <p><strong>Desafio:</strong> ${desafio}</p>
-      <p><strong>Estratégia:</strong> ${estrategia}</p>
-    `;
   }
 
   else if(userProfile === "Iniciante"){
     desafio = "Guardar 5% da sua renda por 30 dias.";
 
-    painel.innerHTML = `
-      <h2>Fase Inicial 💡</h2>
-      <p>Hora de começar a estruturar sua organização financeira.</p>
-      <p><strong>Desafio:</strong> ${desafio}</p>
-    `;
   }
 
   else if(userProfile === "Intermediário"){
     desafio = "Criar reserva de 3 meses.";
 
-    painel.innerHTML = `
-      <h2>Fase de Consolidação 📈</h2>
-      <p>Você já está guardando dinheiro. Agora é hora de estruturar crescimento.</p>
-      <p><strong>Desafio:</strong> ${desafio}</p>
-    `;
   }
 
   else if(userProfile === "Estável"){
     desafio = "Investir para crescimento.";
 
-    painel.innerHTML = `
-      <h2>Modo Crescimento 🚀</h2>
-      <p>Sua base está sólida. Hora de investir.</p>
-      <p><strong>Desafio:</strong> ${desafio}</p>
-    `;
   }
 
   else{
     desafio = "Organizar despesas fixas.";
 
-    painel.innerHTML = `
-      <h2>Plano Personalizado</h2>
-      <p>Seu plano está em evolução.</p>
-      <p><strong>Desafio:</strong> ${desafio}</p>
-    `;
   }
-  
+  document.getElementById("homeTituloPlano").innerText = userProfile;
+  document.getElementById("homeDescricaoPlano").innerText = estrategia;
+  document.getElementById("homeDesafioTexto").innerText = desafio;
 }
 
 function createAccount(){
