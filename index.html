@@ -194,7 +194,27 @@ button{
 <div id="home" class="hidden">
 
   <div id="painelContent"></div>
-  
+
+  <div style="margin-top:25px;">
+    <div style="background:#333; border-radius:10px; height:20px;">
+      <div id="progressBar" style="
+        height:20px;
+        width:0%;
+        background:#00c896;
+        border-radius:10px;
+        transition:0.5s;
+      "></div>
+    </div>
+
+    <p id="progressTextBar" style="margin-top:8px; font-size:14px;">
+      Progresso: 0%
+    </p>
+
+    <button class="primary" onclick="concluirDesafio()">
+      Concluir Desafio
+    </button>
+  </div>
+
 </div>
 
 <script>
@@ -202,6 +222,7 @@ button{
 let currentQuestion = 0;
 let answers = [];
 let userProfile = "";
+let progresso = 0;
 
 const questions = [
 
@@ -488,6 +509,20 @@ function createAccount(){
 
   document.getElementById("login").classList.add("hidden");  // ESCONDE LOGIN
   goToHome();  // MOSTRA HOME
+
+  }
+function concluirDesafio(){
+
+  if(progresso < 100){
+    progresso += 20;
+  }
+
+  if(progresso > 100){
+    progresso = 100;
+  }
+
+  document.getElementById("progressBar").style.width = progresso + "%";
+  document.getElementById("progressTextBar").innerText = "Progresso: " + progresso + "%";
 
 }
 </script>
