@@ -16,6 +16,16 @@ body{
   justify-content:center;
   align-items:center;
   height:100vh;
+  overflow:hidden; /* REMOVE SCROLL */
+}
+.app{
+  width:100%;
+  max-width:500px; /* largura estilo celular */
+  height:100vh;
+  padding:20px;
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
 }
 
 .container{
@@ -77,7 +87,7 @@ button{
 
 <body>
 
-<div class="container">
+<div class="app">
 
 <!-- LANDING -->
 <div id="landing" style="position:relative;">
@@ -202,15 +212,52 @@ button{
     align-items:flex-start;
   ">
 
-  <h2 style="margin-bottom:30px;">Painel Financeiro</h2>
+  <!-- PERFIL -->
+<div style="display:flex; align-items:center; gap:15px; margin-bottom:25px;">
+
+  <div style="
+    width:60px;
+    height:60px;
+    background:#444;
+    border-radius:50%;
+  "></div>
+
+  <div>
+    <h3 style="margin:0;">Nome do Usuário</h3>
+    <p id="perfilTipo" style="margin:0; font-size:14px; opacity:0.7;">
+      Perfil: —
+    </p>
+  </div>
+
+</div>
+<!-- MENU PRINCIPAL -->
+<div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:25px; justify-content:center;">
+
+  <button onclick="abrirAba('home')">Home</button>
+
+  <button onclick="abrirAba('desafios')">Desafios</button>
+
+  <button onclick="abrirAba('novoDesafio')">Novo Desafio</button>
+
+  <button onclick="abrirAba('categorias')">Categorias</button>
+
+  <button onclick="abrirAba('relatorios')">Relatórios</button>
+
+  <button onclick="abrirAba('reserva')">Reserva</button>
+
+  <button onclick="abrirAba('emprestimo')">Empréstimo</button>
+
+  <button onclick="abrirAba('configuracoes')">Configurações</button>
+
+</div>
   <div style="margin-bottom:25px;">
     <button onclick="abrirDesafios()">Ir para Desafios</button>
 </div>
 
   <!-- RESUMO -->
-  <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-bottom:40px;">
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;">
 
-    <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px; width:180px;">
+    <div style="background:rgba(255,255,255,0.1); padding:20px; border-radius:10px;">
       <p>Saldo</p>
       <h3 id="saldoValor">€ 0</h3>
     </div>
@@ -224,6 +271,27 @@ button{
       <p>Saídas</p>
       <h3 id="saidaValor">€ 0</h3>
     </div>
+    </div>
+<!-- AÇÕES RÁPIDAS -->
+<div style="display:flex; gap:15px; margin-bottom:25px;">
+
+  <button class="primary" style="flex:1;">
+    + Entrada
+  </button>
+
+  <button style="
+    flex:1;
+    background:#e74c3c;
+    color:white;
+    border:none;
+    border-radius:8px;
+    padding:12px;
+    cursor:pointer;
+  ">
+    - Saída
+  </button>
+
+</div>
 <div id="areaDesafios" class="hidden" style="margin-top:40px;">
 
   <h2>Seus Desafios</h2>
@@ -231,10 +299,8 @@ button{
   <div style="background:rgba(255,255,255,0.08); padding:20px; border-radius:12px; margin-top:15px;">
     <p><strong>Desafio Principal:</strong></p>
     <p id="desafioPrincipalTexto"></p>
-  </div>
-
+  
 </div>
-  </div>
 
   <!-- DESAFIO ATIVO -->
   <div style="background:rgba(255,255,255,0.08); padding:25px; border-radius:12px;">
@@ -265,19 +331,50 @@ button{
       Concluir Desafio
     </button>
   </div>
-  </div>
-
+    
 </div>
 
 </div>
+<!-- DESAFIOS -->
+<div id="desafios" class="hidden">
+  <h2>Desafios</h2>
+</div>
 
+<!-- NOVO DESAFIO -->
+<div id="novoDesafio" class="hidden">
+  <h2>Criar Novo Desafio</h2>
+</div>
+
+<!-- CATEGORIAS -->
+<div id="categorias" class="hidden">
+  <h2>Categorias</h2>
+</div>
+
+<!-- RELATORIOS -->
+<div id="relatorios" class="hidden">
+  <h2>Relatórios</h2>
+</div>
+
+<!-- RESERVA -->
+<div id="reserva" class="hidden">
+  <h2>Reserva Emergencial</h2>
+</div>
+
+<!-- EMPRESTIMO -->
+<div id="emprestimo" class="hidden">
+  <h2>Empréstimo Interno</h2>
+</div>
+
+<!-- CONFIGURACOES -->
+<div id="configuracoes" class="hidden">
+  <h2>Configurações</h2>
+</div>
 <script>
 
 let currentQuestion = 0;
 let answers = [];
 let userProfile = "";
 let progresso = 0;
-
 const questions = [
 
 {
@@ -479,6 +576,7 @@ function goToHome(){
 
   document.getElementById("result").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
+  document.getElementById("perfilTipo").innerText = "Perfil: " + userProfile;
 
   let painel = document.getElementById("painelContent");
   let objetivo = answers[0][0];
@@ -519,7 +617,6 @@ function goToHome(){
     desafio = "Organizar despesas fixas.";
 
   }
-  document.getElementById("homeTituloPlano").innerText = userProfile;
   document.getElementById("homeDescricaoPlano").innerText = estrategia;
   document.getElementById("homeDesafioTexto").innerText = desafio;
 }
@@ -564,6 +661,22 @@ function concluirDesafio(){
   document.getElementById("progressBar").style.width = progresso + "%";
   document.getElementById("progressTextBar").innerText = "Progresso: " + progresso + "%";
 
+}
+
+function abrirAba(id){
+
+  // Esconde todas as abas
+  document.getElementById("home").classList.add("hidden");
+  document.getElementById("desafios").classList.add("hidden");
+  document.getElementById("novoDesafio").classList.add("hidden");
+  document.getElementById("categorias").classList.add("hidden");
+  document.getElementById("relatorios").classList.add("hidden");
+  document.getElementById("reserva").classList.add("hidden");
+  document.getElementById("emprestimo").classList.add("hidden");
+  document.getElementById("configuracoes").classList.add("hidden");
+
+  // Mostra a aba clicada
+  document.getElementById(id).classList.remove("hidden");
 }
 </script>
 
