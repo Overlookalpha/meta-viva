@@ -195,6 +195,11 @@ button{
   <div style="width:100%; max-width:900px;">
 
   <h2 style="margin-bottom:30px;">Painel Financeiro</h2>
+  <div style="margin-bottom:25px;">
+    <button onclick="abrirDesafios()">Ir para Desafios</button>
+</div>
+
+</div>
 
   <!-- RESUMO -->
   <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-bottom:40px;">
@@ -213,7 +218,16 @@ button{
       <p>Saídas</p>
       <h3 id="saidaValor">€ 0</h3>
     </div>
+<div id="areaDesafios" class="hidden" style="margin-top:40px;">
 
+  <h2>Seus Desafios</h2>
+
+  <div style="background:rgba(255,255,255,0.08); padding:20px; border-radius:12px; margin-top:15px;">
+    <p><strong>Desafio Principal:</strong></p>
+    <p id="desafioPrincipalTexto"></p>
+  </div>
+
+</div>
   </div>
 
   <!-- DESAFIO ATIVO -->
@@ -524,6 +538,16 @@ function createAccount(){
   goToHome();  // MOSTRA HOME
 
   }
+
+function abrirDesafios(){
+  document.getElementById("areaDesafios").classList.remove("hidden");
+
+  // Rola suavemente até a área de desafios
+  document.getElementById("areaDesafios").scrollIntoView({
+    behavior: "smooth"
+  });
+}
+  
 function concluirDesafio(){
 
   if(progresso < 100){
