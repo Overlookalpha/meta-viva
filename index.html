@@ -404,10 +404,35 @@ function goToHome(){
   document.getElementById("home").classList.remove("hidden");
   let painel = document.getElementById("painelContent");
 
-  painel.innerHTML = `
-    <h2>Seu Painel</h2>
-    <p>Teste de painel dinâmico funcionando.</p>
-  `;
+  if(userProfile === "Crítico"){
+
+    painel.innerHTML = `
+      <h2>Plano Emergencial</h2>
+      <p>Você precisa organizar suas finanças com urgência.</p>
+      <p><strong>Desafio:</strong> Anotar todos os gastos por 7 dias.</p>
+    `;
+
+  }
+
+  else if(userProfile === "Estável"){
+
+    painel.innerHTML = `
+      <h2>Modo Crescimento 🚀</h2>
+      <p>Sua base está sólida. Hora de investir.</p>
+      <p><strong>Desafio:</strong> Investir para crescimento.</p>
+    `;
+
+  }
+
+  else{
+
+    painel.innerHTML = `
+      <h2>Plano Personalizado</h2>
+      <p>Seu plano está em evolução.</p>
+      <p><strong>Desafio:</strong> ${desafio}</p>
+    `;
+
+  }
   let saldo = 0;
   let entradas = 0;
   let saidas = 0;
