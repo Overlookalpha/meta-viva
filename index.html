@@ -48,6 +48,11 @@ button{
   cursor:pointer;
   font-size:16px;
 }
+.btnAcao{
+  padding:10px 15px;
+  font-size:15px;
+  height:55px;
+}
 
 .primary{
   background:#00c896;
@@ -110,6 +115,24 @@ button{
 
 .cardResumo:hover{
   background:rgba(255,255,255,0.15);
+}
+
+.btnAcao{
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  font-size:14px;
+  cursor:pointer;
+}
+
+.btnEntrada{
+  background:#00c896;
+  color:white;
+}
+
+.btnSaida{
+  background:#444;
+  color:white;
 }
 
 /* TELAS QUE ABREM POR CIMA */
@@ -326,7 +349,7 @@ button{
       </div>
 
       <!-- BOTÕES -->
-      <div style="display:flex; gap:20px;">
+      
       <!-- META MENSAL -->
 <div style="margin-top:25px;">
 
@@ -346,18 +369,18 @@ button{
   <p style="margin-top:5px; font-size:13px; opacity:0.7;">
     Guardado: € <span id="guardadoValor">0</span>
   </p>
+  </div>
+  <!-- BOTÕES -->
+<div style="display:flex; gap:15px; margin-top:15px;">
 
-</div>
+  <button class="btnAcao btnEntrada" style="flex:1;" onclick="adicionarEntrada()">
+    + Entrada
+  </button>
 
-        <button class="btnAcao btnEntrada" style="flex:1;" onclick="adicionarEntrada()">
-          + Entrada
-        </button>
-
-        <button class="btnAcao btnSaida" style="flex:1;">
-          - Saída
-        </button>
-
-      </div>
+  <button class="btnAcao btnSaida" style="flex:1;">
+    - Saída
+  </button>
+ </div>
 
     </div>
 
