@@ -234,12 +234,12 @@ button{
 
 <div style="
   width:100%;
-  max-width:1100px;
   display:flex;
-  gap:40px;
+  gap:20px;
   align-items:flex-start;
 ">
-<div style="width:220px;">
+  
+<div style="width:40%;">
   <!-- PERFIL -->
 <div style="display:flex; align-items:center; gap:15px; margin-bottom:25px;">
 
@@ -259,7 +259,7 @@ button{
 
 </div>
 <!-- MENU PRINCIPAL -->
-<play:flex; flex-direction:column; gap:10px; margin-bottom:25px; width:220px;">
+<div style="display:flex; flex-direction:column; gap:10px; margin-bottom:25px; width:220px;">
 
   <button class="menuBtn" onclick="abrirAba('home')">🏠 Home</button>
 
@@ -281,31 +281,36 @@ button{
   <div style="flex:1;">
 
   <!-- RESUMO -->
-  <play:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;">
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;">
 
     <div class="cardResumo">
-      <p>Saldo</p>
-      <h3 id="saldoValor">€ 0</h3>
-    </div>
+    <p>Saldo</p>
+    <h3 id="saldoValor">€ 0</h3>
+  </div>
 
-    <div class="cardResumo">
-      <p>Entradas</p>
-      <h3 id="entradaValor">€ 0</h3>
-    </div>
+  <div class="cardResumo">
+    <p>Reserva</p>
+    <h3 id="reservaValor">€ 0</h3>
+  </div>
 
-    <div class="cardResumo">
-      <p>Saídas</p>
-      <h3 id="saidaValor">€ 0</h3>
-    </div>
-    </div>
-<!-- AÇÕES RÁPIDAS -->
-<div class="acoesRapidas">
+  <div class="cardResumo">
+    <p>Entradas</p>
+    <h3 id="entradaValor">€ 0</h3>
+  </div>
 
-  <button class="btnAcao btnEntrada">
+  <div class="cardResumo">
+    <p>Saídas</p>
+    <h3 id="saidaValor">€ 0</h3>
+  </div>
+
+</div>
+<div style="display:flex; gap:20px; margin-bottom:30px;">
+
+  <button class="btnAcao btnEntrada" style="flex:1;">
     + Entrada
   </button>
 
-  <button class="btnAcao btnSaida">
+  <button class="btnAcao btnSaida" style="flex:1;">
     - Saída
   </button>
 
