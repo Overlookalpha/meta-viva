@@ -228,91 +228,98 @@ button{
 
 </div>
 
-  <!-- HOME -->
+
+<!-- HOME -->
 <div id="home" class="hidden">
 
-<div style="width:100%; display:flex; gap:20px; align-items:flex-start;">
+  <div style="
+    width:100%;
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+  ">
 
-  <!-- COLUNA 1 – MENU -->
-  <div style="width:25%;">
+    <!-- COLUNA 1 - MENU -->
+    <div style="width:30%;">
 
-    <div style="display:flex; flex-direction:column; gap:8px; width:100%;">
+      <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
 
-      <button class="menuBtn" onclick="abrirAba('home')">🏠 Home</button>
-      <button class="menuBtn" onclick="abrirAba('desafios')">🎯 Desafios</button>
-      <button class="menuBtn" onclick="abrirAba('categorias')">🗂️ Categorias</button>
-      <button class="menuBtn" onclick="abrirAba('relatorios')">📊 Relatórios</button>
-      <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
-      <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦 Empréstimo</button>
-      <button class="menuBtn">🧾 Contas a Pagar</button>
-      <button class="menuBtn" onclick="abrirAba('configuracoes')">⚙️ Configurações</button>
+        <button class="menuBtn" onclick="abrirAba('home')">🏠 Home</button>
+        <button class="menuBtn" onclick="abrirAba('desafios')">🎯 Desafios</button>
+        <button class="menuBtn" onclick="abrirAba('categorias')">🗂️ Categorias</button>
+        <button class="menuBtn" onclick="abrirAba('relatorios')">📊 Relatórios</button>
+        <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
+        <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦 Empréstimo</button>
+        <button class="menuBtn">🧾 Contas a Pagar</button>
+        <button class="menuBtn" onclick="abrirAba('configuracoes')">⚙️ Configurações</button>
+
+      </div>
+
+    </div>
+
+    <!-- COLUNA 2 - CONTEÚDO -->
+    <div style="width:60%;">
+
+      <!-- PERFIL -->
+      <div style="display:flex; align-items:center; gap:15px; margin-bottom:30px;">
+
+        <div style="
+          width:60px;
+          height:60px;
+          background:#444;
+          border-radius:50%;
+        "></div>
+
+        <div>
+          <h3 style="margin:0;">Nome do Usuário</h3>
+          <p id="perfilTipo" style="margin:0; font-size:14px; opacity:0.7;">
+            Perfil: —
+          </p>
+        </div>
+
+      </div>
+
+      <!-- RESUMO -->
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;">
+
+        <div class="cardResumo">
+          <p>Saldo</p>
+          <h3 id="saldoValor">€ 0</h3>
+        </div>
+
+        <div class="cardResumo">
+          <p>Reserva</p>
+          <h3 id="reservaValor">€ 0</h3>
+        </div>
+
+        <div class="cardResumo">
+          <p>Entradas</p>
+          <h3 id="entradaValor">€ 0</h3>
+        </div>
+
+        <div class="cardResumo">
+          <p>Saídas</p>
+          <h3 id="saidaValor">€ 0</h3>
+        </div>
+
+      </div>
+
+      <!-- BOTÕES -->
+      <div style="display:flex; gap:20px;">
+
+        <button class="btnAcao btnEntrada" style="flex:1;">
+          + Entrada
+        </button>
+
+        <button class="btnAcao btnSaida" style="flex:1;">
+          - Saída
+        </button>
+
+      </div>
 
     </div>
 
   </div>
-
-
-  <!-- COLUNA 2 – RESUMO -->
-  <div style="width:45%;">
-
-    <!-- RESUMO GRID -->
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:25px;">
-
-      <div class="cardResumo">
-        <p>Saldo</p>
-        <h3 id="saldoValor">€ 0</h3>
-      </div>
-
-      <div class="cardResumo">
-        <p>Reserva</p>
-        <h3 id="reservaValor">€ 0</h3>
-      </div>
-
-      <div class="cardResumo">
-        <p>Entradas</p>
-        <h3 id="entradaValor">€ 0</h3>
-      </div>
-
-      <div class="cardResumo">
-        <p>Saídas</p>
-        <h3 id="saidaValor">€ 0</h3>
-      </div>
-
-    </div>
-
-    <!-- BOTÕES -->
-    <div style="display:flex; gap:15px;">
-      <button class="btnAcao btnEntrada" style="flex:1;">+ Entrada</button>
-      <button class="btnAcao btnSaida" style="flex:1;">- Saída</button>
-    </div>
-
-  </div>
-
-
-  <!-- COLUNA 3 – PERFIL -->
-  <div style="width:30%;">
-
-    <div style="display:flex; align-items:center; gap:15px;">
-
-      <div style="
-        width:60px;
-        height:60px;
-        background:#444;
-        border-radius:50%;
-      "></div>
-
-      <div>
-        <h3 style="margin:0;">Nome do Usuário</h3>
-        <p id="perfilTipo" style="margin:0; font-size:14px; opacity:0.7;">
-          Perfil: —
-        </p>
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
 
 </div>
 <!-- DESAFIOS -->
