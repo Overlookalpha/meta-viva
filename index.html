@@ -713,6 +713,10 @@ function goToHome(){
   // ===== ATIVAR PLANO AUTOMÁTICO DO PERFIL =====
 
 const plano = planosPerfil[userProfile];
+// Garante que perfil existe
+if(!planosPerfil[userProfile]){
+   userProfile = "Crítico"; // apenas para teste
+}
 
 if (plano) {
     metaMensal = 0;
