@@ -20,6 +20,8 @@ body{
   min-height:100vh;
   padding:20px;
   box-sizing:border-box;
+  position:relative;   /* IMPORTANTE */
+  overflow:hidden;     /* impede scroll lateral */
 }
 
 .container{
@@ -108,6 +110,25 @@ button{
 
 .cardResumo:hover{
   background:rgba(255,255,255,0.15);
+}
+
+/* TELAS QUE ABREM POR CIMA */
+
+.screen{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  padding:20px;
+  box-sizing:border-box;
+  display:none;
+  z-index:10;
+}
+
+.screen.active{
+  display:block;
 }
 </style>
 </head>
@@ -245,7 +266,7 @@ button{
       <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
 
         <button class="menuBtn" onclick="abrirAba('home')">🏠 Home</button>
-        <button class="menuBtn" onclick="abrirAba('desafios')">🎯 Desafios</button>
+        <button class="menuBtn" onclick="abrirTela('telaDesafios')">🎯 Desafios</button>
         <button class="menuBtn" onclick="abrirAba('categorias')">🗂️ Categorias</button>
         <button class="menuBtn" onclick="abrirAba('relatorios')">📊 Relatórios</button>
         <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
@@ -356,6 +377,29 @@ button{
 <div id="configuracoes" class="hidden">
   <h2>Configurações</h2>
 </div>
+
+<!-- TELA DESAFIOS (NOVA TELA) -->
+<div id="telaDesafios" class="screen">
+
+  <button onclick="fecharTela('telaDesafios')" style="
+    background:none;
+    border:none;
+    color:white;
+    font-size:16px;
+    margin-bottom:20px;
+    cursor:pointer;
+  ">
+    ← Voltar
+  </button>
+
+  <h2 style="margin-top:0;">🎯 Desafios</h2>
+
+  <p style="opacity:0.8; margin-top:15px;">
+    Aqui ficará o desafio ativo do seu perfil.
+  </p>
+
+</div>
+
 <script>
 
 let currentQuestion = 0;
@@ -664,6 +708,13 @@ function abrirAba(id){
 
   // Mostra a aba clicada
   document.getElementById(id).classList.remove("hidden");
+}
+function abrirTela(id){
+  document.getElementById(id).classList.add("active");
+}
+
+function fecharTela(id){
+  document.getElementById(id).classList.remove("active");
 }
 </script>
 
