@@ -825,31 +825,30 @@ function adicionarEntrada(){
 
   // 🔥 Agora entra o cérebro do desafio
 
-  if(planosPerfil[userProfile]){
+   function adicionarEntrada(){
 
-    let porcentagem = planosPerfil[userProfile].porcentagem;
-    let valorParaGuardar = valor * porcentagem;
+  let valor = parseFloat(prompt("Digite o valor da entrada:"));
 
-    let confirmar = confirm(
-      "Para seu perfil (" + userProfile + 
-      ") você deveria guardar € " + valorParaGuardar.toFixed(2) +
-      ".\nDeseja guardar esse valor agora?"
-    );
+  if(isNaN(valor) || valor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
 
-    if(confirmar){
+  entradasTotal += valor;
+  saldo += valor;
+  // Atualiza meta baseada no perfil (apenas cálculo, não guarda dinheiro)
+if(planosPerfil[userProfile]){
 
-      saldo -= valorParaGuardar;
-      reserva += valorParaGuardar;
-      saidasTotal += valorParaGuardar;
+  let porcentagem = planosPerfil[userProfile].porcentagem;
 
-      valorGuardado += valorParaGuardar;
+  // Meta = total de entradas * porcentagem do perfil
+  metaMensal = entradasTotal * porcentagem;
 
-      document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-      document.getElementById("reservaValor").innerText = "€ " + reserva.toFixed(2);
-      document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+  document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
+}
 
-      atualizarProgresso();
-    }
+  document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
 
   }
 
