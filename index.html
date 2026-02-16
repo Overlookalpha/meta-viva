@@ -327,8 +327,29 @@ button{
 
       <!-- BOTÕES -->
       <div style="display:flex; gap:20px;">
+      <!-- META MENSAL -->
+<div style="margin-top:25px;">
 
-        <button class="btnAcao btnEntrada" style="flex:1;">
+  <p style="margin:5px 0; font-size:14px; opacity:0.8;">
+    Meta do mês: € <span id="metaValor">0</span>
+  </p>
+
+  <div style="background:#333; border-radius:10px; height:18px; overflow:hidden;">
+    <div id="barraMeta" style="
+      height:18px;
+      width:0%;
+      background:#00c896;
+      transition:0.4s;
+    "></div>
+  </div>
+
+  <p style="margin-top:5px; font-size:13px; opacity:0.7;">
+    Guardado: € <span id="guardadoValor">0</span>
+  </p>
+
+</div>
+
+        <button class="btnAcao btnEntrada" style="flex:1;" onclick="adicionarEntrada()">
           + Entrada
         </button>
 
@@ -402,10 +423,68 @@ button{
 
 <script>
 
+let progresso = 0;
 let currentQuestion = 0;
 let answers = [];
 let userProfile = "";
-let progresso = 0;
+
+/* ===== PLANOS POR PERFIL ===== */
+let metaMensal = 0;
+let valorGuardado = 0;
+const planosPerfil = {
+
+  "Crítico": {
+    porcentagem: 0.05,
+    titulo: "Plano de Reorganização Financeira",
+    etapas: [
+      "Guardar 5% de cada entrada.",
+      "Registrar todos os gastos por 30 dias.",
+      "Criar disciplina antes de aumentar a meta."
+    ]
+  },
+
+  "Iniciante": {
+    porcentagem: 0.08,
+    titulo: "Plano de Construção de Base",
+    etapas: [
+      "Guardar 8% de cada entrada.",
+      "Separar despesas fixas e variáveis.",
+      "Criar reserva equivalente a 1 mês."
+    ]
+  },
+
+  "Em Evolução": {
+    porcentagem: 0.10,
+    titulo: "Plano de Crescimento",
+    etapas: [
+      "Guardar 10% de cada entrada.",
+      "Eliminar desperdícios mensais.",
+      "Fortalecer reserva progressivamente."
+    ]
+  },
+
+  "Intermediário": {
+    porcentagem: 0.15,
+    titulo: "Plano de Consolidação",
+    etapas: [
+      "Guardar 15% de cada entrada.",
+      "Expandir reserva para 3 meses.",
+      "Criar metas de investimento."
+    ]
+  },
+
+  "Estável": {
+    porcentagem: 0.20,
+    titulo: "Plano de Independência",
+    etapas: [
+      "Guardar 20% de cada entrada.",
+      "Criar fundo estratégico.",
+      "Preparar capital para investimento."
+    ]
+  }
+
+};
+  
 const questions = [
 
 {
@@ -608,6 +687,14 @@ function goToHome(){
   document.getElementById("result").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
   document.getElementById("perfilTipo").innerText = "Perfil: " + userProfile;
+  // ===== ATIVAR PLANO AUTOMÁTICO DO PERFIL =====
+
+const plano = planosPerfil[userProfile];
+
+if (plano) {
+    metaMensal = 0;
+    valorGuardado = 0;
+}
 
   let painel = document.getElementById("painelContent");
   let objetivo = answers[0][0];
@@ -693,6 +780,57 @@ function concluirDesafio(){
   document.getElementById("progressTextBar").innerText = "Progresso: " + progresso + "%";
 
 }
+let saldo = 0;
+let reserva = 0;
+let entradasTotal = 0;
+let saidasTotal = 0;
+
+function adicionarEntrada(){
+
+  let valor = parseFloat(prompt("Digite o valor da entrada:"));
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  entradasTotal += valor;
+  saldo += valor;
+
+  document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+
+  // 🔥 Agora entra o cérebro do desafio
+
+  if(planosPerfil[userProfile]){
+
+    let porcentagem = planosPerfil[userProfile].porcentagem;
+    let valorParaGuardar = valor * porcentagem;
+
+    let confirmar = confirm(
+      "Para seu perfil (" + userProfile + 
+      ") você deveria guardar € " + valorParaGuardar.toFixed(2) +
+      ".\nDeseja guardar esse valor agora?"
+    );
+
+    if(confirmar){
+
+      saldo -= valorParaGuardar;
+      reserva += valorParaGuardar;
+      saidasTotal += valorParaGuardar;
+
+      valorGuardado += valorParaGuardar;
+
+      document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+      document.getElementById("reservaValor").innerText = "€ " + reserva.toFixed(2);
+      document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+
+      atualizarProgresso();
+    }
+
+  }
+
+}
 
 function abrirAba(id){
 
@@ -709,6 +847,29 @@ function abrirAba(id){
   // Mostra a aba clicada
   document.getElementById(id).classList.remove("hidden");
 }
+
+function atualizarProgresso(){
+
+  if(metaMensal === 0){
+    metaMensal = entradasTotal * planosPerfil[userProfile].porcentagem;
+  }
+
+  let porcentagem = 0;
+
+  if(metaMensal > 0){
+    porcentagem = (valorGuardado / metaMensal) * 100;
+  }
+
+  if(porcentagem > 100){
+    porcentagem = 100;
+  }
+
+  console.log("Meta mensal:", metaMensal);
+  console.log("Guardado:", valorGuardado);
+  console.log("Progresso:", porcentagem.toFixed(0) + "%");
+
+}
+  
 function abrirTela(id){
   document.getElementById(id).classList.add("active");
 }
