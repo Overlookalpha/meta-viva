@@ -873,9 +873,9 @@ function abrirAba(id){
 
 function atualizarProgresso(){
 
-  if(metaMensal === 0){
-    metaMensal = entradasTotal * planosPerfil[userProfile].porcentagem;
-  }
+  if(!planosPerfil[userProfile]) return;
+
+  metaMensal = entradasTotal * planosPerfil[userProfile].porcentagem;
 
   let porcentagem = 0;
 
@@ -887,9 +887,12 @@ function atualizarProgresso(){
     porcentagem = 100;
   }
 
-  console.log("Meta mensal:", metaMensal);
-  console.log("Guardado:", valorGuardado);
-  console.log("Progresso:", porcentagem.toFixed(0) + "%");
+  // Atualiza textos
+  document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
+  document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
+
+  // Atualiza barra
+  document.getElementById("barraMeta").style.width = porcentagem + "%";
 
 }
   
