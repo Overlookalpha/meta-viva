@@ -812,21 +812,6 @@ let reserva = 0;
 let entradasTotal = 0;
 let saidasTotal = 0;
 
-function adicionarEntrada(){
-
-  let valor = parseFloat(prompt("Digite o valor da entrada:"));
-
-  if(isNaN(valor) || valor <= 0){
-    alert("Valor inválido.");
-    return;
-  }
-
-  entradasTotal += valor;
-  saldo += valor;
-
-  document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-
   // 🔥 Agora entra o cérebro do desafio
 
    function adicionarEntrada(){
