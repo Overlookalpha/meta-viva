@@ -580,6 +580,33 @@ let answers = [];
 let userProfile = "";
 let emojiSelecionado = "🎯";
 let desafios = [];
+const mapaEmojis = {
+  "viagem": "✈️",
+  "viajar": "✈️",
+  "passagem": "✈️",
+
+  "celular": "📱",
+  "iphone": "📱",
+
+  "computador": "💻",
+  "notebook": "💻",
+
+  "carro": "🚗",
+  "automóvel": "🚗",
+
+  "presente": "🎁",
+  "natal": "🎁",
+  "aniversário": "🎂",
+  "páscoa": "🎁",
+
+  "dinheiro": "💰",
+  "reserva": "💰",
+
+  "meta": "🎯",
+  "objetivo": "🎯",
+
+  "caixa": "📦"
+};
 let saldo = 0;
 let reserva = 0;
 let desafioAtualIndex = null;
@@ -1141,6 +1168,14 @@ function fecharTela(id){
 function criarDesafioPersonalizado(){
 
   const nome = document.getElementById("nomeDesafio").value;
+  let nomeLower = nome.toLowerCase();
+
+for (let palavra in mapaEmojis) {
+  if (nomeLower.includes(palavra)) {
+    emojiSelecionado = mapaEmojis[palavra];
+    break;
+  }
+}
   const valor = parseFloat(document.getElementById("valorDesafio").value);
   const partes = parseInt(document.getElementById("partesDesafio").value);
 
