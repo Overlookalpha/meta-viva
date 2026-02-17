@@ -484,6 +484,13 @@ button{
   <div style="margin-top:20px;">
     <p>Meta atual: € <span id="desafioMeta">0</span></p>
     <p>Progresso: <span id="desafioProgresso">0</span>%</p>
+  <div style="background:#333; border-radius:10px; height:18px; overflow:hidden; margin-top:10px;">
+  <div id="barraDesafio" style="
+    height:18px;
+    width:0%;
+    background:#00c896;
+    transition:0.4s;
+  "></div>
   </div>
 
 </div>
@@ -1026,7 +1033,7 @@ function carregarPlanoDesafio(){
 
   document.getElementById("desafioMeta").innerText = metaMensal.toFixed(2);
 
-  let progresso = 0;
+  progresso = 0;
 
   if(metaMensal > 0){
     progresso = (valorGuardado / metaMensal) * 100;
@@ -1035,6 +1042,7 @@ function carregarPlanoDesafio(){
   if(progresso > 100) progresso = 100;
 
   document.getElementById("desafioProgresso").innerText = progresso.toFixed(0);
+  document.getElementById("barraDesafio").style.width = progresso + "%";
 }
   
 function abrirTela(id){
