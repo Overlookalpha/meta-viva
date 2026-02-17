@@ -541,9 +541,18 @@ button{
 
     <p style="margin-top:15px;">Escolha um emoji:</p>
 
-  <div style="margin-top:10px;">
-    ✈️ 📱 💻 🚗 🎁 🐷 🎂 💰 📦 🎯
-  </div>
+  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+  <span onclick="selecionarEmoji('✈️')" style="cursor:pointer; font-size:22px;">✈️</span>
+  <span onclick="selecionarEmoji('📱')" style="cursor:pointer; font-size:22px;">📱</span>
+  <span onclick="selecionarEmoji('💻')" style="cursor:pointer; font-size:22px;">💻</span>
+  <span onclick="selecionarEmoji('🚗')" style="cursor:pointer; font-size:22px;">🚗</span>
+  <span onclick="selecionarEmoji('🎁')" style="cursor:pointer; font-size:22px;">🎁</span>
+  <span onclick="selecionarEmoji('🐷')" style="cursor:pointer; font-size:22px;">🐷</span>
+  <span onclick="selecionarEmoji('🎂')" style="cursor:pointer; font-size:22px;">🎂</span>
+  <span onclick="selecionarEmoji('💰')" style="cursor:pointer; font-size:22px;">💰</span>
+  <span onclick="selecionarEmoji('📦')" style="cursor:pointer; font-size:22px;">📦</span>
+  <span onclick="selecionarEmoji('🎯')" style="cursor:pointer; font-size:22px;">🎯</span>
+</div>
 
     <button onclick="criarDesafioPersonalizado()" 
       style="
@@ -1123,6 +1132,22 @@ function abrirTela(id){
 
 function fecharTela(id){
   document.getElementById(id).classList.remove("active");
+}
+
+function criarDesafioPersonalizado(){
+
+  const nome = document.getElementById("nomeDesafio").value;
+  const valor = parseFloat(document.getElementById("valorDesafio").value);
+  const partes = parseInt(document.getElementById("partesDesafio").value);
+
+  if(!nome || isNaN(valor) || isNaN(partes)){
+    alert("Preencha todos os campos corretamente.");
+    return;
+  }
+
+  alert("Desafio criado com sucesso! " + emojiSelecionado + " " + nome);
+
+  fecharTela("telaNovoDesafio");
 }
 </script>
 
