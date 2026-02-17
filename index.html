@@ -408,8 +408,35 @@ button{
 </div>
 
 <!-- RESERVA -->
+<!-- RESERVA -->
 <div id="reserva" class="hidden">
-  <h2>Reserva Emergencial</h2>
+
+  <h2>💰 Reserva Emergencial</h2>
+
+  <p style="margin-top:20px;">
+    Meta do mês: € <span id="reservaMetaTexto">0</span>
+  </p>
+
+  <p>
+    Guardado até agora: € <span id="reservaGuardadoTexto">0</span>
+  </p>
+
+  <p>
+    Falta: € <span id="reservaFaltaTexto">0</span>
+  </p>
+
+  <div style="margin-top:20px;">
+    <input 
+      type="number" 
+      id="valorGuardarInput" 
+      placeholder="Digite valor para guardar"
+      style="width:100%; padding:10px; border-radius:6px; border:none;">
+  </div>
+
+  <button class="primary" style="margin-top:15px;" onclick="guardarNaReserva()">
+    Guardar Valor
+  </button>
+
 </div>
 
 <!-- EMPRESTIMO -->
@@ -838,7 +865,7 @@ if(planosPerfil[userProfile]){
 
   document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-
+  atualizarProgresso();
   }
 
 
@@ -853,7 +880,18 @@ function abrirAba(id){
   document.getElementById("reserva").classList.add("hidden");
   document.getElementById("emprestimo").classList.add("hidden");
   document.getElementById("configuracoes").classList.add("hidden");
+  
+  if(id === "reserva"){
 
+  document.getElementById("reservaGuardadoTexto").innerText = valorGuardado.toFixed(2);
+  document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
+
+  let falta = metaMensal - valorGuardado;
+  if(falta < 0) falta = 0;
+
+  document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
+
+}
   // Mostra a aba clicada
   document.getElementById(id).classList.remove("hidden");
 }
@@ -880,6 +918,47 @@ function atualizarProgresso(){
 
   // Atualiza barra
   document.getElementById("barraMeta").style.width = porcentagem + "%";
+
+}
+
+function guardarNaReserva(){
+
+  let valor = parseFloat(document.getElementById("valorGuardarInput").value);
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  if(valor > saldo){
+    alert("Você não tem saldo suficiente.");
+    return;
+  }
+
+  // Move dinheiro do saldo para reserva
+  saldo -= valor;
+  reserva += valor;
+  valorGuardado += valor;
+
+  // Atualiza tela principal
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("reservaValor").innerText = "€ " + reserva.toFixed(2);
+  document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
+
+  // Atualiza meta e barra
+  atualizarProgresso();
+
+  // Atualiza tela da reserva
+  document.getElementById("reservaGuardadoTexto").innerText = valorGuardado.toFixed(2);
+
+  let falta = metaMensal - valorGuardado;
+  if(falta < 0) falta = 0;
+
+  document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
+  document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
+
+  // Limpa campo
+  document.getElementById("valorGuardarInput").value = "";
 
 }
   
