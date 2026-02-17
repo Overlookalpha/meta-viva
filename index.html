@@ -1361,6 +1361,21 @@ function atualizarParcelasVisuais(){
   }
 
 }
+ function pagarParcela(){
+
+  const desafio = desafios[desafioAtualIndex];
+
+  if(desafio.parcelasPagas >= desafio.partes){
+    alert("Todas as parcelas já foram pagas.");
+    return;
+  }
+
+  desafio.parcelasPagas++;
+
+  atualizarParcelasVisuais();
+  atualizarListaDesafios();
+
+}
 </script>
 
 </body>
