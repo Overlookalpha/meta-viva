@@ -289,7 +289,9 @@ button{
       <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
 
         <button class="menuBtn" onclick="abrirAba('home')">🏠 Home</button>
-        <button class="menuBtn" onclick="abrirTela('telaDesafios')">🎯 Desafios</button>
+        <button class="menuBtn" onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
+         🎯 Desafios
+        </button>
         <button class="menuBtn" onclick="abrirAba('categorias')">🗂️ Categorias</button>
         <button class="menuBtn" onclick="abrirAba('relatorios')">📊 Relatórios</button>
         <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
@@ -998,6 +1000,41 @@ function guardarNaReserva(){
   // Limpa campo
   document.getElementById("valorGuardarInput").value = "";
 
+}
+
+function carregarPlanoDesafio(){
+
+  if(!planosPerfil[userProfile]) return;
+
+  const plano = planosPerfil[userProfile];
+
+  // Título
+  document.getElementById("tituloPlano").innerText = plano.titulo;
+
+  // Etapas
+  const lista = document.getElementById("etapasPlano");
+  lista.innerHTML = "";
+
+  plano.etapas.forEach(etapa => {
+    const li = document.createElement("li");
+    li.innerText = etapa;
+    lista.appendChild(li);
+  });
+
+  // Meta baseada nas entradas
+  metaMensal = entradasTotal * plano.porcentagem;
+
+  document.getElementById("desafioMeta").innerText = metaMensal.toFixed(2);
+
+  let progresso = 0;
+
+  if(metaMensal > 0){
+    progresso = (valorGuardado / metaMensal) * 100;
+  }
+
+  if(progresso > 100) progresso = 100;
+
+  document.getElementById("desafioProgresso").innerText = progresso.toFixed(0);
 }
   
 function abrirTela(id){
