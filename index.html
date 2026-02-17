@@ -474,15 +474,17 @@ button{
   </button>
 
   <h2 style="margin-top:0;">🎯 Desafios</h2>
-  <button onclick="abrirTela('telaNovoDesafio')" style="
-  margin-top:15px;
-  padding:10px 15px;
-  border-radius:8px;
-  border:none;
-  background:#00c896;
-  color:white;
-  cursor:pointer;
-">
+ <button 
+  onclick="abrirTela('telaNovoDesafio')"
+  style="
+    margin-top:15px;
+    background:#00c896;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;
+  ">
   ➕ Criar Novo Desafio
 </button>
 
@@ -505,6 +507,53 @@ button{
   </div>
 
 </div>
+</div>
+
+ <!-- TELA NOVO DESAFIO -->
+<div id="telaNovoDesafio" class="screen">
+
+  <button onclick="fecharTela('telaNovoDesafio')" style="
+    background:none;
+    border:none;
+    color:white;
+    font-size:16px;
+    margin-bottom:20px;
+    cursor:pointer;
+  ">
+    ← Voltar
+  </button>
+
+  <h2 style="margin-top:0;">✨ Criar Novo Desafio</h2>
+
+  <div style="margin-top:20px; text-align:left;">
+
+    <p>Nome do desafio:</p>
+    <input type="text" id="nomeDesafio" 
+      style="width:100%; padding:8px; border-radius:6px; border:none;">
+
+    <p style="margin-top:15px;">Valor total:</p>
+    <input type="number" id="valorDesafio" 
+      style="width:100%; padding:8px; border-radius:6px; border:none;">
+
+    <p style="margin-top:15px;">Dividir em quantas partes?</p>
+    <input type="number" id="partesDesafio" 
+      style="width:100%; padding:8px; border-radius:6px; border:none;">
+
+    <button onclick="criarDesafioPersonalizado()" 
+      style="
+        margin-top:20px;
+        background:#00c896;
+        border:none;
+        padding:10px 15px;
+        border-radius:8px;
+        color:white;
+        cursor:pointer;
+      ">
+      Criar Desafio
+    </button>
+
+  </div>
+
 </div>
 
 <script>
