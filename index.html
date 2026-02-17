@@ -612,10 +612,27 @@ let reserva = 0;
 let desafioAtualIndex = null;
 
 function selecionarEmoji(emoji){
-  emojiSelecionado = emoji;
-  alert("Emoji selecionado: " + emoji);
-}
 
+  emojiSelecionado = emoji;
+
+  const nomesPadrao = {
+    "✈️": "Viagem",
+    "📱": "Celular",
+    "💻": "Computador",
+    "🚗": "Carro",
+    "🎁": "Presente",
+    "🐷": "Reserva",
+    "🎂": "Aniversário",
+    "💰": "Dinheiro",
+    "📦": "Compra",
+    "🎯": "Meta"
+  };
+
+  if(nomesPadrao[emoji]){
+    document.getElementById("nomeDesafio").value = nomesPadrao[emoji];
+  }
+
+}
 /* ===== PLANOS POR PERFIL ===== */
 let metaMensal = 0;
 let valorGuardado = 0;
