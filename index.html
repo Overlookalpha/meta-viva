@@ -1363,27 +1363,38 @@ function atualizarParcelasVisuais(){
 }
  function pagarParcela(){
 
-  if(desafioAtualIndex === null){
-    alert("Nenhum desafio selecionado.");
-    return;
-  }
-
   const desafio = desafios[desafioAtualIndex];
-
-  if(!desafio){
-    alert("Erro ao localizar desafio.");
-    return;
-  }
 
   if(desafio.parcelasPagas >= desafio.partes){
     alert("Todas as parcelas já foram pagas.");
     return;
   }
 
+  // 🔥 Verifica se tem saldo suficiente
+  if(saldo < desafio.valorParcela){
+    alert("Saldo insuficiente para pagar esta parcela.");
+    return;
+  }
+
+  // 💸 Desconta do saldo
+  saldo -= desafio.valorParcela;
+
+  // 🐷 Adiciona na reserva
+  reserva += desafio.valorParcela;
+
+  // Marca parcela como paga
   desafio.parcelasPagas++;
 
+  // 🔄 Atualiza cards da Home
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("reservaValor").innerText = "€ " + reserva.toFixed(2);
+
+  // Atualiza visual das parcelas
   atualizarParcelasVisuais();
+
+  // Atualiza lista principal
   atualizarListaDesafios();
+
 }
 </script>
 
