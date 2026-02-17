@@ -572,6 +572,39 @@ button{
 
 </div>
 
+<!-- TELA DETALHE DESAFIO -->
+<div id="telaDetalheDesafio" class="screen">
+
+  <button onclick="fecharTela('telaDetalheDesafio')" style="
+    background:none;
+    border:none;
+    color:white;
+    font-size:16px;
+    margin-bottom:20px;
+    cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2 id="tituloDetalhe"></h2>
+
+  <p>Total: € <span id="valorTotalDetalhe"></span></p>
+  <p>Parcela: € <span id="valorParcelaDetalhe"></span></p>
+
+  <div id="areaParcelas" style="margin-top:20px; font-size:28px;"></div>
+
+  <button onclick="pagarParcela()" style="
+    margin-top:25px;
+    background:#00c896;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;">
+    💸 Pagar Parcela
+  </button>
+
+</div>
+
 <script>
 
 let progresso = 0;
@@ -1288,7 +1321,44 @@ for (let palavra in mapaEmojis) {
   desafioAtualIndex = index;
   const desafio = desafios[index];
 
-  alert("Abrindo desafio: " + desafio.emoji + " " + desafio.nome);
+  // Atualiza textos
+  document.getElementById("tituloDetalhe").innerText =
+    desafio.emoji + " " + desafio.nome;
+
+  document.getElementById("valorTotalDetalhe").innerText =
+    desafio.valorTotal.toFixed(2);
+
+  document.getElementById("valorParcelaDetalhe").innerText =
+    desafio.valorParcela.toFixed(2);
+
+  // Desenha as parcelas
+  atualizarParcelasVisuais();
+
+  // Abre tela
+  abrirTela("telaDetalheDesafio");
+}
+
+function atualizarParcelasVisuais(){
+
+  const desafio = desafios[desafioAtualIndex];
+  const area = document.getElementById("areaParcelas");
+
+  area.innerHTML = "";
+
+  for(let i = 0; i < desafio.partes; i++){
+
+    const span = document.createElement("span");
+
+    if(i < desafio.parcelasPagas){
+      span.innerText = "🟢";
+    } else {
+      span.innerText = desafio.emoji;
+    }
+
+    span.style.marginRight = "10px";
+
+    area.appendChild(span);
+  }
 
 }
 </script>
