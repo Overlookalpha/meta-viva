@@ -602,6 +602,16 @@ button{
     cursor:pointer;">
     💸 Pagar Parcela
   </button>
+  <button onclick="encerrarDesafio()" style="
+  margin-top:15px;
+  background:#444;
+  border:none;
+  padding:10px 15px;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;">
+  ✔ Encerrar Desafio
+</button>
 
 </div>
 
@@ -1393,6 +1403,23 @@ function atualizarParcelasVisuais(){
   atualizarParcelasVisuais();
 
   // Atualiza lista principal
+  atualizarListaDesafios();
+
+}
+  function encerrarDesafio(){
+
+  if(desafioAtualIndex === null) return;
+
+  if(!confirm("Encerrar este desafio? As parcelas pagas continuarão na sua reserva.")){
+    return;
+  }
+
+  // Remove da lista
+  desafios.splice(desafioAtualIndex, 1);
+
+  desafioAtualIndex = null;
+
+  fecharTela("telaDetalheDesafio");
   atualizarListaDesafios();
 
 }
