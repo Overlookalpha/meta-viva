@@ -1363,7 +1363,17 @@ function atualizarParcelasVisuais(){
 }
  function pagarParcela(){
 
+  if(desafioAtualIndex === null){
+    alert("Nenhum desafio selecionado.");
+    return;
+  }
+
   const desafio = desafios[desafioAtualIndex];
+
+  if(!desafio){
+    alert("Erro ao localizar desafio.");
+    return;
+  }
 
   if(desafio.parcelasPagas >= desafio.partes){
     alert("Todas as parcelas já foram pagas.");
@@ -1374,7 +1384,6 @@ function atualizarParcelasVisuais(){
 
   atualizarParcelasVisuais();
   atualizarListaDesafios();
-
 }
 </script>
 
