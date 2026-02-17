@@ -489,7 +489,8 @@ button{
 </button>
 
   <div style="margin-top:20px; text-align:left;">
-
+  
+  <div id="listaDesafios" style="margin-top:20px;"></div>
   <h3 id="tituloPlano"></h3>
 
   <ul id="etapasPlano" style="margin-top:15px; line-height:1.6;"></ul>
@@ -578,6 +579,10 @@ let currentQuestion = 0;
 let answers = [];
 let userProfile = "";
 let emojiSelecionado = "🎯";
+let desafios = [];
+let saldo = 0;
+let reserva = 0;
+let desafioAtualIndex = null;
 
 function selecionarEmoji(emoji){
   emojiSelecionado = emoji;
@@ -1140,14 +1145,100 @@ function criarDesafioPersonalizado(){
   const valor = parseFloat(document.getElementById("valorDesafio").value);
   const partes = parseInt(document.getElementById("partesDesafio").value);
 
-  if(!nome || isNaN(valor) || isNaN(partes)){
+  if(!nome || isNaN(valor) || isNaN(partes) || partes <= 0){
     alert("Preencha todos os campos corretamente.");
     return;
   }
 
-  alert("Desafio criado com sucesso! " + emojiSelecionado + " " + nome);
+  let novoDesafio = {
+    nome: nome,
+    valorTotal: valor,
+    partes: partes,
+    valorParcela: valor / partes,
+    parcelasPagas: 0,
+    emoji: emojiSelecionado
+  };
+
+  desafios.push(novoDesafio);
+
+  // Limpa campos
+  document.getElementById("nomeDesafio").value = "";
+  document.getElementById("valorDesafio").value = "";
+  document.getElementById("partesDesafio").value = "";
+
+  emojiSelecionado = "🎯";
 
   fecharTela("telaNovoDesafio");
+
+  atualizarListaDesafios();
+}
+  function atualizarListaDesafios(){
+
+  const container = document.getElementById("listaDesafios");
+  container.innerHTML = "";
+
+  desafios.forEach((desafio, index) => {
+
+    let porcentagem = 0;
+
+    if(desafio.partes > 0){
+      porcentagem = (desafio.parcelasPagas / desafio.partes) * 100;
+    }
+
+    const item = document.createElement("div");
+    item.style.marginBottom = "15px";
+    item.style.padding = "12px";
+    item.style.background = "rgba(255,255,255,0.08)";
+    item.style.borderRadius = "8px";
+
+    item.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="font-size:16px;">
+            ${desafio.emoji} ${desafio.nome}
+          </strong><br>
+          € ${desafio.valorTotal.toFixed(2)}
+        </div>
+        <button onclick="abrirDesafio(${index})"
+          style="
+            background:#00c896;
+            border:none;
+            padding:6px 10px;
+            border-radius:6px;
+            color:white;
+            cursor:pointer;
+          ">
+          Abrir →
+        </button>
+      </div>
+
+      <div style="
+        background:#333;
+        height:8px;
+        border-radius:5px;
+        margin-top:10px;
+      ">
+        <div style="
+          width:${porcentagem}%;
+          height:8px;
+          background:#00c896;
+          border-radius:5px;
+        "></div>
+      </div>
+    `;
+
+    container.appendChild(item);
+
+  });
+
+}
+  function abrirDesafio(index){
+
+  desafioAtualIndex = index;
+  const desafio = desafios[index];
+
+  alert("Abrindo desafio: " + desafio.emoji + " " + desafio.nome);
+
 }
 </script>
 
