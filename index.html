@@ -377,9 +377,9 @@ button{
     + Entrada
   </button>
 
-  <button class="btnAcao btnSaida" style="flex:1;">
-    - Saída
-  </button>
+  <button class="btnAcao btnSaida" style="flex:1;" onclick="adicionarSaida()">
+  - Saída
+</button>
  </div>
 
     </div>
@@ -875,6 +875,28 @@ if(planosPerfil[userProfile]){
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
   atualizarProgresso();
   }
+
+function adicionarSaida(){
+
+  let valor = parseFloat(prompt("Digite o valor da saída:"));
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  if(valor > saldo){
+    alert("Você não tem saldo suficiente.");
+    return;
+  }
+
+  saidasTotal += valor;
+  saldo -= valor;
+
+  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+
+}
 
 
 function abrirAba(id){
