@@ -1606,7 +1606,14 @@ function atualizarParcelasVisuais(){
     card.innerHTML = `
       <div style="display:flex; justify-content:space-between;">
         <strong>${categoria.nome}</strong>
-        <span>€ ${totalCategoria.toFixed(2)} / € ${categoria.piso.toFixed(2)}</span>
+        <span>
+        € ${totalCategoria.toFixed(2)} / 
+        <span 
+          style="cursor:pointer; text-decoration:underline;"
+          onclick="editarPiso(${index})">
+          € ${categoria.piso.toFixed(2)}
+        </span>
+        </span>
       </div>
 
       <div style="
