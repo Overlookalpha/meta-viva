@@ -1801,6 +1801,32 @@ function confirmarSaida(){
   saidasTotal += valor;
 
   categorias[indexCategoria].subcategorias[indexSub].total += valor;
+  // 🔥 Verificar limite da categoria
+
+let categoria = categorias[indexCategoria];
+
+let totalCategoria = categoria.subcategorias.reduce(function(acc, sub){
+  return acc + sub.total;
+}, 0);
+
+let porcentagem = (totalCategoria / categoria.piso) * 100;
+
+if(porcentagem >= 120){
+  let excesso = totalCategoria - categoria.piso;
+  alert("🚨 Você ultrapassou o limite da categoria " 
+        + categoria.nome + 
+        " em € " + excesso.toFixed(2));
+}
+
+else if(porcentagem >= 100){
+  alert("🚨 Você atingiu o limite da categoria " 
+        + categoria.nome);
+}
+
+else if(porcentagem >= 80){
+  alert("⚠️ Atenção: você está próximo do limite da categoria " 
+        + categoria.nome);
+}
 
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
   document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
