@@ -317,7 +317,7 @@ button{
         <button class="menuBtn" onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
          🎯 Desafios
         </button>
-        <button class="menuBtn" onclick="abrirAba('categorias')">🗂️ Categorias</button>
+        <button class="menuBtn" onclick="abrirTela('telaCategorias'); atualizarTelaCategorias();">🗂️ Categorias</button>
         <button class="menuBtn" onclick="abrirAba('relatorios')">📊 Relatórios</button>
         <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
         <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦 Empréstimo</button>
@@ -425,8 +425,24 @@ button{
 </div>
 
 <!-- CATEGORIAS -->
-<div id="categorias" class="hidden">
-  <h2>Categorias</h2>
+<!-- TELA CATEGORIAS -->
+<div id="telaCategorias" class="screen">
+
+  <button onclick="fecharTela('telaCategorias')" style="
+    background:none;
+    border:none;
+    color:white;
+    font-size:16px;
+    margin-bottom:20px;
+    cursor:pointer;
+  ">
+    ← Voltar
+  </button>
+
+  <h2 style="margin-top:0;">🗂️ Categorias</h2>
+
+  <div id="listaCategorias" style="margin-top:20px;"></div>
+
 </div>
 
 <!-- RELATORIOS -->
@@ -1468,6 +1484,56 @@ function atualizarParcelasVisuais(){
   document.getElementById("setupRenda").classList.add("hidden");
 
   goToHome();
+}
+  function atualizarTelaCategorias(){
+
+  const container = document.getElementById("listaCategorias");
+  container.innerHTML = "";
+
+  categorias.forEach((categoria, index) => {
+
+    let porcentagem = 0;
+
+    if(categoria.piso > 0){
+      porcentagem = (categoria.total / categoria.piso) * 100;
+    }
+
+    if(porcentagem > 100){
+      porcentagem = 100;
+    }
+
+    const card = document.createElement("div");
+    card.style.marginBottom = "20px";
+    card.style.padding = "15px";
+    card.style.background = "rgba(255,255,255,0.08)";
+    card.style.borderRadius = "10px";
+
+    card.innerHTML = `
+      <div style="display:flex; justify-content:space-between;">
+        <strong>${categoria.nome}</strong>
+        <span>€ ${categoria.total.toFixed(2)} / € ${categoria.piso.toFixed(2)}</span>
+      </div>
+
+      <div style="
+        background:#333;
+        height:10px;
+        border-radius:6px;
+        margin-top:10px;
+        overflow:hidden;
+      ">
+        <div style="
+          width:${porcentagem}%;
+          height:10px;
+          background:${porcentagem >= 100 ? '#ff4d4d' : '#00c896'};
+          transition:0.4s;
+        "></div>
+      </div>
+    `;
+
+    container.appendChild(card);
+
+  });
+
 }
   function gerarCategoriasBase(){
 
