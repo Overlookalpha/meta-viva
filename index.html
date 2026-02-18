@@ -1993,7 +1993,23 @@ historicoEntradas.push(registroEntrada);
   function gerarRelatorio(){
 
   let html = "";
+  // 🔥 BLOCO PERFIL + META
 
+let porcentagemMeta = 0;
+
+if(metaMensal > 0){
+  porcentagemMeta = (valorGuardado / metaMensal) * 100;
+}
+
+if(porcentagemMeta > 100){
+  porcentagemMeta = 100;
+}
+
+html += "<h3>Perfil Financeiro</h3>";
+html += "Perfil: " + userProfile + "<br>";
+html += "Meta do Perfil: € " + metaMensal.toFixed(2) + "<br>";
+html += "Guardado: € " + valorGuardado.toFixed(2) +
+        " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
   html += "<h3>Resumo Geral</h3>";
   html += "Saldo: € " + saldo.toFixed(2) + "<br>";
   html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
