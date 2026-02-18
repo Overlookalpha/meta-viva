@@ -404,7 +404,7 @@ button{
     + Entrada
   </button>
 
-  <button class="btnAcao btnSaida" style="flex:1;" onclick="adicionarSaida()">
+  <button class="btnAcao btnSaida" style="flex:1;" onclick="abrirTelaSaida()">
   - Saída
 </button>
  </div>
@@ -445,6 +445,33 @@ button{
 
 </div>
 
+<!-- TELA SAÍDA -->
+<div id="telaSaida" class="screen">
+
+  <button onclick="fecharTela('telaSaida')" 
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2>- Registrar Saída</h2>
+
+  <p>Categoria:</p>
+  <select id="selectCategoria" style="width:100%;padding:8px;border-radius:6px;border:none;"></select>
+
+  <p style="margin-top:15px;">Subcategoria:</p>
+  <select id="selectSubcategoria" style="width:100%;padding:8px;border-radius:6px;border:none;"></select>
+
+  <p style="margin-top:15px;">Valor:</p>
+  <input type="number" id="valorSaidaInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <button onclick="confirmarSaida()"
+    style="margin-top:20px;background:#ff4d4d;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
+    Confirmar Saída
+  </button>
+
+</div>
+  
 <!-- RELATORIOS -->
 <div id="relatorios" class="hidden">
   <h2>Relatórios</h2>
@@ -1687,6 +1714,79 @@ function atualizarParcelasVisuais(){
   });
 
 }
+}
+ function abrirTelaSaida(){
+
+  if(categorias.length === 0){
+    alert("Nenhuma categoria criada.");
+    return;
+  }
+
+  abrirTela("telaSaida");
+
+  const selectCategoria = document.getElementById("selectCategoria");
+  const selectSub = document.getElementById("selectSubcategoria");
+
+  selectCategoria.innerHTML = "";
+  selectSub.innerHTML = "";
+
+  categorias.forEach(function(cat, index){
+    let option = document.createElement("option");
+    option.value = index;
+    option.text = cat.nome;
+    selectCategoria.appendChild(option);
+  });
+
+  atualizarSubcategorias();
+}
+
+function atualizarSubcategorias(){
+
+  const indexCategoria = document.getElementById("selectCategoria").value;
+  const selectSub = document.getElementById("selectSubcategoria");
+
+  selectSub.innerHTML = "";
+
+  categorias[indexCategoria].subcategorias.forEach(function(sub, i){
+    let option = document.createElement("option");
+    option.value = i;
+    option.text = sub.nome;
+    selectSub.appendChild(option);
+  });
+}
+
+document.addEventListener("change", function(e){
+  if(e.target.id === "selectCategoria"){
+    atualizarSubcategorias();
+  }
+});
+
+function confirmarSaida(){
+
+  const indexCategoria = document.getElementById("selectCategoria").value;
+  const indexSub = document.getElementById("selectSubcategoria").value;
+  const valor = parseFloat(document.getElementById("valorSaidaInput").value);
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  if(valor > saldo){
+    alert("Saldo insuficiente.");
+    return;
+  }
+
+  saldo -= valor;
+  saidasTotal += valor;
+
+  categorias[indexCategoria].subcategorias[indexSub].total += valor;
+
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+
+  fecharTela("telaSaida");
+  atualizarTelaCategorias();
 }
 </script>
 
