@@ -803,7 +803,7 @@ function selecionarEmoji(emoji){
 /* ===== PLANOS POR PERFIL ===== */
 let metaMensal = 0;
 let valorGuardado = 0;
-const planosPerfil = {
+const  = {
 
   "Crítico": {
     porcentagem: 0.05,
@@ -1063,7 +1063,7 @@ function goToHome(){
   document.getElementById("perfilTipo").innerText = "Perfil: " + userProfile;
   // ===== ATIVAR PLANO AUTOMÁTICO DO PERFIL =====
 
-const plano = planosPerfil[userProfile];
+const plano = [userProfile];
 // Garante que perfil existe
 if(!planosPerfil[userProfile]){
    userProfile = "Crítico"; // apenas para teste
@@ -1178,12 +1178,6 @@ let historicoEntradas = [];
   entradasTotal += valor;
   saldo += valor;
   // Atualiza meta baseada no perfil (apenas cálculo, não guarda dinheiro)
-if(planosPerfil[userProfile]){
-
-  let porcentagem = planosPerfil[userProfile].porcentagem;
-
-  // Meta = total de entradas * porcentagem do perfil
-  metaMensal = entradasTotal * porcentagem;
 
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
 }
