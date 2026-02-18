@@ -1921,12 +1921,27 @@ else if(porcentagem >= 80){
     return;
   }
 
+  // Soma valores
   entradasTotal += valor;
   saldo += valor;
 
+  // 🔥 Atualiza meta baseada no perfil
+  if(planosPerfil[userProfile]){
+    let porcentagem = planosPerfil[userProfile].porcentagem;
+    metaMensal = entradasTotal * porcentagem;
+  }
+
+  // Atualiza UI principal
   document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
 
+  // Atualiza barra da meta
+  atualizarProgresso();
+
+  // 🔥 Se tela de desafios estiver aberta, atualiza também
+  carregarPlanoDesafio();
+
+  // Limpa campos
   document.getElementById("nomeClienteInput").value = "";
   document.getElementById("valorEntradaInput").value = "";
 
