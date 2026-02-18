@@ -1592,6 +1592,15 @@ function atualizarParcelasVisuais(){
       porcentagem = 100;
     }
 
+    let corBarra = "#00c896"; // verde padrão
+
+    if(porcentagem >= 80 && porcentagem < 100){
+      corBarra = "#f4b400"; // amarelo
+  }
+    else if(porcentagem >= 100){
+      corBarra = "#ff4d4d"; // vermelho
+  }
+
     const card = document.createElement("div");
     card.style.marginBottom = "20px";
     card.style.padding = "15px";
@@ -1614,7 +1623,7 @@ function atualizarParcelasVisuais(){
         <div style="
           width:${porcentagem}%;
           height:10px;
-          background:${porcentagem >= 100 ? '#ff4d4d' : '#00c896'};
+          background:${corBarra};
           transition:0.4s;
         "></div>
       </div>
