@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meta Viva</title>
-
 <style>
 
 body{
@@ -1606,16 +1605,19 @@ function atualizarParcelasVisuais(){
     card.innerHTML = `
       <div style="display:flex; justify-content:space-between;">
         <strong>${categoria.nome}</strong>
-        <span
-        style="
-         cursor:pointer;
-           text-decoration:underline;
-            font-weight:600;
-       "
-        title="Clique para editar o limite"
-        onclick="editarPiso(${index})">
-        € ${categoria.piso.toFixed(2)} ✏️
-      </span>
+  <span>
+    € ${totalCategoria.toFixed(2)} /
+    <span
+     style="
+       cursor:pointer;
+       text-decoration:underline;
+       font-weight:600;
+    "
+    title="Clique para editar o limite"
+    onclick="editarPiso(${index})">
+    € ${categoria.piso.toFixed(2)} ✏️
+  </span>
+</span>
       </div>
 
       <div style="
