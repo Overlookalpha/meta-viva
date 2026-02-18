@@ -1112,6 +1112,47 @@ if(planosPerfil[userProfile]){
 
 function adicionarSaida(){
 
+  if(categorias.length === 0){
+    alert("Nenhuma categoria criada.");
+    return;
+  }
+
+  // Escolher categoria
+  let nomesCategorias = categorias.map((c, i) => ${i} - ${c.nome}).join("\n");
+
+  let escolhaCategoria = prompt(
+    "Escolha a categoria digitando o número:\n\n" + nomesCategorias
+  );
+
+  if(escolhaCategoria === null) return;
+
+  let indexCategoria = parseInt(escolhaCategoria);
+
+  if(isNaN(indexCategoria) || !categorias[indexCategoria]){
+    alert("Categoria inválida.");
+    return;
+  }
+
+  let categoria = categorias[indexCategoria];
+
+  // Escolher subcategoria
+  let nomesSub = categoria.subcategorias
+    .map((s, i) => ${i} - ${s.nome})
+    .join("\n");
+
+  let escolhaSub = prompt(
+    Escolha a subcategoria de ${categoria.nome}:\n\n + nomesSub
+  );
+
+  if(escolhaSub === null) return;
+
+  let indexSub = parseInt(escolhaSub);
+
+  if(isNaN(indexSub) || !categoria.subcategorias[indexSub]){
+    alert("Subcategoria inválida.");
+    return;
+  }
+
   let valor = parseFloat(prompt("Digite o valor da saída:"));
 
   if(isNaN(valor) || valor <= 0){
@@ -1120,18 +1161,21 @@ function adicionarSaida(){
   }
 
   if(valor > saldo){
-    alert("Você não tem saldo suficiente.");
+    alert("Saldo insuficiente.");
     return;
   }
 
-  saidasTotal += valor;
+  // Atualiza valores
   saldo -= valor;
+  saidasTotal += valor;
+  categoria.subcategorias[indexSub].total += valor;
 
-  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+  // Atualiza UI
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
 
+  atualizarTelaCategorias();
 }
-
 
 function abrirAba(id){
 
@@ -1166,11 +1210,15 @@ function atualizarProgresso(){
 
   metaMensal = entradasTotal * planosPerfil[userProfile].porcentagem;
 
-  let porcentagem = 0;
+  let totalCategoria = categoria.subcategorias.reduce(
+  (acc, sub) => acc + sub.total, 0
+);
 
-  if(metaMensal > 0){
-    porcentagem = (valorGuardado / metaMensal) * 100;
-  }
+let porcentagem = 0;
+
+if(categoria.piso > 0){
+  porcentagem = (totalCategoria / categoria.piso) * 100;
+}
 
   if(porcentagem > 100){
     porcentagem = 100;
@@ -1491,11 +1539,13 @@ function atualizarParcelasVisuais(){
   container.innerHTML = "";
 
   categorias.forEach((categoria, index) => {
-
+    let totalCategoria = categoria.subcategorias.reduce(
+    (acc, sub) => acc + sub.total, 0
+    );
     let porcentagem = 0;
 
     if(categoria.piso > 0){
-      porcentagem = (categoria.total / categoria.piso) * 100;
+      porcentagem = (totalCategoria / categoria.piso) * 100;
     }
 
     if(porcentagem > 100){
@@ -1511,7 +1561,7 @@ function atualizarParcelasVisuais(){
     card.innerHTML = `
       <div style="display:flex; justify-content:space-between;">
         <strong>${categoria.nome}</strong>
-        <span>€ ${categoria.total.toFixed(2)} / € ${categoria.piso.toFixed(2)}</span>
+        <span>€ ${totalCategoria.toFixed(2)} / € ${categoria.piso.toFixed(2)}</span>
       </div>
 
       <div style="
@@ -1593,18 +1643,51 @@ function atualizarParcelasVisuais(){
     };
   }
 
-  for(let nome in distribuicao){
+  for (let nome in distribuicao){
 
-    categorias.push({
-      nome: nome,
-      piso: rendaMensalBase * distribuicao[nome],
-      total: 0,
-      subcategorias: []
-    });
+  let pisoCalculado = rendaMensalBase * distribuicao[nome];
 
+  let subcategoriasPadrao = [];
+
+  if(nome === "Essencial"){
+    subcategoriasPadrao = [
+      { nome: "Mercado", total: 0 },
+      { nome: "Farmácia", total: 0 }
+    ];
   }
 
-  console.log("Categorias geradas:", categorias);
+  else if(nome === "Fixos"){
+    subcategoriasPadrao = [
+      { nome: "Aluguel", total: 0 },
+      { nome: "Luz", total: 0 },
+      { nome: "Água", total: 0 },
+      { nome: "Internet", total: 0 }
+    ];
+  }
+
+  else if(nome === "Lazer"){
+    subcategoriasPadrao = [
+      { nome: "Restaurante", total: 0 },
+      { nome: "Cinema", total: 0 }
+    ];
+  }
+
+  else if(nome === "Esporádicos"){
+    subcategoriasPadrao = [
+      { nome: "Roupas", total: 0 },
+      { nome: "Manutenção", total: 0 }
+    ];
+  }
+
+  else{
+    subcategoriasPadrao = [];
+  }
+
+  categorias.push({
+    nome: nome,
+    piso: pisoCalculado,
+    subcategorias: subcategoriasPadrao
+  });
 
 }
 </script>
