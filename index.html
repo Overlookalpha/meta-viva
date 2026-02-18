@@ -272,6 +272,31 @@ button{
 
 </div>
 
+<!-- SETUP RENDA -->
+<div id="setupRenda" class="hidden">
+
+  <h2>Defina sua renda mensal base</h2>
+
+  <p style="opacity:0.8; font-size:14px; margin-top:10px;">
+    Essa informação será usada para montar sua estrutura financeira.
+  </p>
+
+  <input 
+    type="number" 
+    id="rendaInput" 
+    placeholder="Digite sua renda mensal"
+    style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;"
+  >
+
+  <button 
+    class="primary" 
+    style="margin-top:20px;"
+    onclick="confirmarRenda()">
+    Confirmar e Montar Estrutura
+  </button>
+
+</div>
+
 
 <!-- HOME -->
 <div id="home" class="hidden">
@@ -653,6 +678,7 @@ const mapaEmojis = {
 let saldo = 0;
 let reserva = 0;
 let desafioAtualIndex = null;
+let rendaMensalBase = 0;
 
 function selecionarEmoji(emoji){
 
@@ -1005,7 +1031,7 @@ function createAccount(){
   alert("Conta criada com sucesso!");
 
   document.getElementById("login").classList.add("hidden");  // ESCONDE LOGIN
-  goToHome();  // MOSTRA HOME
+  document.getElementById("setupRenda").classList.remove("hidden");
 
   }
 
