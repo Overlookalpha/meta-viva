@@ -399,7 +399,7 @@ button{
   <!-- BOTÕES -->
 <div style="display:flex; gap:15px; margin-top:15px;">
 
-  <button class="btnAcao btnEntrada" style="flex:1;" onclick="adicionarEntrada()">
+  <button class="btnAcao btnEntrada" style="flex:1;" onclick="abrirTela('telaEntrada')">
     + Entrada
   </button>
 
@@ -443,7 +443,30 @@ button{
   <div id="listaCategorias" style="margin-top:20px;"></div>
 
 </div>
+<!-- TELA ENTRADA -->
+<div id="telaEntrada" class="screen">
 
+  <button onclick="fecharTela('telaEntrada')" 
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2>+ Registrar Entrada</h2>
+
+  <p>Nome do Cliente:</p>
+  <input type="text" id="nomeClienteInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <p style="margin-top:15px;">Valor:</p>
+  <input type="number" id="valorEntradaInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <button onclick="confirmarEntrada()"
+    style="margin-top:20px;background:#00c896;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
+    Confirmar Entrada
+  </button>
+
+</div>
 <!-- TELA SAÍDA -->
 <div id="telaSaida" class="screen">
 
