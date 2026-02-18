@@ -1910,6 +1910,29 @@ else if(porcentagem >= 80){
 
   atualizarSubcategorias();
 }
+
+  function confirmarEntrada(){
+
+  const nome = document.getElementById("nomeClienteInput").value;
+  const valor = parseFloat(document.getElementById("valorEntradaInput").value);
+
+  if(!nome || isNaN(valor) || valor <= 0){
+    alert("Preencha nome e valor corretamente.");
+    return;
+  }
+
+  entradasTotal += valor;
+  saldo += valor;
+
+  document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+
+  // limpa os campos
+  document.getElementById("nomeClienteInput").value = "";
+  document.getElementById("valorEntradaInput").value = "";
+
+  fecharTela("telaEntrada");
+}
 </script>
 
 </body>
