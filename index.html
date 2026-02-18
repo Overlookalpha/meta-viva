@@ -1139,8 +1139,10 @@ function adicionarSaida(){
 
   // Escolher subcategoria
   let nomesSub = categoria.subcategorias
-    .map((s, i) => `${i} - ${s.nome}`)
-    .join("\n");
+  .map(function(s, i){
+    return i + " - " + s.nome;
+  })
+  .join("\n");
 
   let escolhaSub = prompt(
     `Escolha a subcategoria de ${categoria.nome}:\n\n` + nomesSub
