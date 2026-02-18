@@ -1934,7 +1934,9 @@ else if(porcentagem >= 80){
   // Atualiza UI principal
   document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-
+  if(!userProfile){
+  generateProfile();
+}
   // Atualiza barra da meta
   atualizarProgresso();
 
