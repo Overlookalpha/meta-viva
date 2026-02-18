@@ -1449,6 +1449,21 @@ function atualizarParcelasVisuais(){
   atualizarListaDesafios();
 
 }
+  function confirmarRenda(){
+
+  let valor = parseFloat(document.getElementById("rendaInput").value);
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Digite um valor válido.");
+    return;
+  }
+
+  rendaMensalBase = valor;
+
+  document.getElementById("setupRenda").classList.add("hidden");
+
+  goToHome();
+}
 </script>
 
 </body>
