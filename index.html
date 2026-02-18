@@ -1118,7 +1118,9 @@ function adicionarSaida(){
   }
 
   // Escolher categoria
-  let nomesCategorias = categorias.map((c, i) => ${i} - ${c.nome}).join("\n");
+  let nomesCategorias = categorias
+  .map((c, i) => `${i} - ${c.nome}`)
+  .join("\n");
 
   let escolhaCategoria = prompt(
     "Escolha a categoria digitando o número:\n\n" + nomesCategorias
@@ -1141,7 +1143,7 @@ function adicionarSaida(){
     .join("\n");
 
   let escolhaSub = prompt(
-    Escolha a subcategoria de ${categoria.nome}:\n\n + nomesSub
+    `Escolha a subcategoria de ${categoria.nome}:\n\n` + nomesSub
   );
 
   if(escolhaSub === null) return;
@@ -1209,16 +1211,6 @@ function atualizarProgresso(){
   if(!planosPerfil[userProfile]) return;
 
   metaMensal = entradasTotal * planosPerfil[userProfile].porcentagem;
-
-  let totalCategoria = categoria.subcategorias.reduce(
-  (acc, sub) => acc + sub.total, 0
-);
-
-let porcentagem = 0;
-
-if(categoria.piso > 0){
-  porcentagem = (totalCategoria / categoria.piso) * 100;
-}
 
   if(porcentagem > 100){
     porcentagem = 100;
@@ -1689,6 +1681,7 @@ function atualizarParcelasVisuais(){
     subcategorias: subcategoriasPadrao
   });
 
+}
 }
 </script>
 
