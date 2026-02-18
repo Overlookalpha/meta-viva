@@ -679,6 +679,7 @@ let saldo = 0;
 let reserva = 0;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
+let categorias = [];
 
 function selecionarEmoji(emoji){
 
@@ -1462,9 +1463,83 @@ function atualizarParcelasVisuais(){
 
   rendaMensalBase = valor;
 
+  gerarCategoriasBase(); // 🔥 gera categorias automaticamente
+
   document.getElementById("setupRenda").classList.add("hidden");
 
   goToHome();
+}
+  function gerarCategoriasBase(){
+
+  categorias = []; // limpa se já existir algo
+
+  if(!rendaMensalBase || !userProfile) return;
+
+  let distribuicao = {};
+
+  if(userProfile === "Crítico"){
+    distribuicao = {
+      "Essencial": 0.60,
+      "Fixos": 0.25,
+      "Lazer": 0.05,
+      "Reserva": 0.05,
+      "Esporádicos": 0.05
+    };
+  }
+
+  else if(userProfile === "Iniciante"){
+    distribuicao = {
+      "Essencial": 0.50,
+      "Fixos": 0.25,
+      "Lazer": 0.10,
+      "Reserva": 0.08,
+      "Esporádicos": 0.07
+    };
+  }
+
+  else if(userProfile === "Intermediário"){
+    distribuicao = {
+      "Essencial": 0.40,
+      "Fixos": 0.25,
+      "Lazer": 0.10,
+      "Reserva": 0.15,
+      "Esporádicos": 0.10
+    };
+  }
+
+  else if(userProfile === "Estável"){
+    distribuicao = {
+      "Essencial": 0.35,
+      "Fixos": 0.25,
+      "Lazer": 0.10,
+      "Reserva": 0.20,
+      "Esporádicos": 0.10
+    };
+  }
+
+  else { // Em Evolução
+    distribuicao = {
+      "Essencial": 0.45,
+      "Fixos": 0.25,
+      "Lazer": 0.10,
+      "Reserva": 0.10,
+      "Esporádicos": 0.10
+    };
+  }
+
+  for(let nome in distribuicao){
+
+    categorias.push({
+      nome: nome,
+      piso: rendaMensalBase * distribuicao[nome],
+      total: 0,
+      subcategorias: []
+    });
+
+  }
+
+  console.log("Categorias geradas:", categorias);
+
 }
 </script>
 
