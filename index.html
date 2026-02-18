@@ -317,7 +317,7 @@ button{
          🎯 Desafios
         </button>
         <button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">🗂️ Categorias</button>
-        <button class="menuBtn" onclick="abrirAba('relatorios')">📊 Relatórios</button>
+        <button class="menuBtn" onclick="abrirTela('telaRelatorio'); gerarRelatorio();">📊 Relatórios</button>
         <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
         <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦 Empréstimo</button>
         <button class="menuBtn">🧾 Contas a Pagar</button>
@@ -720,6 +720,23 @@ button{
 </button>
 
 </div>
+  </div>
+
+<!-- TELA RELATÓRIO -->
+<div id="telaRelatorio" class="screen">
+
+  <button onclick="fecharTela('telaRelatorio')" 
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2 style="margin-top:0;">📊 Relatório Financeiro</h2>
+
+  <div id="conteudoRelatorio" style="margin-top:20px;"></div>
+
+</div>
+
+<script>
 
 <script>
 
@@ -1948,6 +1965,40 @@ else if(porcentagem >= 80){
   document.getElementById("valorEntradaInput").value = "";
 
   fecharTela("telaEntrada");
+}
+
+  function gerarRelatorio(){
+
+  let html = "";
+
+  html += "<h3>Resumo Geral</h3>";
+  html += "Saldo: € " + saldo.toFixed(2) + "<br>";
+  html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
+  html += "Saídas: € " + saidasTotal.toFixed(2) + "<br>";
+  html += "Reserva: € " + reserva.toFixed(2) + "<br><br>";
+
+  html += "<h3>Categorias</h3>";
+
+  categorias.forEach(cat => {
+    let total = cat.subcategorias.reduce((acc, sub) => acc + sub.total, 0);
+    html += cat.nome + ": € " + total.toFixed(2) + "<br>";
+  });
+
+  html += "<br><h3>Desafios</h3>";
+
+  desafios.forEach(desafio => {
+
+    let porcentagem = 0;
+
+    if(desafio.partes > 0){
+      porcentagem = (desafio.parcelasPagas / desafio.partes) * 100;
+    }
+
+    html += desafio.emoji + " " + desafio.nome +
+      " — " + porcentagem.toFixed(0) + "% concluído<br>";
+  });
+
+  document.getElementById("conteudoRelatorio").innerHTML = html;
 }
 </script>
 
