@@ -1850,6 +1850,16 @@ function confirmarSaida(){
 
   categorias[indexCategoria].subcategorias[indexSub].total += valor;
   // 🔥 Verificar limite da categoria
+  // 🔥 Registrar no histórico
+let agora = new Date();
+
+historicoSaidas.push({
+  data: agora.toLocaleDateString(),
+  hora: agora.toLocaleTimeString(),
+  categoria: categorias[indexCategoria].nome,
+  subcategoria: categorias[indexCategoria].subcategorias[indexSub].nome,
+  valor: valor
+});
 
 let categoria = categorias[indexCategoria];
 
@@ -1996,7 +2006,23 @@ historicoEntradas.push(registroEntrada);
     let total = cat.subcategorias.reduce((acc, sub) => acc + sub.total, 0);
     html += cat.nome + ": € " + total.toFixed(2) + "<br>";
   });
+  html += "<br><h3>Histórico de Saídas</h3>";
 
+if(historicoSaidas.length === 0){
+  html += "Nenhuma saída registrada.<br>";
+} else {
+
+  historicoSaidas.forEach(item => {
+
+    html += `
+      ${item.data} ${item.hora} —
+      ${item.categoria} > ${item.subcategoria}
+      — € ${item.valor.toFixed(2)}<br>
+    `;
+
+  });
+
+}
   html += "<br><h3>Desafios</h3>";
 
   desafios.forEach(desafio => {
