@@ -1139,7 +1139,7 @@ function adicionarSaida(){
 
   // Escolher subcategoria
   let nomesSub = categoria.subcategorias
-    .map((s, i) => ${i} - ${s.nome})
+    .map((s, i) => `${i} - ${s.nome}`)
     .join("\n");
 
   let escolhaSub = prompt(
@@ -1212,15 +1212,18 @@ function atualizarProgresso(){
 
   metaMensal = entradasTotal * planosPerfil[userProfile].porcentagem;
 
+  let porcentagem = 0;
+
+  if(metaMensal > 0){
+    porcentagem = (valorGuardado / metaMensal) * 100;
+  }
+
   if(porcentagem > 100){
     porcentagem = 100;
   }
 
-  // Atualiza textos
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
   document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
-
-  // Atualiza barra
   document.getElementById("barraMeta").style.width = porcentagem + "%";
 
 }
