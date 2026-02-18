@@ -460,6 +460,19 @@ button{
 
   <p style="margin-top:15px;">Subcategoria:</p>
   <select id="selectSubcategoria" style="width:100%;padding:8px;border-radius:6px;border:none;"></select>
+  <div style="display:flex; gap:10px; margin-top:10px;">
+
+  <button onclick="adicionarSubcategoria()" 
+    style="flex:1; background:#00c896; border:none; padding:8px; border-radius:6px; color:white; cursor:pointer;">
+    ➕ Adicionar
+  </button>
+
+  <button onclick="excluirSubcategoria()" 
+    style="flex:1; background:#ff4d4d; border:none; padding:8px; border-radius:6px; color:white; cursor:pointer;">
+    🗑 Excluir
+  </button>
+
+</div>
 
   <p style="margin-top:15px;">Valor:</p>
   <input type="number" id="valorSaidaInput"
@@ -1782,6 +1795,52 @@ function confirmarSaida(){
 
   fecharTela("telaSaida");
   atualizarTelaCategorias();
+}
+
+ function adicionarSubcategoria(){
+
+  const indexCategoria = document.getElementById("selectCategoria").value;
+
+  let nome = prompt("Digite o nome da nova subcategoria:");
+
+  if(!nome || nome.trim() === ""){
+    alert("Nome inválido.");
+    return;
+  }
+
+  categorias[indexCategoria].subcategorias.push({
+    nome: nome,
+    total: 0
+  });
+
+  atualizarSubcategorias();
+}
+
+  function excluirSubcategoria(){
+
+  const indexCategoria = document.getElementById("selectCategoria").value;
+  const indexSub = document.getElementById("selectSubcategoria").value;
+
+  let sub = categorias[indexCategoria].subcategorias[indexSub];
+
+  if(!sub){
+    alert("Nenhuma subcategoria selecionada.");
+    return;
+  }
+
+  if(sub.total > 0){
+
+    let confirmar = confirm(
+      "Esta subcategoria possui € " + sub.total.toFixed(2) + 
+      " registrados.\n\nOs valores continuarão contabilizados no saldo e relatórios.\n\nDeseja excluir mesmo assim?"
+    );
+
+    if(!confirmar) return;
+  }
+
+  categorias[indexCategoria].subcategorias.splice(indexSub, 1);
+
+  atualizarSubcategorias();
 }
 </script>
 
