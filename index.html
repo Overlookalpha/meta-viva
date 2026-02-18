@@ -776,6 +776,7 @@ let reserva = 0;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
 let categorias = [];
+let historicoSaidas = [];
 
 function selecionarEmoji(emoji){
 
@@ -1160,6 +1161,8 @@ function concluirDesafio(){
 
 let entradasTotal = 0;
 let saidasTotal = 0;
+let historicoEntradas = [];
+let historicoSaidas = [];
 
   // 🔥 Agora entra o cérebro do desafio
 
@@ -1939,7 +1942,19 @@ else if(porcentagem >= 80){
   // Soma valores
   entradasTotal += valor;
   saldo += valor;
+  // 🔥 Criar registro com data e mês
+let agora = new Date();
 
+let registroEntrada = {
+  cliente: nome,
+  valor: valor,
+  data: agora.toLocaleDateString("pt-PT"),
+  hora: agora.toLocaleTimeString("pt-PT"),
+  mes: agora.getMonth() + 1,
+  ano: agora.getFullYear()
+};
+
+historicoEntradas.push(registroEntrada);
   // 🔥 Atualiza meta baseada no perfil
   if(planosPerfil[userProfile]){
     let porcentagem = planosPerfil[userProfile].porcentagem;
