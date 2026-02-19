@@ -2000,27 +2000,26 @@ historicoEntradas.push(registroEntrada);
   fecharTela("telaEntrada");
 }
 
-  function gerarRelatorio(){
-const mesSelecionado = document.getElementById("filtroMes")?.value;
-const categoriaSelecionada = document.getElementById("filtroCategoria")?.value;
+ function gerarRelatorio(){
+
   let html = "";
-  // 🔥 BLOCO PERFIL + META
 
-let porcentagemMeta = 0;
+  let porcentagemMeta = 0;
 
-if(metaMensal > 0){
-  porcentagemMeta = (valorGuardado / metaMensal) * 100;
-}
+  if(metaMensal > 0){
+    porcentagemMeta = (valorGuardado / metaMensal) * 100;
+  }
 
-if(porcentagemMeta > 100){
-  porcentagemMeta = 100;
-}
+  if(porcentagemMeta > 100){
+    porcentagemMeta = 100;
+  }
 
-html += "<h3>Perfil Financeiro</h3>";
-html += "Perfil: " + userProfile + "<br>";
-html += "Meta do Perfil: € " + metaMensal.toFixed(2) + "<br>";
-html += "Guardado: € " + valorGuardado.toFixed(2) +
-        " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
+  html += "<h3>Perfil Financeiro</h3>";
+  html += "Perfil: " + userProfile + "<br>";
+  html += "Meta do Perfil: € " + metaMensal.toFixed(2) + "<br>";
+  html += "Guardado: € " + valorGuardado.toFixed(2) +
+          " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
+
   html += "<h3>Resumo Geral</h3>";
   html += "Saldo: € " + saldo.toFixed(2) + "<br>";
   html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
@@ -2029,67 +2028,57 @@ html += "Guardado: € " + valorGuardado.toFixed(2) +
 
   html += "<h3>Categorias</h3>";
 
-  categorias.forEach(cat => {
-    let total = cat.subcategorias.reduce((acc, sub) => acc + sub.total, 0);
+  categorias.forEach(function(cat){
+
+    let total = 0;
+
+    cat.subcategorias.forEach(function(sub){
+      total += sub.total;
+    });
+
     html += cat.nome + ": € " + total.toFixed(2) + "<br>";
   });
+
   html += "<br><h3>Histórico de Saídas</h3>";
 
-if(historicoSaidas.length === 0){
-  html += "Nenhuma saída registrada.<br>";
-} else {
+  if(historicoSaidas.length === 0){
+    html += "Nenhuma saída registrada.<br>";
+  } else {
 
-  historicoSaidas
-  .filter(item => {
+    historicoSaidas.forEach(function(item){
 
-    let passaMes = true;
-    let passaCategoria = true;
+      html += item.data + " " + item.hora + " — " +
+              item.categoria + " > " +
+              item.subcategoria + " — € " +
+              item.valor.toFixed(2) + "<br>";
 
-    if(mesSelecionado && mesSelecionado !== "todos"){
-      passaMes = item.mes == mesSelecionado;
-    }
+    });
 
-    if(categoriaSelecionada && categoriaSelecionada !== "todas"){
-      passaCategoria = item.categoria === categoriaSelecionada;
-    }
+  }
 
-    return passaMes && passaCategoria;
-  })
-  .forEach(item => {
+  html += "<br><h3>Desafios</h3>";
 
-    html += `
-      ${item.data} ${item.hora} —
-      ${item.categoria} > ${item.subcategoria}
-      — € ${item.valor.toFixed(2)}<br>
-    `;
+  if(desafios.length === 0){
+    html += "Nenhum desafio criado.<br>";
+  } else {
 
-  });
+    desafios.forEach(function(desafio){
 
-}
- html += "<br><h3>Desafios</h3>";
+      let porcentagem = 0;
 
-if(desafios.length === 0){
-  html += "Nenhum desafio criado.<br>";
-} else {
+      if(desafio.partes > 0){
+        porcentagem = (desafio.parcelasPagas / desafio.partes) * 100;
+      }
 
-  desafios.forEach(desafio => {
+      html += desafio.emoji + " " +
+              desafio.nome + " — " +
+              porcentagem.toFixed(0) + "% concluído<br>";
 
-    let porcentagem = 0;
+    });
 
-    if(desafio.partes > 0){
-      porcentagem = (desafio.parcelasPagas / desafio.partes) * 100;
-    }
+  }
 
-    if(porcentagem > 100) porcentagem = 100;
-
-    html += `
-      ${desafio.emoji} <strong>${desafio.nome}</strong><br>
-      Total: € ${desafio.valorTotal.toFixed(2)}<br>
-      Parcelas pagas: ${desafio.parcelasPagas} / ${desafio.partes}<br>
-      Progresso: ${porcentagem.toFixed(0)}%<br><br>
-    `;
-  });
-
+  document.getElementById("conteudoRelatorio").innerHTML = html;
 }
   function preencherFiltrosRelatorio(){
 
