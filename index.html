@@ -2231,6 +2231,45 @@ if(historicoSaidas.length === 0){
   document.getElementById("valorEmprestimoInput").value = "";
 
 }
+  function pagarEmprestimo(){
+
+  let valor = parseFloat(document.getElementById("valorPagamentoInput").value);
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  if(valor > saldo){
+    alert("Você não tem saldo suficiente.");
+    return;
+  }
+
+  if(valor > dividaAtual){
+    alert("O valor é maior que a dívida atual.");
+    return;
+  }
+
+  // Sai do saldo
+  saldo -= valor;
+
+  // Volta para reserva
+  valorGuardado += valor;
+
+  // Reduz dívida
+  dividaAtual -= valor;
+
+  // Atualiza interface principal
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
+
+  // Atualiza texto da dívida
+  document.getElementById("dividaAtualTexto").innerText = dividaAtual.toFixed(2);
+
+  // Limpa campo
+  document.getElementById("valorPagamentoInput").value = "";
+
+}
 </script>
 
 </body>
