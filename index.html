@@ -1164,6 +1164,7 @@ if (plano) {
   }
   // document.getElementById("homeDescricaoPlano").innerText = estrategia;
   // document.getElementById("homeDesafioTexto").innerText = desafio;
+  atualizarDividaHeader();
 }
 
 function createAccount(){
@@ -2268,6 +2269,21 @@ if(historicoSaidas.length === 0){
 
   // Limpa campo
   document.getElementById("valorPagamentoInput").value = "";
+
+}
+  function atualizarDividaHeader(){
+
+  if(dividaAtual > 0){
+
+    document.getElementById("dividaHeader").style.display = "block";
+    document.getElementById("dividaHeader").innerText =
+      "Dívida: € " + dividaAtual.toFixed(2);
+
+  } else {
+
+    document.getElementById("dividaHeader").style.display = "none";
+
+  }
 
 }
 </script>
