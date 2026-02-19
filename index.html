@@ -317,7 +317,7 @@ button{
          🎯 Desafios
         </button>
         <button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">🗂️ Categorias</button>
-        <button class="menuBtn" onclick="abrirTela('telaRelatorio'); gerarRelatorio();">📊 Relatórios</button>
+        <button class="menuBtn" onclick="abrirTela('telaRelatorio'); preencherFiltrosRelatorio(); gerarRelatorio();">📊 Relatórios</button>
         <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
         <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦 Empréstimo</button>
         <button class="menuBtn">🧾 Contas a Pagar</button>
@@ -579,7 +579,7 @@ button{
     ← Voltar
   </button>
 
-  <h2 style="margin-top:0;">🎯 Desafios</h2>
+  <h2 style=";">🎯 Desafios</h2>
  <button 
   onclick="abrirTela('telaNovoDesafio')"
   style="
@@ -731,6 +731,22 @@ button{
   </button>
 
   <h2 style="margin-top:0;">📊 Relatório Financeiro</h2>
+  <div style="margin:15px 0; display:flex; gap:10px; flex-wrap:wrap;">
+
+  <select id="filtroMes" style="padding:6px;border-radius:6px;border:none;">
+    <option value="todos">Todos os Meses</option>
+  </select>
+
+  <select id="filtroCategoria" style="padding:6px;border-radius:6px;border:none;">
+    <option value="todas">Todas Categorias</option>
+  </select>
+
+  <button onclick="gerarRelatorio()"
+    style="background:#00c896;border:none;padding:6px 10px;border-radius:6px;color:white;cursor:pointer;">
+    Aplicar Filtro
+  </button>
+
+</div>
 
   <div id="conteudoRelatorio" style="margin-top:20px;"></div>
 
@@ -2048,6 +2064,39 @@ if(historicoSaidas.length === 0){
   });
 
   document.getElementById("conteudoRelatorio").innerHTML = html;
+}
+  function preencherFiltrosRelatorio(){
+
+  const selectMes = document.getElementById("filtroMes");
+  const selectCategoria = document.getElementById("filtroCategoria");
+
+  selectMes.innerHTML = '<option value="todos">Todos os Meses</option>';
+  selectCategoria.innerHTML = '<option value="todas">Todas Categorias</option>';
+
+  // Meses
+  let meses = new Set();
+
+  historicoEntradas.forEach(e => meses.add(e.mes));
+  historicoSaidas.forEach(s => {
+    let partes = s.data.split("/");
+    meses.add(parseInt(partes[1]));
+  });
+
+  meses.forEach(m => {
+    let option = document.createElement("option");
+    option.value = m;
+    option.text = "Mês " + m;
+    selectMes.appendChild(option);
+  });
+
+  // Categorias
+  categorias.forEach(cat => {
+    let option = document.createElement("option");
+    option.value = cat.nome;
+    option.text = cat.nome;
+    selectCategoria.appendChild(option);
+  });
+
 }
 </script>
 
