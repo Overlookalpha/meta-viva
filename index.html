@@ -1289,7 +1289,8 @@ function atualizarProgresso(){
 
   if(!planosPerfil[userProfile]) return;
 
-  metaMensal = entradasTotal * planosPerfil[userProfile].porcentagem;
+  // 🔥 META FIXA BASEADA NA RENDA MENSAL
+  metaMensal = rendaMensalBase * planosPerfil[userProfile].porcentagem;
 
   let porcentagem = 0;
 
@@ -1304,7 +1305,6 @@ function atualizarProgresso(){
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
   document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
   document.getElementById("barraMeta").style.width = porcentagem + "%";
-
 }
 
 function guardarNaReserva(){
