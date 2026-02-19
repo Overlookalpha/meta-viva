@@ -2015,6 +2015,23 @@ html += "Guardado: € " + valorGuardado.toFixed(2) +
   html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
   html += "Saídas: € " + saidasTotal.toFixed(2) + "<br>";
   html += "Reserva: € " + valorGuardado.toFixed(2) + "<br><br>";
+  html += "<h3>Histórico de Entradas</h3>";
+
+if(historicoEntradas.length === 0){
+  html += "Nenhuma entrada registrada.<br>";
+} else {
+
+  historicoEntradas.forEach(function(item){
+
+    html += item.data + " " + item.hora + " — " +
+            "Cliente: " + item.cliente +
+            " — € " + item.valor.toFixed(2) + "<br>";
+
+  });
+
+}
+
+html += "<br>";
 
   html += "<h3>Categorias</h3>";
 
