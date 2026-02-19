@@ -2088,24 +2088,25 @@ historicoEntradas.push(registroEntrada);
   selectMes.innerHTML = '<option value="todos">Todos os Meses</option>';
   selectCategoria.innerHTML = '<option value="todas">Todas Categorias</option>';
 
-  // Meses
   let meses = new Set();
 
-  historicoEntradas.forEach(e => meses.add(e.mes));
-  historicoSaidas.forEach(s => {
+  historicoEntradas.forEach(function(e){
+    meses.add(e.mes);
+  });
+
+  historicoSaidas.forEach(function(s){
     let partes = s.data.split("/");
     meses.add(parseInt(partes[1]));
   });
 
-  meses.forEach(m => {
+  meses.forEach(function(m){
     let option = document.createElement("option");
     option.value = m;
     option.text = "Mês " + m;
     selectMes.appendChild(option);
   });
 
-  // Categorias
-  categorias.forEach(cat => {
+  categorias.forEach(function(cat){
     let option = document.createElement("option");
     option.value = cat.nome;
     option.text = cat.nome;
