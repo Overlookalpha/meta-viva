@@ -825,6 +825,7 @@ const mapaEmojis = {
 };
 let saldo = 0;
 let dividaAtual = 0;
+dividaAtual = 999;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
 let categorias = [];
@@ -2289,6 +2290,9 @@ if(historicoSaidas.length === 0){
   }
 
 }
+  window.onload = function(){
+    atualizarDividaHeader();
+};
 </script>
 
 </body>
