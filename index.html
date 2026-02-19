@@ -2013,11 +2013,27 @@ html += "Perfil: " + userProfile + "<br>";
 html += "Meta do Perfil: € " + metaMensal.toFixed(2) + "<br>";
 html += "Guardado: € " + valorGuardado.toFixed(2) +
         " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
-  html += "<h3>Resumo Geral</h3>";
-  html += "Saldo: € " + saldo.toFixed(2) + "<br>";
-  html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
-  html += "Saídas: € " + saidasTotal.toFixed(2) + "<br>";
-  html += "Reserva: € " + valorGuardado.toFixed(2) + "<br><br>";
+ html += "<h3>Resumo Geral</h3>";
+
+let totalSaidasFiltradas = 0;
+
+if(categoriaSelecionada === "todas"){
+  totalSaidasFiltradas = saidasTotal;
+} else {
+
+  totalSaidasFiltradas = historicoSaidas
+    .filter(function(item){
+      return item.categoria === categoriaSelecionada;
+    })
+    .reduce(function(acc, item){
+      return acc + item.valor;
+    }, 0);
+}
+
+html += "Saldo: € " + saldo.toFixed(2) + "<br>";
+html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
+html += "Saídas: € " + totalSaidasFiltradas.toFixed(2) + "<br>";
+html += "Reserva: € " + valorGuardado.toFixed(2) + "<br><br>";
   html += "<h3>Histórico de Entradas</h3>";
 
 let entradasFiltradas = historicoEntradas.filter(function(item){
