@@ -2001,7 +2001,8 @@ historicoEntradas.push(registroEntrada);
 }
 
   function gerarRelatorio(){
-
+const mesSelecionado = document.getElementById("filtroMes")?.value;
+const categoriaSelecionada = document.getElementById("filtroCategoria")?.value;
   let html = "";
   // 🔥 BLOCO PERFIL + META
 
@@ -2038,7 +2039,23 @@ if(historicoSaidas.length === 0){
   html += "Nenhuma saída registrada.<br>";
 } else {
 
-  historicoSaidas.forEach(item => {
+  historicoSaidas
+  .filter(item => {
+
+    let passaMes = true;
+    let passaCategoria = true;
+
+    if(mesSelecionado && mesSelecionado !== "todos"){
+      passaMes = item.mes == mesSelecionado;
+    }
+
+    if(categoriaSelecionada && categoriaSelecionada !== "todas"){
+      passaCategoria = item.categoria === categoriaSelecionada;
+    }
+
+    return passaMes && passaCategoria;
+  })
+  .forEach(item => {
 
     html += `
       ${item.data} ${item.hora} —
@@ -2049,7 +2066,11 @@ if(historicoSaidas.length === 0){
   });
 
 }
-  html += "<br><h3>Desafios</h3>";
+ html += "<br><h3>Desafios</h3>";
+
+if(desafios.length === 0){
+  html += "Nenhum desafio criado.<br>";
+} else {
 
   desafios.forEach(desafio => {
 
@@ -2059,11 +2080,16 @@ if(historicoSaidas.length === 0){
       porcentagem = (desafio.parcelasPagas / desafio.partes) * 100;
     }
 
-    html += desafio.emoji + " " + desafio.nome +
-      " — " + porcentagem.toFixed(0) + "% concluído<br>";
+    if(porcentagem > 100) porcentagem = 100;
+
+    html += `
+      ${desafio.emoji} <strong>${desafio.nome}</strong><br>
+      Total: € ${desafio.valorTotal.toFixed(2)}<br>
+      Parcelas pagas: ${desafio.parcelasPagas} / ${desafio.partes}<br>
+      Progresso: ${porcentagem.toFixed(0)}%<br><br>
+    `;
   });
 
-  document.getElementById("conteudoRelatorio").innerHTML = html;
 }
   function preencherFiltrosRelatorio(){
 
