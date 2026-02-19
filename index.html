@@ -2113,7 +2113,19 @@ historicoEntradas.push(registroEntrada);
   });
 
 }
-  
+  function editarPiso(index){
+
+  let novoValor = parseFloat(prompt("Digite o novo limite da categoria:"));
+
+  if(isNaN(novoValor) || novoValor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  categorias[index].piso = novoValor;
+
+  atualizarTelaCategorias();
+}
 </script>
 
 </body>
