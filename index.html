@@ -2042,12 +2042,26 @@ if(entradasFiltradas.length === 0){
 }
 
 html += "<br>";
-  html += "<h3>Categorias</h3>";
+ html += "<h3>Categorias</h3>";
 
-  categorias.forEach(cat => {
-    let total = cat.subcategorias.reduce((acc, sub) => acc + sub.total, 0);
-    html += cat.nome + ": € " + total.toFixed(2) + "<br>";
-  });
+let categoriasFiltradas = categorias.filter(function(cat){
+
+  if(categoriaSelecionada === "todas"){
+    return true;
+  }
+
+  return cat.nome === categoriaSelecionada;
+});
+
+categoriasFiltradas.forEach(function(cat){
+
+  let total = cat.subcategorias.reduce(function(acc, sub){
+    return acc + sub.total;
+  }, 0);
+
+  html += cat.nome + ": € " + total.toFixed(2) + "<br>";
+
+});
   html += "<br><h3>Histórico de Saídas</h3>";
 
 if(historicoSaidas.length === 0){
