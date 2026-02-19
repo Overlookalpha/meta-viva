@@ -2088,6 +2088,24 @@ if(historicoSaidas.length === 0){
   });
 
 }
+
+ function editarPiso(index){
+
+  let novoValor = prompt("Digite o novo limite para esta categoria:");
+
+  if(novoValor === null) return;
+
+  novoValor = parseFloat(novoValor);
+
+  if(isNaN(novoValor) || novoValor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  categorias[index].piso = novoValor;
+
+  atualizarTelaCategorias();
+}
 </script>
 
 </body>
