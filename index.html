@@ -821,6 +821,7 @@ const mapaEmojis = {
   "caixa": "📦"
 };
 let saldo = 0;
+let dividaAtual = 0;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
 let categorias = [];
@@ -2195,6 +2196,40 @@ if(historicoSaidas.length === 0){
 }
   function gerarPDF(){
   window.print();
+}
+  function pegarEmprestimo(){
+
+  let valor = parseFloat(document.getElementById("valorEmprestimoInput").value);
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Valor inválido.");
+    return;
+  }
+
+  if(valor > valorGuardado){
+    alert("Você não tem reserva suficiente.");
+    return;
+  }
+
+  // Sai da reserva
+  valorGuardado -= valor;
+
+  // Entra no saldo
+  saldo += valor;
+
+  // Aumenta dívida
+  dividaAtual += valor;
+
+  // Atualiza interface principal
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
+
+  // Atualiza texto da dívida
+  document.getElementById("dividaAtualTexto").innerText = dividaAtual.toFixed(2);
+
+  // Limpa campo
+  document.getElementById("valorEmprestimoInput").value = "";
+
 }
 </script>
 
