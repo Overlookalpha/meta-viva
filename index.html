@@ -1092,7 +1092,7 @@ if (plano) {
 }
 
  
-  let objetivo = answers[0][0];
+  let objetivo = answers[0]?.[0] || "";
   let desafio = "";
   let estrategia = "";
   if(objetivo === "Comprar um carro"){
