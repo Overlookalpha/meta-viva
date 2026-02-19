@@ -1994,6 +1994,8 @@ historicoEntradas.push(registroEntrada);
   function gerarRelatorio(){
 
   let html = "";
+  let mesSelecionado = document.getElementById("filtroMes").value;
+  let categoriaSelecionada = document.getElementById("filtroCategoria").value;
   // 🔥 BLOCO PERFIL + META
 
 let porcentagemMeta = 0;
@@ -2018,11 +2020,18 @@ html += "Guardado: € " + valorGuardado.toFixed(2) +
   html += "Reserva: € " + valorGuardado.toFixed(2) + "<br><br>";
   html += "<h3>Histórico de Entradas</h3>";
 
-if(historicoEntradas.length === 0){
-  html += "Nenhuma entrada registrada.<br>";
+let entradasFiltradas = historicoEntradas.filter(function(item){
+
+  let passaMes = (mesSelecionado === "todos" || item.mes == mesSelecionado);
+
+  return passaMes;
+});
+
+if(entradasFiltradas.length === 0){
+  html += "Nenhuma entrada encontrada.<br>";
 } else {
 
-  historicoEntradas.forEach(function(item){
+  entradasFiltradas.forEach(function(item){
 
     html += item.data + " " + item.hora + " — " +
             "Cliente: " + item.cliente +
@@ -2033,7 +2042,6 @@ if(historicoEntradas.length === 0){
 }
 
 html += "<br>";
-
   html += "<h3>Categorias</h3>";
 
   categorias.forEach(cat => {
