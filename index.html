@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -192,15 +193,15 @@ button{
   </p>
 
   <button class="primary"
-        onclick="start()"
-        style="
+      onclick="start()"
+      style="
         font-size:18px;
         padding:16px 32px;
         border-radius:10px;
         box-shadow:0 4px 20px rgba(0,0,0,0.3);
       ">
       Criar Meu Plano Gratuito
-</button>
+  </button>
 
   <div style="
       position:absolute;
@@ -720,7 +721,7 @@ button{
 </button>
 
 </div>
-  
+  </div>
 
 <!-- TELA RELATÓRIO -->
 <div id="telaRelatorio" class="screen">
@@ -933,7 +934,7 @@ const questions = [
 
 ];
 
-window.start = function(){
+function start(){
   document.getElementById("landing").classList.add("hidden");
   document.getElementById("quiz").classList.remove("hidden");
   currentQuestion = 0;
@@ -1079,12 +1080,11 @@ function goToHome(){
   document.getElementById("perfilTipo").innerText = "Perfil: " + userProfile;
   // ===== ATIVAR PLANO AUTOMÁTICO DO PERFIL =====
 
+const plano = [userProfile];
 // Garante que perfil existe
 if(!planosPerfil[userProfile]){
-   userProfile = "Crítico";
+   userProfile = "Crítico"; // apenas para teste
 }
-
-const plano = planosPerfil[userProfile];
 
 if (plano) {
     metaMensal = 0;
@@ -1092,7 +1092,7 @@ if (plano) {
 }
 
  
-  let objetivo = answers[0]?.[0] || "";
+  let objetivo = answers[0][0];
   let desafio = "";
   let estrategia = "";
   if(objetivo === "Comprar um carro"){
@@ -1371,23 +1371,25 @@ function carregarPlanoDesafio(){
 
   const plano = planosPerfil[userProfile];
 
+  // Título
   document.getElementById("tituloPlano").innerText = plano.titulo;
 
+  // Etapas
   const lista = document.getElementById("etapasPlano");
   lista.innerHTML = "";
 
-  plano.etapas.forEach(function(etapa){
+  plano.etapas.forEach(etapa => {
     const li = document.createElement("li");
     li.innerText = etapa;
     lista.appendChild(li);
   });
 
-  // META baseada SOMENTE na renda
-  metaMensal = rendaMensalBase * plano.porcentagem;
+  // Meta baseada nas entradas
+  metaMensal = entradasTotal * plano.porcentagem;
 
   document.getElementById("desafioMeta").innerText = metaMensal.toFixed(2);
 
-  let progresso = 0;
+  progresso = 0;
 
   if(metaMensal > 0){
     progresso = (valorGuardado / metaMensal) * 100;
@@ -1975,6 +1977,10 @@ let registroEntrada = {
 
 historicoEntradas.push(registroEntrada);
   // 🔥 Atualiza meta baseada no perfil
+  if(planosPerfil[userProfile]){
+    let porcentagem = planosPerfil[userProfile].porcentagem;
+    metaMensal = entradasTotal * porcentagem;
+  }
 
   // Atualiza UI principal
   document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
@@ -1995,26 +2001,26 @@ historicoEntradas.push(registroEntrada);
   fecharTela("telaEntrada");
 }
 
- function gerarRelatorio(){
+  function gerarRelatorio(){
 
   let html = "";
+  // 🔥 BLOCO PERFIL + META
 
-  let porcentagemMeta = 0;
+let porcentagemMeta = 0;
 
-  if(metaMensal > 0){
-    porcentagemMeta = (valorGuardado / metaMensal) * 100;
-  }
+if(metaMensal > 0){
+  porcentagemMeta = (valorGuardado / metaMensal) * 100;
+}
 
-  if(porcentagemMeta > 100){
-    porcentagemMeta = 100;
-  }
+if(porcentagemMeta > 100){
+  porcentagemMeta = 100;
+}
 
-  html += "<h3>Perfil Financeiro</h3>";
-  html += "Perfil: " + userProfile + "<br>";
-  html += "Meta do Perfil: € " + metaMensal.toFixed(2) + "<br>";
-  html += "Guardado: € " + valorGuardado.toFixed(2) +
-          " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
-
+html += "<h3>Perfil Financeiro</h3>";
+html += "Perfil: " + userProfile + "<br>";
+html += "Meta do Perfil: € " + metaMensal.toFixed(2) + "<br>";
+html += "Guardado: € " + valorGuardado.toFixed(2) +
+        " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
   html += "<h3>Resumo Geral</h3>";
   html += "Saldo: € " + saldo.toFixed(2) + "<br>";
   html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
@@ -2023,55 +2029,40 @@ historicoEntradas.push(registroEntrada);
 
   html += "<h3>Categorias</h3>";
 
-  categorias.forEach(function(cat){
-
-    let total = 0;
-
-    cat.subcategorias.forEach(function(sub){
-      total += sub.total;
-    });
-
+  categorias.forEach(cat => {
+    let total = cat.subcategorias.reduce((acc, sub) => acc + sub.total, 0);
     html += cat.nome + ": € " + total.toFixed(2) + "<br>";
   });
-
   html += "<br><h3>Histórico de Saídas</h3>";
 
-  if(historicoSaidas.length === 0){
-    html += "Nenhuma saída registrada.<br>";
-  } else {
+if(historicoSaidas.length === 0){
+  html += "Nenhuma saída registrada.<br>";
+} else {
 
-    historicoSaidas.forEach(function(item){
+  historicoSaidas.forEach(item => {
 
-      html += item.data + " " + item.hora + " — " +
-              item.categoria + " > " +
-              item.subcategoria + " — € " +
-              item.valor.toFixed(2) + "<br>";
+    html += `
+      ${item.data} ${item.hora} —
+      ${item.categoria} > ${item.subcategoria}
+      — € ${item.valor.toFixed(2)}<br>
+    `;
 
-    });
+  });
 
-  }
-
+}
   html += "<br><h3>Desafios</h3>";
 
-  if(desafios.length === 0){
-    html += "Nenhum desafio criado.<br>";
-  } else {
+  desafios.forEach(desafio => {
 
-    desafios.forEach(function(desafio){
+    let porcentagem = 0;
 
-      let porcentagem = 0;
+    if(desafio.partes > 0){
+      porcentagem = (desafio.parcelasPagas / desafio.partes) * 100;
+    }
 
-      if(desafio.partes > 0){
-        porcentagem = (desafio.parcelasPagas / desafio.partes) * 100;
-      }
-
-      html += desafio.emoji + " " +
-              desafio.nome + " — " +
-              porcentagem.toFixed(0) + "% concluído<br>";
-
-    });
-
-  }
+    html += desafio.emoji + " " + desafio.nome +
+      " — " + porcentagem.toFixed(0) + "% concluído<br>";
+  });
 
   document.getElementById("conteudoRelatorio").innerHTML = html;
 }
@@ -2083,25 +2074,24 @@ historicoEntradas.push(registroEntrada);
   selectMes.innerHTML = '<option value="todos">Todos os Meses</option>';
   selectCategoria.innerHTML = '<option value="todas">Todas Categorias</option>';
 
+  // Meses
   let meses = new Set();
 
-  historicoEntradas.forEach(function(e){
-    meses.add(e.mes);
-  });
-
-  historicoSaidas.forEach(function(s){
+  historicoEntradas.forEach(e => meses.add(e.mes));
+  historicoSaidas.forEach(s => {
     let partes = s.data.split("/");
     meses.add(parseInt(partes[1]));
   });
 
-  meses.forEach(function(m){
+  meses.forEach(m => {
     let option = document.createElement("option");
     option.value = m;
     option.text = "Mês " + m;
     selectMes.appendChild(option);
   });
 
-  categorias.forEach(function(cat){
+  // Categorias
+  categorias.forEach(cat => {
     let option = document.createElement("option");
     option.value = cat.nome;
     option.text = cat.nome;
@@ -2109,24 +2099,9 @@ historicoEntradas.push(registroEntrada);
   });
 
 }
-  function editarPiso(index){
-
-  let novoValor = parseFloat(prompt("Digite o novo limite da categoria:"));
-
-  if(isNaN(novoValor) || novoValor <= 0){
-    alert("Valor inválido.");
-    return;
-  }
-
-  categorias[index].piso = novoValor;
-
-  atualizarTelaCategorias();
-}
 </script>
 
 </body>
 </html>
 
 
-
-  }
