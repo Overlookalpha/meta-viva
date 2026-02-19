@@ -789,7 +789,6 @@ const mapaEmojis = {
   "caixa": "📦"
 };
 let saldo = 0;
-let reserva = 0;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
 let categorias = [];
@@ -1338,17 +1337,14 @@ function guardarNaReserva(){
     return;
   }
 
-  // Move dinheiro do saldo para reserva
+  // Move dinheiro do saldo para reserva oficial
   saldo -= valor;
-  reserva += valor;
   valorGuardado += valor;
 
-  // Atualiza tela principal
+  // Atualiza UI principal
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-  document.getElementById("reservaValor").innerText = "€ " + reserva.toFixed(2);
-  document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
+  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
 
-  // Atualiza meta e barra
   atualizarProgresso();
 
   // Atualiza tela da reserva
@@ -1360,9 +1356,7 @@ function guardarNaReserva(){
   document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
   document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
 
-  // Limpa campo
   document.getElementById("valorGuardarInput").value = "";
-
 }
 
 function carregarPlanoDesafio(){
@@ -1574,14 +1568,14 @@ function atualizarParcelasVisuais(){
   saldo -= desafio.valorParcela;
 
   // 🐷 Adiciona na reserva
-  reserva += desafio.valorParcela;
+  valorGuardado += desafio.valorParcela;
 
   // Marca parcela como paga
   desafio.parcelasPagas++;
 
   // 🔄 Atualiza cards da Home
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-  document.getElementById("reservaValor").innerText = "€ " + reserva.toFixed(2);
+  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
 
   // Atualiza visual das parcelas
   atualizarParcelasVisuais();
@@ -2025,7 +2019,7 @@ html += "Guardado: € " + valorGuardado.toFixed(2) +
   html += "Saldo: € " + saldo.toFixed(2) + "<br>";
   html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
   html += "Saídas: € " + saidasTotal.toFixed(2) + "<br>";
-  html += "Reserva: € " + reserva.toFixed(2) + "<br><br>";
+  html += "Reserva: € " + valorGuardado.toFixed(2) + "<br><br>";
 
   html += "<h3>Categorias</h3>";
 
