@@ -1079,7 +1079,7 @@ function goToHome(){
   document.getElementById("perfilTipo").innerText = "Perfil: " + userProfile;
   // ===== ATIVAR PLANO AUTOMÁTICO DO PERFIL =====
 
-const plano = [userProfile];
+const plano = planosPerfil[userProfile];
 // Garante que perfil existe
 if(!planosPerfil[userProfile]){
    userProfile = "Crítico"; // apenas para teste
