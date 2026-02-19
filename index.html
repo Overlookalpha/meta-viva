@@ -1371,25 +1371,23 @@ function carregarPlanoDesafio(){
 
   const plano = planosPerfil[userProfile];
 
-  // Título
   document.getElementById("tituloPlano").innerText = plano.titulo;
 
-  // Etapas
   const lista = document.getElementById("etapasPlano");
   lista.innerHTML = "";
 
-  plano.etapas.forEach(etapa => {
+  plano.etapas.forEach(function(etapa){
     const li = document.createElement("li");
     li.innerText = etapa;
     lista.appendChild(li);
   });
 
-  // Meta baseada nas entradas
-  metaMensal = entradasTotal * plano.porcentagem;
+  // META baseada SOMENTE na renda
+  metaMensal = rendaMensalBase * plano.porcentagem;
 
   document.getElementById("desafioMeta").innerText = metaMensal.toFixed(2);
 
-  progresso = 0;
+  let progresso = 0;
 
   if(metaMensal > 0){
     progresso = (valorGuardado / metaMensal) * 100;
@@ -1977,10 +1975,6 @@ let registroEntrada = {
 
 historicoEntradas.push(registroEntrada);
   // 🔥 Atualiza meta baseada no perfil
-  if(planosPerfil[userProfile]){
-    let porcentagem = planosPerfil[userProfile].porcentagem;
-    metaMensal = entradasTotal * porcentagem;
-  }
 
   // Atualiza UI principal
   document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
