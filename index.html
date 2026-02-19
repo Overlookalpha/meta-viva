@@ -747,6 +747,10 @@ button{
     style="background:#00c896;border:none;padding:6px 10px;border-radius:6px;color:white;cursor:pointer;">
     Aplicar Filtro
   </button>
+  <button onclick="gerarPDF()"
+  style="background:#444;border:none;padding:6px 10px;border-radius:6px;color:white;cursor:pointer;">
+  Gerar PDF
+</button>
 
 </div>
 
@@ -2161,6 +2165,9 @@ if(historicoSaidas.length === 0){
   categorias[index].piso = novoValor;
 
   atualizarTelaCategorias();
+}
+  function gerarPDF(){
+  window.print();
 }
 </script>
 
