@@ -1971,11 +1971,6 @@ let registroEntrada = {
 
 historicoEntradas.push(registroEntrada);
   // 🔥 Atualiza meta baseada no perfil
-  if(planosPerfil[userProfile]){
-    let porcentagem = planosPerfil[userProfile].porcentagem;
-    metaMensal = entradasTotal * porcentagem;
-  }
-
   // Atualiza UI principal
   document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
