@@ -559,7 +559,34 @@ button{
 
 <!-- EMPRESTIMO -->
 <div id="emprestimo" class="hidden">
-  <h2>Empréstimo Interno</h2>
+
+  <h2>🏦 Empréstimo Interno</h2>
+
+  <button onclick="abrirAba('home')"
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <p>Dívida Atual: € <span id="dividaAtualTexto">0.00</span></p>
+
+  <p style="margin-top:20px;">Valor para pegar emprestado:</p>
+  <input type="number" id="valorEmprestimoInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <button onclick="pegarEmprestimo()"
+    style="margin-top:15px;background:#00c896;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
+    Pegar Empréstimo
+  </button>
+
+  <p style="margin-top:30px;">Valor para pagar:</p>
+  <input type="number" id="valorPagamentoInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <button onclick="pagarEmprestimo()"
+    style="margin-top:15px;background:#ff4d4d;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
+    Pagar Empréstimo
+  </button>
+
 </div>
 
 <!-- CONFIGURACOES -->
