@@ -2521,6 +2521,44 @@ div.innerHTML =
   fecharTela("telaNovaConta");
 
 }
+  function pagarConta(index){
+
+  const conta = contas[index];
+
+  if(!conta || conta.paga) return;
+
+  // Verifica saldo
+  if(conta.valor > saldo){
+    alert("Saldo insuficiente para pagar esta conta.");
+    return;
+  }
+
+  // Desconta do saldo
+  saldo -= conta.valor;
+  saidasTotal += conta.valor;
+
+  // Marca como paga
+  conta.paga = true;
+
+  // Registrar no histórico de saídas
+  let agora = new Date();
+
+  historicoSaidas.push({
+    data: agora.toLocaleDateString("pt-PT"),
+    hora: agora.toLocaleTimeString("pt-PT"),
+    categoria: "Contas",
+    subcategoria: conta.nome,
+    valor: conta.valor
+  });
+
+  // Atualiza interface
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+
+  atualizarListaContas();
+  atualizarResumoContas();
+
+}
 </script>
 
 </body>
