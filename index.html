@@ -1434,6 +1434,8 @@ function guardarNaReserva(){
   document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
 
   document.getElementById("valorGuardarInput").value = "";
+  atualizarProgresso();
+  abrirAba("home");
 }
 
 function carregarPlanoDesafio(){
@@ -2555,6 +2557,23 @@ div.innerHTML =
 
   atualizarListaContas();
   atualizarResumoContas();
+}
+  function atualizarProgresso(){
+
+  // Atualiza texto счита na Home
+  document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
+  document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
+
+  let porcentagem = 0;
+
+  if(metaMensal > 0){
+    porcentagem = (valorGuardado / metaMensal) * 100;
+    if(porcentagem > 100){
+      porcentagem = 100;
+    }
+  }
+
+  document.getElementById("barraProgresso").style.width = porcentagem + "%";
 }
 </script>
 
