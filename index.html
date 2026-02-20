@@ -2465,6 +2465,32 @@ div.innerHTML =
   }
 
 }
+  function salvarConta(){
+
+  const nome = document.getElementById("novaContaNome").value;
+  const valor = parseFloat(document.getElementById("novaContaValor").value);
+  const vencimento = document.getElementById("novaContaVencimento").value;
+
+  if(!nome || isNaN(valor) || !vencimento){
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  contas.push({
+    nome: nome,
+    valor: valor,
+    vencimento: vencimento,
+    paga: false
+  });
+
+  document.getElementById("novaContaNome").value = "";
+  document.getElementById("novaContaValor").value = "";
+  document.getElementById("novaContaVencimento").value = "";
+
+  fecharTela("telaNovaConta");
+  atualizarListaContas();
+  atualizarResumoContas();
+}
 </script>
 
 </body>
