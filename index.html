@@ -1363,6 +1363,8 @@ function abrirAba(id){
 }
   // Mostra a aba clicada
   document.getElementById(id).classList.remove("hidden");
+  if(id === "contas"){
+  atualizarListaContas();
 }
 
 function atualizarProgresso(){
@@ -2321,6 +2323,36 @@ if(historicoSaidas.length === 0){
     document.getElementById("dividaHeader").style.display = "none";
 
   }
+
+}
+  function atualizarListaContas(){
+
+  const container = document.getElementById("listaContas");
+  container.innerHTML = "";
+
+  if(contas.length === 0){
+    container.innerHTML = "Nenhuma conta cadastrada.";
+    return;
+  }
+
+  contas.forEach((conta, index) => {
+
+    const div = document.createElement("div");
+
+    div.style.background = "rgba(255,255,255,0.08)";
+    div.style.padding = "15px";
+    div.style.borderRadius = "10px";
+    div.style.marginBottom = "15px";
+
+    div.innerHTML = `
+      <strong>${conta.nome}</strong><br>
+      Valor: € ${conta.valor.toFixed(2)}<br>
+      Vencimento: ${conta.vencimento}
+    `;
+
+    container.appendChild(div);
+
+  });
 
 }
 </script>
