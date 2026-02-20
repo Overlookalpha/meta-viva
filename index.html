@@ -1477,13 +1477,26 @@ function carregarPlanoDesafio(){
   
 function abrirTela(id){
 
-  // Se for tela de entrada, limpar campos antes de abrir
+  // 🔹 Limpa campos da tela de entrada
   if(id === "telaEntrada"){
     document.getElementById("nomeClienteInput").value = "";
     document.getElementById("valorEntradaInput").value = "";
   }
 
+  // 🔹 Limpa campos da tela nova conta
+  if(id === "telaNovaConta"){
+    document.getElementById("nomeContaInput").value = "";
+    document.getElementById("valorContaInput").value = "";
+    document.getElementById("vencimentoContaInput").value = "";
+  }
+
+  // 🔹 Limpa campos da tela saída
+  if(id === "telaSaida"){
+    document.getElementById("valorSaidaInput").value = "";
+  }
+
   document.getElementById(id).classList.add("active");
+}
 }
 
 function fecharTela(id){
