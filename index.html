@@ -1164,7 +1164,11 @@ function goToLogin(){
 }
 
 function goToHome(){
+ const plano = planosPerfil[userProfile];
 
+if(plano){
+   metaMensal = rendaMensalBase * plano.porcentagem;
+   }
   generateProfile();
   console.log("Perfil gerado:", userProfile);
 
@@ -1225,6 +1229,7 @@ if (plano) {
   // document.getElementById("homeDesafioTexto").innerText = desafio;
   atualizarDividaHeader();
   atualizarResumoContas();
+  atualizarProgresso();
 }
 
 function createAccount(){
