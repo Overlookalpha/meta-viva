@@ -889,14 +889,6 @@ let rendaMensalBase = 0;
 let categorias = [];
 let historicoSaidas = [];
 let contas = [];
-// 🔥 Conta de teste (temporária)
-contas.push({
-  nome: "Internet",
-  valor: 100,
-  vencimento: "2025-03-25",
-  paga: false
-});
-
 function selecionarEmoji(emoji){
 
   emojiSelecionado = emoji;
@@ -2501,26 +2493,23 @@ div.innerHTML =
   fecharTela("telaNovaConta");
 
 }
-  function pagarConta(index){
+ function pagarConta(index){
 
   const conta = contas[index];
 
-  if(!conta || conta.paga) return;
-
-  // Verifica saldo
   if(conta.valor > saldo){
     alert("Saldo insuficiente para pagar esta conta.");
     return;
   }
 
-  // Desconta do saldo
+  // 💸 Baixa do saldo
   saldo -= conta.valor;
   saidasTotal += conta.valor;
 
-  // Marca como paga
-  conta.paga = true;
+  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
 
-  // Registrar no histórico de saídas
+  // 📊 Registra no histórico
   let agora = new Date();
 
   historicoSaidas.push({
@@ -2531,13 +2520,11 @@ div.innerHTML =
     valor: conta.valor
   });
 
-  // Atualiza interface
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+  // 🗑 REMOVE COMPLETAMENTE DA LISTA
+  contas.splice(index, 1);
 
   atualizarListaContas();
   atualizarResumoContas();
-
 }
 </script>
 
