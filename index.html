@@ -402,7 +402,7 @@ button{
 <div style="margin-top:25px;">
 
   <p style="margin:5px 0; font-size:14px; opacity:0.8;">
-    Meta do mês: € <span id="metaValor">0</span>
+    Meta do mês: <span id="moedaMeta"></span><span id="metaValor">0</span>
   </p>
 
   <div style="background:#333; border-radius:10px; height:18px; overflow:hidden;">
@@ -1307,7 +1307,7 @@ let historicoEntradas = [];
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
 
 
-  document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
+  document.getElementById("entradaValor").innerText = moedaUsuario + " " + entradasTotal.toFixed(2);
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
   atualizarProgresso();
   }
@@ -1378,7 +1378,7 @@ function adicionarSaida(){
 
   // Atualiza UI
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+  document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
 
   atualizarTelaCategorias();
 }
@@ -2020,7 +2020,7 @@ else if(porcentagem >= 80){
 }
 
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+  document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
 
   fecharTela("telaSaida");
   atualizarTelaCategorias();
@@ -2557,7 +2557,7 @@ div.innerHTML =
   saidasTotal += conta.valor;
 
   document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
-  document.getElementById("saidaValor").innerText = "€ " + saidasTotal.toFixed(2);
+  document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
 
   // 📊 Registra no histórico
   let agora = new Date();
@@ -2581,7 +2581,7 @@ div.innerHTML =
   // Atualiza texto счита na Home
   document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
-
+  document.getElementById("moedaMeta").innerText = moedaUsuario + " ";
   let porcentagem = 0;
 
   if(metaMensal > 0){
