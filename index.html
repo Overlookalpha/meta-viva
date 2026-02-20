@@ -2491,8 +2491,31 @@ div.innerHTML =
   atualizarListaContas();
   atualizarResumoContas();
 }
-  function salvarNovaConta(){
-  alert("Função salvarNovaConta funcionando");
+ function salvarNovaConta(){
+
+  const nome = document.getElementById("nomeContaInput").value;
+  const valor = parseFloat(document.getElementById("valorContaInput").value);
+  const vencimento = document.getElementById("vencimentoContaInput").value;
+
+  if(!nome || isNaN(valor) || !vencimento){
+    alert("Preencha todos os campos corretamente.");
+    return;
+  }
+
+  contas.push({
+    nome: nome,
+    valor: valor,
+    vencimento: vencimento,
+    paga: false
+  });
+
+  alert("Conta adicionada com sucesso!");
+
+  atualizarListaContas();
+  atualizarResumoContas();
+
+  fecharTela("telaNovaConta");
+
 }
 </script>
 
