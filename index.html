@@ -2344,12 +2344,35 @@ if(historicoSaidas.length === 0){
     div.style.borderRadius = "10px";
     div.style.marginBottom = "15px";
 
-    div.innerHTML = `
-      <strong>${conta.nome}</strong><br>
-      Valor: € ${conta.valor.toFixed(2)}<br>
-      Vencimento: ${conta.vencimento}
-    `;
+    
+  const hoje = new Date();
+const vencimento = new Date(conta.vencimento);
 
+const diffTime = vencimento - hoje;
+const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+let statusTexto = "";
+let corStatus = "#00c896";
+
+if(diffDias < 0){
+  statusTexto = "🔴 Conta vencida";
+  corStatus = "#ff4d4d";
+}
+else if(diffDias <= 3){
+  statusTexto = "🟡 Vence em " + diffDias + " dias";
+  corStatus = "#f4b400";
+}
+else{
+  statusTexto = "🟢 Dentro do prazo";
+}
+
+div.innerHTML =
+  "<strong>" + conta.nome + "</strong><br>" +
+  "Valor: € " + conta.valor.toFixed(2) + "<br>" +
+  "Vencimento: " + conta.vencimento + "<br>" +
+  "<span style='color:" + corStatus + "; font-weight:600;'>" +
+  statusTexto +
+  "</span>";
     container.appendChild(div);
 
   });
