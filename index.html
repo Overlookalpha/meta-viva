@@ -1477,11 +1477,11 @@ function carregarPlanoDesafio(){
   
 function abrirTela(id){
 
-  // 🔹 Limpa campos da tela de entrada
-  if(id === "telaEntrada"){
-    document.getElementById("nomeClienteInput").value = "";
-    document.getElementById("valorEntradaInput").value = "";
-  }
+  const tela = document.getElementById(id);
+
+  tela.style.display = "block";
+  tela.classList.add("active");
+}
 
   // 🔹 Limpa campos da tela nova conta
   if(id === "telaNovaConta"){
@@ -1499,7 +1499,11 @@ function abrirTela(id){
 }
 
 function fecharTela(id){
-  document.getElementById(id).classList.remove("active");
+
+  const tela = document.getElementById(id);
+
+  tela.classList.remove("active");
+  tela.style.display = "none"; // força sumir
 }
 
 function criarDesafioPersonalizado(){
