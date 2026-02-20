@@ -289,6 +289,17 @@ button{
     placeholder="Digite sua renda mensal"
     style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;"
   >
+  <p style="margin-top:15px;">Qual moeda você utiliza?</p>
+
+<select id="moedaSelect"
+  style="width:100%; padding:10px; border-radius:6px; border:none; margin-top:5px;">
+  
+  <option value="€">Euro (€)</option>
+  <option value="R$">Real (R$)</option>
+  <option value="$">Dólar ($)</option>
+  <option value="£">Libra (£)</option>
+
+</select>
 
   <button 
     class="primary" 
@@ -887,6 +898,7 @@ let saldo = 0;
 let dividaAtual = 0;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
+let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
 let contas = [];
@@ -1703,7 +1715,7 @@ function atualizarParcelasVisuais(){
   function confirmarRenda(){
 
   let valor = parseFloat(document.getElementById("rendaInput").value);
-
+  moedaUsuario = document.getElementById("moedaSelect").value;
   if(isNaN(valor) || valor <= 0){
     alert("Digite um valor válido.");
     return;
@@ -2084,7 +2096,7 @@ historicoEntradas.push(registroEntrada);
   // 🔥 Atualiza meta baseada no perfil
   // Atualiza UI principal
   document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   if(!userProfile){
   generateProfile();
 }
