@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -142,7 +143,7 @@ button{
   top:0;
   left:0;
   width:100%;
-  height:100%;
+  height:100vh;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   padding:20px;
   box-sizing:border-box;
@@ -1477,11 +1478,11 @@ function carregarPlanoDesafio(){
   
 function abrirTela(id){
 
-  const tela = document.getElementById(id);
-
-  tela.style.display = "block";
-  tela.classList.add("active");
-}
+  // 🔹 Limpa campos da tela de entrada
+  if(id === "telaEntrada"){
+    document.getElementById("nomeClienteInput").value = "";
+    document.getElementById("valorEntradaInput").value = "";
+  }
 
   // 🔹 Limpa campos da tela nova conta
   if(id === "telaNovaConta"){
@@ -1499,11 +1500,7 @@ function abrirTela(id){
 }
 
 function fecharTela(id){
-
-  const tela = document.getElementById(id);
-
-  tela.classList.remove("active");
-  tela.style.display = "none"; // força sumir
+  document.getElementById(id).classList.remove("active");
 }
 
 function criarDesafioPersonalizado(){
