@@ -1476,6 +1476,13 @@ function carregarPlanoDesafio(){
 }
   
 function abrirTela(id){
+
+  // Se for tela de entrada, limpar campos antes de abrir
+  if(id === "telaEntrada"){
+    document.getElementById("nomeClienteInput").value = "";
+    document.getElementById("valorEntradaInput").value = "";
+  }
+
   document.getElementById(id).classList.add("active");
 }
 
@@ -2068,6 +2075,7 @@ historicoEntradas.push(registroEntrada);
   document.getElementById("valorEntradaInput").value = "";
 
   fecharTela("telaEntrada");
+  abrirAba("home");
 }
 
   function gerarRelatorio(){
