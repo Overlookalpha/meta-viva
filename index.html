@@ -1718,6 +1718,9 @@ function atualizarParcelasVisuais(){
 
   let valor = parseFloat(document.getElementById("rendaInput").value);
   moedaUsuario = document.getElementById("moedaSelect").value;
+  // Atualiza saldo e reserva imediatamente
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
+  document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
   if(isNaN(valor) || valor <= 0){
     alert("Digite um valor válido.");
     return;
