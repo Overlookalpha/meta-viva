@@ -636,7 +636,31 @@ button{
 
 <!-- CONFIGURACOES -->
 <div id="configuracoes" class="hidden">
-  <h2>Configurações</h2>
+
+  <h2>⚙️ Configurações</h2>
+
+  <button onclick="abrirAba('home')"
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h3 style="margin-top:20px;">🔧 Ajuste Manual de Saldo</h3>
+
+  <p style="opacity:0.8; font-size:14px;">
+    Use valores positivos para adicionar e negativos para remover.
+  </p>
+
+  <input 
+    type="number" 
+    id="ajusteSaldoInput"
+    placeholder="Ex: 200 ou -150"
+    style="width:100%; padding:10px; border-radius:6px; border:none; margin-top:10px;"
+  >
+
+  <button class="primary" style="margin-top:15px;" onclick="aplicarAjusteSaldo()">
+    Aplicar Ajuste
+  </button>
+
 </div>
 
 <!-- TELA DESAFIOS (NOVA TELA) -->
@@ -2596,6 +2620,34 @@ div.innerHTML =
   }
 
   document.getElementById("barraMeta").style.width = porcentagem + "%";
+}
+  function aplicarAjusteSaldo(){
+
+  let valor = parseFloat(document.getElementById("ajusteSaldoInput").value);
+
+  if(isNaN(valor) || valor === 0){
+    alert("Digite um valor válido.");
+    return;
+  }
+
+  // Verifica se vai deixar saldo negativo
+  if(saldo + valor < 0){
+    alert("O ajuste deixaria o saldo negativo.");
+    return;
+  }
+
+  // Aplica ajuste
+  saldo += valor;
+
+  // Atualiza card da Home
+  document.getElementById("saldoValor").innerText =
+    moedaUsuario + " " + saldo.toFixed(2);
+
+  // Limpa campo
+  document.getElementById("ajusteSaldoInput").value = "";
+
+  alert("Saldo ajustado com sucesso!");
+
 }
 </script>
 
