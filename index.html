@@ -1308,7 +1308,7 @@ let historicoEntradas = [];
 
 
   document.getElementById("entradaValor").innerText = moedaUsuario + " " + entradasTotal.toFixed(2);
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   atualizarProgresso();
   }
 
@@ -1377,7 +1377,7 @@ function adicionarSaida(){
   categoria.subcategorias[indexSub].total += valor;
 
   // Atualiza UI
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
 
   atualizarTelaCategorias();
@@ -1434,7 +1434,7 @@ function guardarNaReserva(){
   valorGuardado += valor;
 
   // Atualiza UI principal
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
 
   atualizarProgresso();
@@ -1687,7 +1687,7 @@ function atualizarParcelasVisuais(){
   desafio.parcelasPagas++;
 
   // 🔄 Atualiza cards da Home
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
 
   // Atualiza visual das parcelas
@@ -2019,7 +2019,7 @@ else if(porcentagem >= 80){
         + categoria.nome);
 }
 
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
 
   fecharTela("telaSaida");
@@ -2323,7 +2323,7 @@ if(historicoSaidas.length === 0){
   dividaAtual += valor;
 
   // Atualiza interface principal
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
 
   // Atualiza texto da dívida
@@ -2362,7 +2362,7 @@ if(historicoSaidas.length === 0){
   dividaAtual -= valor;
 
   // Atualiza interface principal
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
 
   // Atualiza texto da dívida
@@ -2556,7 +2556,7 @@ div.innerHTML =
   saldo -= conta.valor;
   saidasTotal += conta.valor;
 
-  document.getElementById("saldoValor").innerText = "€ " + saldo.toFixed(2);
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
 
   // 📊 Registra no histórico
