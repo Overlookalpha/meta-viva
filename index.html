@@ -1706,7 +1706,19 @@ function atualizarParcelasVisuais(){
 
   rendaMensalBase = valor;
 
-  gerarCategoriasBase(); // 🔥 gera categorias automaticamente
+  // 🔥 Gera perfil se ainda não estiver gerado
+  if(!userProfile){
+    generateProfile();
+  }
+
+  // 🔥 Calcula meta baseada no perfil
+  const plano = planosPerfil[userProfile];
+
+  if(plano){
+    metaMensal = rendaMensalBase * plano.porcentagem;
+  }
+
+  gerarCategoriasBase();
 
   document.getElementById("setupRenda").classList.add("hidden");
 
