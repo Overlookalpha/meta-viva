@@ -606,7 +606,18 @@ button{
     style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
     ← Voltar
   </button>
-
+  <button 
+  onclick="abrirTela('telaNovaConta')" 
+  style="
+    margin-bottom:15px;
+    background:#00c896;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;">
+  ➕ Nova Conta
+</button>
   <div id="listaContas"></div>
 
 </div>
@@ -804,6 +815,35 @@ button{
 </div>
 
   <div id="conteudoRelatorio" style="margin-top:20px;"></div>
+
+</div>
+
+<!-- TELA NOVA CONTA -->
+<div id="telaNovaConta" class="screen">
+
+  <button onclick="fecharTela('telaNovaConta')" 
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2>➕ Nova Conta</h2>
+
+  <p>Nome da Conta:</p>
+  <input type="text" id="nomeContaInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <p style="margin-top:15px;">Valor:</p>
+  <input type="number" id="valorContaInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <p style="margin-top:15px;">Data de Vencimento:</p>
+  <input type="date" id="vencimentoContaInput"
+    style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+  <button onclick="salvarNovaConta()"
+    style="margin-top:20px;background:#00c896;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
+    Salvar Conta
+  </button>
 
 </div>
   
