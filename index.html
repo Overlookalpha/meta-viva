@@ -2032,8 +2032,11 @@ historicoEntradas.push(registroEntrada);
   let html = "";
   let mesSelecionado = document.getElementById("filtroMes").value;
   let categoriaSelecionada = document.getElementById("filtroCategoria").value;
-  html += "<h3>Dívida</h3>";
-  html += "Dívida Atual: € " + dividaAtual.toFixed(2) + "<br><br>";
+   // 🔥 BLOCO DÍVIDA
+  if(dividaAtual > 0){
+    html += "<h3>Dívida Atual</h3>";
+    html += "💳 € " + dividaAtual.toFixed(2) + "<br><br>";
+  }
   // 🔥 BLOCO PERFIL + META
 
 let porcentagemMeta = 0;
