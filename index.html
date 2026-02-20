@@ -415,7 +415,7 @@ button{
   </div>
 
   <p style="margin-top:5px; font-size:13px; opacity:0.7;">
-    Guardado: € <span id="guardadoValor">0</span>
+    Guardado: <span id="moedaGuardado"></span><span id="guardadoValor">0</span>
   </p>
   </div>
   <!-- BOTÕES -->
@@ -2582,6 +2582,7 @@ div.innerHTML =
   document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
   document.getElementById("moedaMeta").innerText = moedaUsuario + " ";
+  document.getElementById("moedaGuardado").innerText = moedaUsuario + " ";
   let porcentagem = 0;
 
   if(metaMensal > 0){
