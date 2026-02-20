@@ -1385,52 +1385,32 @@ function abrirAba(id){
   document.getElementById("home").classList.add("hidden");
   document.getElementById("desafios").classList.add("hidden");
   document.getElementById("novoDesafio").classList.add("hidden");
-  //document.getElementById("categorias").classList.add("hidden");
   document.getElementById("relatorios").classList.add("hidden");
   document.getElementById("reserva").classList.add("hidden");
   document.getElementById("emprestimo").classList.add("hidden");
   document.getElementById("configuracoes").classList.add("hidden");
-  
+  document.getElementById("contas").classList.add("hidden"); // 🔥 ESTA LINHA FALTAVA
+
   if(id === "reserva"){
 
-  document.getElementById("reservaGuardadoTexto").innerText = valorGuardado.toFixed(2);
-  document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
+    document.getElementById("reservaGuardadoTexto").innerText = valorGuardado.toFixed(2);
+    document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
 
-  let falta = metaMensal - valorGuardado;
-  if(falta < 0) falta = 0;
+    let falta = metaMensal - valorGuardado;
+    if(falta < 0) falta = 0;
 
-  document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
+    document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
+  }
 
-}
   // Mostra a aba clicada
   document.getElementById(id).classList.remove("hidden");
+
   if(id === "contas"){
-  atualizarListaContas();
-}
+    atualizarListaContas();
+  }
+
   atualizarResumoContas();
 }
-function atualizarProgresso(){
-
-  if(!planosPerfil[userProfile]) return;
-
-  // 🔥 META FIXA BASEADA NA RENDA MENSAL
-  metaMensal = rendaMensalBase * planosPerfil[userProfile].porcentagem;
-
-  let porcentagem = 0;
-
-  if(metaMensal > 0){
-    porcentagem = (valorGuardado / metaMensal) * 100;
-  }
-
-  if(porcentagem > 100){
-    porcentagem = 100;
-  }
-
-  document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
-  document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
-  document.getElementById("barraMeta").style.width = porcentagem + "%";
-}
-
 function guardarNaReserva(){
 
   let valor = parseFloat(document.getElementById("valorGuardarInput").value);
