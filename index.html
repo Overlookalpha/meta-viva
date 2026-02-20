@@ -2230,7 +2230,7 @@ if(historicoSaidas.length === 0){
 
   // Atualiza texto da dívida
   document.getElementById("dividaAtualTexto").innerText = dividaAtual.toFixed(2);
-
+  atualizarDividaHeader();
   // Limpa campo
   document.getElementById("valorEmprestimoInput").value = "";
 
@@ -2269,7 +2269,7 @@ if(historicoSaidas.length === 0){
 
   // Atualiza texto da dívida
   document.getElementById("dividaAtualTexto").innerText = dividaAtual.toFixed(2);
-
+  atualizarDividaHeader();
   // Limpa campo
   document.getElementById("valorPagamentoInput").value = "";
 
@@ -2282,7 +2282,7 @@ if(historicoSaidas.length === 0){
 
     document.getElementById("dividaHeader").style.display = "block";
     document.getElementById("dividaHeader").innerText =
-      "Dívida: € " + dividaAtual.toFixed(2);
+       "💳 Dívida: € " + dividaAtual.toFixed(2);
 
   } else {
 
