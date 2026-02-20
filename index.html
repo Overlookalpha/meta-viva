@@ -2414,8 +2414,11 @@ div.innerHTML =
   "Vencimento: " + conta.vencimento + "<br>" +
   "<span style='color:" + corStatus + "; font-weight:600;'>" +
   statusTexto +
-  "</span>";
-    container.appendChild(div);
+  "</span>" +
+  "<br><br>" +
+  "<button onclick='pagarConta(" + index + ")' " +
+  "style='background:#00c896;border:none;padding:6px 10px;border-radius:6px;color:white;cursor:pointer;'>" +
+  "✔ Marcar como Paga</button>";
 
   });
 
