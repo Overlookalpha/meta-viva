@@ -1366,6 +1366,7 @@ function abrirAba(id){
   if(id === "contas"){
   atualizarListaContas();
 }
+  atualizarResumoContas();
 }
 function atualizarProgresso(){
 
@@ -2376,6 +2377,51 @@ div.innerHTML =
     container.appendChild(div);
 
   });
+
+}
+
+  function atualizarResumoContas(){
+
+  const header = document.getElementById("contasResumo");
+
+  if(!header) return;
+
+  if(contas.length === 0){
+    header.innerHTML = "🧾 Contas: 🟢 Nenhuma pendente";
+    return;
+  }
+
+  let vencidas = 0;
+  let vencendo = 0;
+
+  const hoje = new Date();
+
+  contas.forEach(conta => {
+
+    if(conta.paga) return;
+
+    const vencimento = new Date(conta.vencimento);
+    const diffTime = vencimento - hoje;
+    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if(diffDias < 0){
+      vencidas++;
+    }
+    else if(diffDias <= 3){
+      vencendo++;
+    }
+
+  });
+
+  if(vencidas > 0){
+    header.innerHTML = "🧾 Contas: 🔴 " + vencidas + " vencida(s)";
+  }
+  else if(vencendo > 0){
+    header.innerHTML = "🧾 Contas: 🟡 " + vencendo + " vencendo";
+  }
+  else{
+    header.innerHTML = "🧾 Contas: 🟢 Nenhuma pendente";
+  }
 
 }
 </script>
