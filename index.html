@@ -2044,7 +2044,7 @@ else if(porcentagem >= 80){
 }
 
   function confirmarEntrada(){
-
+  console.log("confirmarEntrada foi chamada");
   const nome = document.getElementById("nomeClienteInput").value;
   const valor = parseFloat(document.getElementById("valorEntradaInput").value);
 
@@ -2087,6 +2087,7 @@ historicoEntradas.push(registroEntrada);
   document.getElementById("valorEntradaInput").value = "";
 
   fecharTela("telaEntrada");
+  abrirAba("home");
   
 }
 
