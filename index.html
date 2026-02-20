@@ -360,7 +360,7 @@ button{
             Perfil: —
           </p>
           <p id="dividaHeader" style="margin:0; font-size:14px; color:#ff6b6b; display:none;">
-          💳 Dívida: € 0
+          💳 Dívida: 0
          </p>
           <p id="contasResumo" 
             onclick="abrirAba('telaContas')"
@@ -552,15 +552,15 @@ button{
 </button>
 
   <p style="margin-top:20px;">
-    Meta do mês: € <span id="reservaMetaTexto">0</span>
+    Meta do mês: <span id="reservaMetaTexto">0</span>
   </p>
 
   <p>
-    Guardado até agora: € <span id="reservaGuardadoTexto">0</span>
+    Guardado até agora: <span id="reservaGuardadoTexto">0</span>
   </p>
 
   <p>
-    Falta: € <span id="reservaFaltaTexto">0</span>
+    Falta: <span id="reservaFaltaTexto">0</span>
   </p>
 
   <div style="margin-top:20px;">
@@ -587,7 +587,7 @@ button{
     ← Voltar
   </button>
 
-  <p>Dívida Atual: € <span id="dividaAtualTexto">0.00</span></p>
+  <p>Dívida Atual: <span id="dividaAtualTexto">0.00</span></p>
 
   <p style="margin-top:20px;">Valor para pegar emprestado:</p>
   <input type="number" id="valorEmprestimoInput"
@@ -676,7 +676,7 @@ button{
   <ul id="etapasPlano" style="margin-top:15px; line-height:1.6;"></ul>
 
   <div style="margin-top:20px;">
-    <p>Meta atual: € <span id="desafioMeta">0</span></p>
+    <p>Meta atual: <span id="desafioMeta">0</span></p>
     <p>Progresso: <span id="desafioProgresso">0</span>%</p>
   <div style="background:#333; border-radius:10px; height:18px; overflow:hidden; margin-top:10px;">
   <div id="barraDesafio" style="
@@ -767,8 +767,8 @@ button{
 
   <h2 id="tituloDetalhe"></h2>
 
-  <p>Total: € <span id="valorTotalDetalhe"></span></p>
-  <p>Parcela: € <span id="valorParcelaDetalhe"></span></p>
+  <p>Total: <span id="valorTotalDetalhe"></span></p>
+  <p>Parcela: <span id="valorParcelaDetalhe"></span></p>
 
   <div id="areaParcelas" style="margin-top:20px; font-size:28px;"></div>
 
@@ -1435,7 +1435,7 @@ function guardarNaReserva(){
 
   // Atualiza UI principal
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
-  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
+  document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
 
   atualizarProgresso();
 
@@ -1582,7 +1582,7 @@ for (let palavra in mapaEmojis) {
           <strong style="font-size:16px;">
             ${desafio.emoji} ${desafio.nome}
           </strong><br>
-          € ${desafio.valorTotal.toFixed(2)}
+          ${moedaUsuario} ${desafio.valorTotal.toFixed(2)}
         </div>
         <button onclick="abrirDesafio(${index})"
           style="
@@ -1617,7 +1617,7 @@ for (let palavra in mapaEmojis) {
   });
 
 }
-  function abrirDesafio(index){
+ function abrirDesafio(index){
 
   desafioAtualIndex = index;
   const desafio = desafios[index];
@@ -1627,10 +1627,10 @@ for (let palavra in mapaEmojis) {
     desafio.emoji + " " + desafio.nome;
 
   document.getElementById("valorTotalDetalhe").innerText =
-    desafio.valorTotal.toFixed(2);
+    moedaUsuario + " " + desafio.valorTotal.toFixed(2);
 
   document.getElementById("valorParcelaDetalhe").innerText =
-    desafio.valorParcela.toFixed(2);
+    moedaUsuario + " " + desafio.valorParcela.toFixed(2);
 
   // Desenha as parcelas
   atualizarParcelasVisuais();
@@ -1638,7 +1638,6 @@ for (let palavra in mapaEmojis) {
   // Abre tela
   abrirTela("telaDetalheDesafio");
 }
-
 function atualizarParcelasVisuais(){
 
   const desafio = desafios[desafioAtualIndex];
@@ -1688,7 +1687,7 @@ function atualizarParcelasVisuais(){
 
   // 🔄 Atualiza cards da Home
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
-  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
+  document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
 
   // Atualiza visual das parcelas
   atualizarParcelasVisuais();
@@ -1780,7 +1779,7 @@ function atualizarParcelasVisuais(){
       <div style="display:flex; justify-content:space-between;">
         <strong>${categoria.nome}</strong>
   <span>
-    € ${totalCategoria.toFixed(2)} /
+    ${moedaUsuario} ${totalCategoria.toFixed(2)} /
     <span
      style="
        cursor:pointer;
@@ -1789,7 +1788,7 @@ function atualizarParcelasVisuais(){
     "
     title="Clique para editar o limite"
     onclick="editarPiso(${index})">
-    € ${categoria.piso.toFixed(2)} ✏️
+    ${moedaUsuario} ${categoria.piso.toFixed(2)} ✏️
   </span>
 </span>
       </div>
@@ -2006,7 +2005,7 @@ if(porcentagem >= 120){
   let excesso = totalCategoria - categoria.piso;
   alert("🚨 Você ultrapassou o limite da categoria " 
         + categoria.nome + 
-        " em € " + excesso.toFixed(2));
+        " em " + moedaUsuario + " " + excesso.toFixed(2));
 }
 
 else if(porcentagem >= 100){
@@ -2060,7 +2059,7 @@ else if(porcentagem >= 80){
   if(sub.total > 0){
 
     let confirmar = confirm(
-      "Esta subcategoria possui € " + sub.total.toFixed(2) + 
+      "Esta subcategoria possui " + moedaUsuario + " " + sub.total.toFixed(2)+ 
       " registrados.\n\nOs valores continuarão contabilizados no saldo e relatórios.\n\nDeseja excluir mesmo assim?"
     );
 
@@ -2100,7 +2099,7 @@ let registroEntrada = {
 historicoEntradas.push(registroEntrada);
   // 🔥 Atualiza meta baseada no perfil
   // Atualiza UI principal
-  document.getElementById("entradaValor").innerText = "€ " + entradasTotal.toFixed(2);
+  document.getElementById("entradaValor").innerText = moedaUsuario + " " + entradasTotal.toFixed(2);
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   if(!userProfile){
   generateProfile();
@@ -2120,115 +2119,119 @@ historicoEntradas.push(registroEntrada);
   
 }
 
-  function gerarRelatorio(){
+ function gerarRelatorio(){
 
   let html = "";
   let mesSelecionado = document.getElementById("filtroMes").value;
   let categoriaSelecionada = document.getElementById("filtroCategoria").value;
-   // 🔥 BLOCO DÍVIDA
+
+  // 🔥 BLOCO DÍVIDA
   if(dividaAtual > 0){
     html += "<h3>Dívida Atual</h3>";
-    html += "💳 € " + dividaAtual.toFixed(2) + "<br><br>";
+    html += "💳 " + moedaUsuario + " " + dividaAtual.toFixed(2) + "<br><br>";
   }
+
   // 🔥 BLOCO PERFIL + META
 
-let porcentagemMeta = 0;
+  let porcentagemMeta = 0;
 
-if(metaMensal > 0){
-  porcentagemMeta = (valorGuardado / metaMensal) * 100;
-}
-
-if(porcentagemMeta > 100){
-  porcentagemMeta = 100;
-}
-
-html += "<h3>Perfil Financeiro</h3>";
-html += "Perfil: " + userProfile + "<br>";
-html += "Meta do Perfil: € " + metaMensal.toFixed(2) + "<br>";
-html += "Guardado: € " + valorGuardado.toFixed(2) +
-        " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
- html += "<h3>Resumo Geral</h3>";
-
-let totalSaidasFiltradas = 0;
-
-if(categoriaSelecionada === "todas"){
-  totalSaidasFiltradas = saidasTotal;
-} else {
-
-  totalSaidasFiltradas = historicoSaidas
-    .filter(function(item){
-      return item.categoria === categoriaSelecionada;
-    })
-    .reduce(function(acc, item){
-      return acc + item.valor;
-    }, 0);
-}
-
-html += "Saldo: € " + saldo.toFixed(2) + "<br>";
-html += "Entradas: € " + entradasTotal.toFixed(2) + "<br>";
-html += "Saídas: € " + totalSaidasFiltradas.toFixed(2) + "<br>";
-html += "Reserva: € " + valorGuardado.toFixed(2) + "<br><br>";
-  html += "<h3>Histórico de Entradas</h3>";
-
-let entradasFiltradas = historicoEntradas.filter(function(item){
-
-  let passaMes = (mesSelecionado === "todos" || item.mes == mesSelecionado);
-
-  return passaMes;
-});
-
-if(entradasFiltradas.length === 0){
-  html += "Nenhuma entrada encontrada.<br>";
-} else {
-
-  entradasFiltradas.forEach(function(item){
-
-    html += item.data + " " + item.hora + " — " +
-            "Cliente: " + item.cliente +
-            " — € " + item.valor.toFixed(2) + "<br>";
-
-  });
-
-}
-
-html += "<br>";
- html += "<h3>Categorias</h3>";
-
-let categoriasFiltradas = categorias.filter(function(cat){
-
-  if(categoriaSelecionada === "todas"){
-    return true;
+  if(metaMensal > 0){
+    porcentagemMeta = (valorGuardado / metaMensal) * 100;
   }
 
-  return cat.nome === categoriaSelecionada;
-});
+  if(porcentagemMeta > 100){
+    porcentagemMeta = 100;
+  }
 
-categoriasFiltradas.forEach(function(cat){
+  html += "<h3>Perfil Financeiro</h3>";
+  html += "Perfil: " + userProfile + "<br>";
+  html += "Meta do Perfil: " + moedaUsuario + " " + metaMensal.toFixed(2) + "<br>";
+  html += "Guardado: " + moedaUsuario + " " + valorGuardado.toFixed(2) +
+          " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
 
-  let total = cat.subcategorias.reduce(function(acc, sub){
-    return acc + sub.total;
-  }, 0);
+  html += "<h3>Resumo Geral</h3>";
 
-  html += cat.nome + ": € " + total.toFixed(2) + "<br>";
+  let totalSaidasFiltradas = 0;
 
-});
-  html += "<br><h3>Histórico de Saídas</h3>";
+  if(categoriaSelecionada === "todas"){
+    totalSaidasFiltradas = saidasTotal;
+  } else {
 
-if(historicoSaidas.length === 0){
-  html += "Nenhuma saída registrada.<br>";
-} else {
+    totalSaidasFiltradas = historicoSaidas
+      .filter(function(item){
+        return item.categoria === categoriaSelecionada;
+      })
+      .reduce(function(acc, item){
+        return acc + item.valor;
+      }, 0);
+  }
 
-  historicoSaidas.forEach(item => {
+  html += "Saldo: " + moedaUsuario + " " + saldo.toFixed(2) + "<br>";
+  html += "Entradas: " + moedaUsuario + " " + entradasTotal.toFixed(2) + "<br>";
+  html += "Saídas: " + moedaUsuario + " " + totalSaidasFiltradas.toFixed(2) + "<br>";
+  html += "Reserva: " + moedaUsuario + " " + valorGuardado.toFixed(2) + "<br><br>";
 
-    html += `
-      ${item.data} ${item.hora} —
-      ${item.categoria} > ${item.subcategoria}
-      — € ${item.valor.toFixed(2)}<br>
-    `;
+  html += "<h3>Histórico de Entradas</h3>";
+
+  let entradasFiltradas = historicoEntradas.filter(function(item){
+    let passaMes = (mesSelecionado === "todos" || item.mes == mesSelecionado);
+    return passaMes;
+  });
+
+  if(entradasFiltradas.length === 0){
+    html += "Nenhuma entrada encontrada.<br>";
+  } else {
+
+    entradasFiltradas.forEach(function(item){
+
+      html += item.data + " " + item.hora + " — " +
+              "Cliente: " + item.cliente +
+              " — " + moedaUsuario + " " + item.valor.toFixed(2) + "<br>";
+
+    });
+
+  }
+
+  html += "<br>";
+  html += "<h3>Categorias</h3>";
+
+  let categoriasFiltradas = categorias.filter(function(cat){
+
+    if(categoriaSelecionada === "todas"){
+      return true;
+    }
+
+    return cat.nome === categoriaSelecionada;
+  });
+
+  categoriasFiltradas.forEach(function(cat){
+
+    let total = cat.subcategorias.reduce(function(acc, sub){
+      return acc + sub.total;
+    }, 0);
+
+    html += cat.nome + ": " + moedaUsuario + " " + total.toFixed(2) + "<br>";
 
   });
 
-}
+  html += "<br><h3>Histórico de Saídas</h3>";
+
+  if(historicoSaidas.length === 0){
+    html += "Nenhuma saída registrada.<br>";
+  } else {
+
+    historicoSaidas.forEach(item => {
+
+      html += `
+        ${item.data} ${item.hora} —
+        ${item.categoria} > ${item.subcategoria}
+        — ${moedaUsuario} ${item.valor.toFixed(2)}<br>
+      `;
+
+    });
+
+  }
+
   html += "<br><h3>Desafios</h3>";
 
   desafios.forEach(desafio => {
@@ -2324,7 +2327,7 @@ if(historicoSaidas.length === 0){
 
   // Atualiza interface principal
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
-  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
+  document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
 
   // Atualiza texto da dívida
   document.getElementById("dividaAtualTexto").innerText = dividaAtual.toFixed(2);
@@ -2363,7 +2366,7 @@ if(historicoSaidas.length === 0){
 
   // Atualiza interface principal
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
-  document.getElementById("reservaValor").innerText = "€ " + valorGuardado.toFixed(2);
+  document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
 
   // Atualiza texto da dívida
   document.getElementById("dividaAtualTexto").innerText = dividaAtual.toFixed(2);
@@ -2380,7 +2383,7 @@ if(historicoSaidas.length === 0){
 
     document.getElementById("dividaHeader").style.display = "block";
     document.getElementById("dividaHeader").innerText =
-       "💳 Dívida: € " + dividaAtual.toFixed(2);
+       "💳 Dívida: " + moedaUsuario + " " + dividaAtual.toFixed(2);
 
   } else {
 
@@ -2432,7 +2435,7 @@ else{
 
 div.innerHTML =
   "<strong>" + conta.nome + "</strong><br>" +
-  "Valor: € " + conta.valor.toFixed(2) + "<br>" +
+  "Valor: " + moedaUsuario + " " + conta.valor.toFixed(2) + "<br>" +
   "Vencimento: " + conta.vencimento + "<br>" +
   "<span style='color:" + corStatus + "; font-weight:600;'>" +
   statusTexto +
