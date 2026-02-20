@@ -322,7 +322,7 @@ button{
         <button class="menuBtn" onclick="abrirTela('telaRelatorio'); preencherFiltrosRelatorio(); gerarRelatorio();">📊 Relatórios</button>
         <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
         <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦 Empréstimo</button>
-        <button class="menuBtn">🧾 Contas a Pagar</button>
+        <button class="menuBtn" onclick="abrirAba('contas')">🧾 Contas a Pagar</button>
         <button class="menuBtn" onclick="abrirAba('configuracoes')">⚙️ Configurações</button>
 
       </div>
@@ -594,6 +594,20 @@ button{
     style="margin-top:15px;background:#ff4d4d;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
     Pagar Empréstimo
   </button>
+
+</div>
+
+<!-- CONTAS A PAGAR -->
+<div id="contas" class="hidden">
+
+  <h2>🧾 Contas a Pagar</h2>
+
+  <button onclick="abrirAba('home')"
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <div id="listaContas"></div>
 
 </div>
 
