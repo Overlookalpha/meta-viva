@@ -3242,7 +3242,6 @@ function verificarEvolucaoPerfil(){
 
   // Verificar contas vencidas
   let contasVencidas = false;
-
   const hoje = new Date();
 
   contas.forEach(conta => {
@@ -3255,7 +3254,7 @@ function verificarEvolucaoPerfil(){
   });
 
   // Verificar se já guardou pelo menos 1 meta completa
-  let metaCumprida = valorGuardado >= metaMensal;
+  let metaCumprida = metaMensal > 0 && valorGuardado >= metaMensal;
 
   // ✅ Condição de evolução
   if(
@@ -3279,24 +3278,16 @@ function verificarEvolucaoPerfil(){
 
     atualizarProgresso();
 
-    // Mensagem de evolução
-let mensagemEvolucao =
-  "Parabéns. Você evoluiu de " +
-  perfilAntigo +
-  " para " +
-  userProfile +
-  ". Seu comportamento financeiro está mais estruturado.";
+    // 💛 Mensagem no tom amiga
+    let mensagemEvolucao =
+      "Olha você evoluindo 💛 Eu sabia que você ia chegar aqui. Agora você está no perfil " +
+      userProfile +
+      ". Continua assim, você está construindo algo forte.";
 
-// Atualiza banner do mentor
-mostrarMensagemMentor(mensagemEvolucao);
+    // 🔥 Só isso — não chamar notificação nem voz separadamente
+    mostrarMensagemMentor(mensagemEvolucao);
 
-// Envia notificação salva
-adicionarNotificacao("evolucao", mensagemEvolucao);
-
-// Fala em voz alta
-falar(mensagemEvolucao);
-
-console.log("Evoluiu de", perfilAntigo, "para", userProfile);
+    console.log("Evoluiu de", perfilAntigo, "para", userProfile);
   }
 
 }
