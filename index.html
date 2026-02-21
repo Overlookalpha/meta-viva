@@ -3119,7 +3119,7 @@ div.innerHTML =
   mostrarMensagemMentor(mensagem);
 }
  function mostrarMensagemMentor(texto){
-
+ adicionarNotificacao("alerta", texto);
   const banner = document.getElementById("mentorBanner");
 
   if(!banner) return;
