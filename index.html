@@ -2747,20 +2747,6 @@ div.innerHTML =
  function pagarConta(index){
 
   const conta = contas[index];
-  if(conta.recorrente){
-
-  const novaData = new Date(conta.vencimento);
-  novaData.setMonth(novaData.getMonth() + 1);
-
-  contas.push({
-    nome: conta.nome,
-    valor: conta.valor,
-    vencimento: novaData.toISOString().split("T")[0],
-    paga: false,
-    recorrente: true
-  });
-
-}
 
   if(conta.valor > saldo){
     alert("Saldo insuficiente para pagar esta conta.");
@@ -2770,24 +2756,12 @@ div.innerHTML =
   // 💸 Baixa do saldo
   saldo -= conta.valor;
   saidasTotal += conta.valor;
-  // 🔁 Se for conta recorrente, cria próxima automaticamente
-if(conta.recorrente){
 
-  const novaData = new Date(conta.vencimento);
-  novaData.setMonth(novaData.getMonth() + 1);
+  document.getElementById("saldoValor").innerText =
+    moedaUsuario + " " + saldo.toFixed(2);
 
-  contas.push({
-    nome: conta.nome,
-    valor: conta.valor,
-    vencimento: novaData.toISOString().split("T")[0],
-    paga: false,
-    recorrente: true
-  });
-
-}
-
-  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
-  document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
+  document.getElementById("saidaValor").innerText =
+    moedaUsuario + " " + saidasTotal.toFixed(2);
 
   // 📊 Registra no histórico
   let agora = new Date();
@@ -2800,13 +2774,31 @@ if(conta.recorrente){
     valor: conta.valor
   });
 
-  // 🗑 REMOVE COMPLETAMENTE DA LISTA
+  // 🔁 Se for conta recorrente, cria próxima automaticamente
+  if(conta.recorrente){
+
+    const novaData = new Date(conta.vencimento);
+    novaData.setMonth(novaData.getMonth() + 1);
+
+    contas.push({
+      nome: conta.nome,
+      valor: conta.valor,
+      vencimento: novaData.toISOString().split("T")[0],
+      paga: false,
+      recorrente: true
+    });
+
+  }
+
+  // 🗑 Remove a conta atual (paga)
   contas.splice(index, 1);
 
   atualizarListaContas();
   atualizarResumoContas();
 }
   function excluirConta(index){
+  console.log("Excluir index:", index);
+
   if(confirm("Tem certeza que deseja excluir esta conta?")){
     contas.splice(index, 1);
     atualizarContas();
