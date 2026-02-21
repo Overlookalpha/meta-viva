@@ -3152,18 +3152,23 @@ function analisarContextoCompleto(tipoEvento = null){
   let mensagem = "";
 
   if(estadoNovo === "crescimento"){
-    mensagem = "🎉 Sua reserva está em " + reservaPercent.toFixed(0) + "% da meta. Você está construindo segurança de verdade. Continue assim.";
-  }
-  else if(estadoNovo === "risco"){
-    mensagem = "😬 Você já usou " + consumo.toFixed(0) + "% do que ganhou. Se continuar assim pode apertar. Tente reduzir alguns gastos esta semana.";
-  }
-  else if(estadoNovo === "atencao"){
-    mensagem = "⚠️ Seus gastos estão altos e sua reserva está em " + reservaPercent.toFixed(0) + "%. Melhor ajustar agora para não apertar depois.";
-  }
-  else{
-    mensagem = "Tudo está equilibrado no momento. Continue acompanhando seus números.";
-  }
-
+  mensagem = "🎉 Sua reserva está em " + 
+             reservaPercent.toFixed(0) + 
+             "% da meta. Você está construindo segurança de verdade. Continue assim.";
+}
+else if(estadoNovo === "risco"){
+  mensagem = "😬 Você já usou " + 
+             consumo.toFixed(0) + 
+             "% do que ganhou. Se continuar assim pode apertar. Tente reduzir alguns gastos esta semana.";
+}
+else if(estadoNovo === "atencao"){
+  mensagem = "⚠️ Seus gastos estão altos e sua reserva está em " + 
+             reservaPercent.toFixed(0) + 
+             "%. Melhor ajustar agora para não apertar depois.";
+}
+else{
+  mensagem = "✨ Tudo está equilibrado no momento. Continue acompanhando seus números.";
+}
   mostrarMensagemMentor(mensagem);
 }
  function mostrarMensagemMentor(texto){
