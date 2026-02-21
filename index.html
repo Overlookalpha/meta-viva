@@ -314,13 +314,14 @@ button{
 <!-- HOME -->
 <div id="home" class="hidden">
 
-  <!-- 🔔 BANNER DO MENTOR -->
+  <!-- 🔔 BANNER DO MENTOR (fica acima de tudo) -->
   <div id="mentorBanner" 
        style="display:none;
               background:#111;
               padding:15px;
               border-radius:8px;
-              margin-bottom:15px;">
+              margin-bottom:15px;
+              font-size:14px;">
   </div>
 
   <div style="
@@ -329,7 +330,6 @@ button{
     gap:20px;
     align-items:flex-start;
   ">
-
     <!-- COLUNA 1 - MENU -->
     <div style="width:30%;">
 
@@ -355,6 +355,22 @@ button{
 
       <!-- PERFIL -->
       <div style="display:flex; align-items:center; gap:15px; margin-bottom:30px;">
+        <!-- 🧠 BOTÃO DO MENTOR -->
+          <button onclick="analisarSituacaoFinanceira(true)"
+          style="
+            position:absolute;
+            right:0;
+            top:0;
+            background:#00c896;
+            border:none;
+            border-radius:50%;
+            width:36px;
+            height:36px;
+            cursor:pointer;
+            font-size:16px;
+          ">
+         🧠
+            </button>
 
         <div style="
           width:60px;
