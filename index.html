@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -397,7 +398,7 @@ button{
   <div style="display:flex; gap:12px;">
 
     <!-- 🧠 MENTOR -->
-  <button onclick="ativarEvellyn()"
+  <button onclick="analisarSituacaoFinanceira(true)"
   style="
     background:transparent !important;
     border:none;
@@ -3096,7 +3097,7 @@ div.innerHTML =
   return lista[Math.floor(Math.random() * lista.length)];
 }
  function analisarSituacaoFinanceira(forcar = false){
-  
+
   let novoEstado = calcularEstadoMentor();
 
   // Se não for forçado e o estado não mudou, não fala
@@ -3117,9 +3118,6 @@ div.innerHTML =
   estadoMentorAtual = novoEstado;
 
   mostrarMensagemMentor(mensagem);
-}
-  function ativarEvellyn(){
-    analisarSituacaoFinanceira(true);
 }
  function mostrarMensagemMentor(texto){
 
@@ -3188,7 +3186,6 @@ div.innerHTML =
   });
 
 }
-
 </script>
 
 </body>
