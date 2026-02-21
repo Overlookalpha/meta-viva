@@ -3117,6 +3117,12 @@ div.innerHTML =
   return lista[Math.floor(Math.random() * lista.length)];
 }
  function analisarSituacaoFinanceira(forcar = false){
+   // 🚫 Não analisa se ainda não há comportamento suficiente
+if(entradasTotal === 0) return;
+
+if(historicoEntradas.length < 2 && historicoSaidas.length === 0){
+  return;
+}
 
   let novoEstado = calcularEstadoMentor();
 
