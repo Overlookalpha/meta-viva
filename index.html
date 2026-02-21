@@ -660,6 +660,14 @@ button{
   <button class="primary" style="margin-top:15px;" onclick="aplicarAjusteSaldo()">
     Aplicar Ajuste
   </button>
+  <hr style="margin:30px 0; opacity:0.2;">
+
+<h3>📊 Sistema de Separação 10%</h3>
+
+<label style="display:flex; align-items:center; gap:10px; margin-top:10px; cursor:pointer;">
+  <input type="checkbox" id="toggleSistema10" onchange="toggleSistema10()">
+  Ativar separação automática de 10% (Entradas + Saídas)
+</label>
 
 </div>
 
@@ -920,6 +928,10 @@ const mapaEmojis = {
 };
 let saldo = 0;
 let dividaAtual = 0;
+// ===== SISTEMA 10% OPCIONAL =====
+let sistema10Ativo = false;
+let pendenteEntradas = 0;
+let pendenteSaidas = 0;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
 let moedaUsuario = "€";
@@ -2647,6 +2659,19 @@ div.innerHTML =
   document.getElementById("ajusteSaldoInput").value = "";
 
   alert("Saldo ajustado com sucesso!");
+
+}
+  function toggleSistema10(){
+
+  const check = document.getElementById("toggleSistema10");
+
+  sistema10Ativo = check.checked;
+
+  if(sistema10Ativo){
+    alert("Sistema 10% ativado.");
+  } else {
+    alert("Sistema 10% desativado.");
+  }
 
 }
 </script>
