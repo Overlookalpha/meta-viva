@@ -2297,7 +2297,7 @@ historicoEntradas.push(registroEntrada);
   // Limpa campos
   document.getElementById("nomeClienteInput").value = "";
   document.getElementById("valorEntradaInput").value = "";
-  analisarSituacaoFinanceira();
+  analisarSituacaoFinanceira(true);
   verificarEvolucaoPerfil();
   fecharTela("telaEntrada");
   abrirAba("home");
@@ -3279,7 +3279,24 @@ function verificarEvolucaoPerfil(){
 
     atualizarProgresso();
 
-    console.log("Evoluiu de", perfilAntigo, "para", userProfile);
+    // Mensagem de evolução
+let mensagemEvolucao =
+  "Parabéns. Você evoluiu de " +
+  perfilAntigo +
+  " para " +
+  userProfile +
+  ". Seu comportamento financeiro está mais estruturado.";
+
+// Atualiza banner do mentor
+mostrarMensagemMentor(mensagemEvolucao);
+
+// Envia notificação salva
+adicionarNotificacao("evolucao", mensagemEvolucao);
+
+// Fala em voz alta
+falar(mensagemEvolucao);
+
+console.log("Evoluiu de", perfilAntigo, "para", userProfile);
   }
 
 }
