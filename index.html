@@ -397,7 +397,7 @@ button{
   <div style="display:flex; gap:12px;">
 
     <!-- 🧠 MENTOR -->
-  <button onclick="analisarSituacaoFinanceira(true)"
+  <button onclick="ativarEvellyn()"
   style="
     background:transparent !important;
     border:none;
@@ -3117,6 +3117,24 @@ div.innerHTML =
   estadoMentorAtual = novoEstado;
 
   mostrarMensagemMentor(mensagem);
+}
+  function ativarEvellyn(){
+
+    let estado = calcularEstadoMentor();
+
+    let blocos = blocosMentor[estado];
+    if(!blocos) return;
+
+    let parte1 = escolherAleatorio(blocos.parte1);
+    let parte2 = escolherAleatorio(blocos.parte2);
+    let parte3 = escolherAleatorio(blocos.parte3);
+
+    let mensagemFinal = parte1 + " " + parte2 + " " + parte3;
+
+    mostrarMensagemMentor(mensagemFinal);
+    falar(mensagemFinal);
+    adicionarNotificacao("mentor", mensagemFinal);
+
 }
  function mostrarMensagemMentor(texto){
 
