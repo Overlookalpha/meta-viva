@@ -1473,7 +1473,12 @@ function abrirAba(id){
 
     document.getElementById("reservaGuardadoTexto").innerText = valorGuardado.toFixed(2);
     document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
-
+    if(sistema10Ativo){
+    document.getElementById("blocoSistema10").style.display = "block";
+    atualizarTelaSistema10();
+    } else {
+    document.getElementById("blocoSistema10").style.display = "none";
+    }
     let falta = metaMensal - valorGuardado;
     if(falta < 0) falta = 0;
 
@@ -2748,6 +2753,64 @@ div.innerHTML =
     bloco.style.display = "none";
 
   }
+
+}
+  function separarManual10(){
+
+  let valor = parseFloat(document.getElementById("valorSepararManualInput").value);
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Digite um valor válido.");
+    return;
+  }
+
+  let totalPendente = pendenteEntradas + pendenteSaidas;
+
+  if(valor > totalPendente){
+    alert("Você está tentando separar mais do que o acumulado.");
+    return;
+  }
+
+  if(valor > saldo){
+    alert("Saldo insuficiente.");
+    return;
+  }
+
+  // 🔥 Move dinheiro do saldo para reserva
+  saldo -= valor;
+  valorGuardado += valor;
+
+  // 🔥 Desconta proporcionalmente dos pendentes
+  if(valor <= pendenteEntradas){
+    pendenteEntradas -= valor;
+  } else {
+    let restante = valor - pendenteEntradas;
+    pendenteEntradas = 0;
+    pendenteSaidas -= restante;
+  }
+
+  if(pendenteSaidas < 0){
+    pendenteSaidas = 0;
+  }
+
+  // 🔥 Atualiza interface
+  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
+  document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
+
+  atualizarTelaSistema10();
+
+  document.getElementById("valorSepararManualInput").value = "";
+}
+  function atualizarTelaSistema10(){
+
+  document.getElementById("pendenteEntradasTexto").innerText =
+    moedaUsuario + " " + pendenteEntradas.toFixed(2);
+
+  document.getElementById("pendenteSaidasTexto").innerText =
+    moedaUsuario + " " + pendenteSaidas.toFixed(2);
+
+  document.getElementById("pendenteTotalTexto").innerText =
+    moedaUsuario + " " + (pendenteEntradas + pendenteSaidas).toFixed(2);
 
 }
 </script>
