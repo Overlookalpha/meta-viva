@@ -1007,6 +1007,11 @@ button{
   <input type="date" id="vencimentoContaInput"
     style="width:100%;padding:8px;border-radius:6px;border:none;">
 
+  <label style="display:flex;align-items:center;gap:8px;margin-top:10px;">
+  <input type="checkbox" id="contaRecorrente">
+  Repetir todo mês
+</label>
+
   <button onclick="salvarNovaConta()"
     style="margin-top:20px;background:#00c896;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
     Salvar Conta
@@ -2686,6 +2691,7 @@ div.innerHTML =
   const nome = document.getElementById("novaContaNome").value;
   const valor = parseFloat(document.getElementById("novaContaValor").value);
   const vencimento = document.getElementById("novaContaVencimento").value;
+  const recorrente = document.getElementById("contaRecorrente").checked;
 
   if(!nome || isNaN(valor) || !vencimento){
     alert("Preencha todos os campos.");
@@ -2697,6 +2703,7 @@ div.innerHTML =
     valor: valor,
     vencimento: vencimento,
     paga: false
+    recorrente: recorrente
   });
 
   document.getElementById("novaContaNome").value = "";
@@ -2745,6 +2752,21 @@ div.innerHTML =
   // 💸 Baixa do saldo
   saldo -= conta.valor;
   saidasTotal += conta.valor;
+  // 🔁 Se for conta recorrente, cria próxima automaticamente
+if(conta.recorrente){
+
+  const novaData = new Date(conta.vencimento);
+  novaData.setMonth(novaData.getMonth() + 1);
+
+  contas.push({
+    nome: conta.nome,
+    valor: conta.valor,
+    vencimento: novaData.toISOString().split("T")[0],
+    paga: false,
+    recorrente: true
+  });
+
+}
 
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
