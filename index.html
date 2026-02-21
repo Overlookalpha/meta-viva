@@ -2298,6 +2298,7 @@ historicoEntradas.push(registroEntrada);
   document.getElementById("nomeClienteInput").value = "";
   document.getElementById("valorEntradaInput").value = "";
   analisarSituacaoFinanceira();
+  verificarEvolucaoPerfil();
   fecharTela("telaEntrada");
   abrirAba("home");
   
@@ -3214,6 +3215,81 @@ div.innerHTML =
     }, 500);
 
   }, tempo);
+}
+  function verificarEvolucaoPerfil(){
+
+  const ordemPerfis = [
+    "Crítico",
+    "Iniciante",
+    "Em Evolução",
+    "Intermediário",
+    "Estável"
+  ];
+
+  if(!userProfile) return;
+
+  const nivelAtualIndex = ordemPerfis.indexOf(userProfile);
+  if(nivelAtualIndex === -1) return;
+
+  // 🔹 Cálculo dos indicadores
+  let reservaPercent = 0;
+  if(metaMensal > 0){
+    reservaPercent = (valorGuardado / metaMensal) * 100;
+  }
+
+  let consumoPercent = 0;
+  if(entradasTotal > 0){
+    consumoPercent = (saidasTotal / entradasTotal) * 100;
+  }
+
+  let dividaPercent = 0;
+  if(rendaMensalBase > 0){
+    dividaPercent = (dividaAtual / rendaMensalBase) * 100;
+  }
+
+  let novoNivelIndex = nivelAtualIndex;
+
+  // 🔴 Crítico → Iniciante
+  if(reservaPercent >= 30){
+    novoNivelIndex = Math.max(novoNivelIndex, 1);
+  }
+
+  // 🟡 Iniciante → Em Evolução
+  if(reservaPercent >= 60 && consumoPercent < 90){
+    novoNivelIndex = Math.max(novoNivelIndex, 2);
+  }
+
+  // 🔵 Em Evolução → Intermediário
+  if(reservaPercent >= 100 && dividaAtual === 0){
+    novoNivelIndex = Math.max(novoNivelIndex, 3);
+  }
+
+  // 🟢 Intermediário → Estável
+  if(reservaPercent >= 150 && consumoPercent < 70 && dividaAtual === 0){
+    novoNivelIndex = Math.max(novoNivelIndex, 4);
+  }
+
+  if(novoNivelIndex > nivelAtualIndex){
+
+    const perfilAntigo = userProfile;
+    const metaAntiga = metaMensal;
+
+    userProfile = ordemPerfis[novoNivelIndex];
+
+    const plano = planosPerfil[userProfile];
+    if(plano){
+      metaMensal = rendaMensalBase * plano.porcentagem;
+    }
+
+    document.getElementById("perfilTipo").innerText =
+      "Perfil: " + userProfile;
+
+    atualizarProgresso();
+
+    console.log("Evoluiu de", perfilAntigo, "para", userProfile);
+
+  }
+
 }
 </script>
 
