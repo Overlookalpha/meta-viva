@@ -2995,6 +2995,10 @@ div.innerHTML =
   if(entradasTotal === 0){
     return "estavel";
   }
+    // Proteção para início de jornada
+  if(entradasTotal < rendaMensalBase * 0.3){
+    return "estavel";
+  }
 
   let consumoPercent = (saidasTotal / entradasTotal) * 100;
   let reservaPercent = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
