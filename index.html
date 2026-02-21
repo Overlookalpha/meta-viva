@@ -3044,7 +3044,7 @@ div.innerHTML =
 
   mostrarMensagemMentor(mensagem);
 }
-  function mostrarMensagemMentor(texto){
+ function mostrarMensagemMentor(texto){
 
   const banner = document.getElementById("mentorBanner");
 
@@ -3052,6 +3052,12 @@ div.innerHTML =
 
   banner.innerText = texto;
   banner.style.display = "block";
+
+  if ('speechSynthesis' in window) {
+    const fala = new SpeechSynthesisUtterance(texto);
+    fala.lang = 'pt-PT';
+    speechSynthesis.speak(fala);
+  }
 
   setTimeout(() => {
     banner.style.display = "none";
