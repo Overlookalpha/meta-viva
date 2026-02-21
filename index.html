@@ -2993,9 +2993,9 @@ div.innerHTML =
   function calcularEstadoMentor(){
 
   if(entradasTotal === 0){
-    return "estavel";
+    return "neutro";
   }
-   
+
   let consumoPercent = (saidasTotal / entradasTotal) * 100;
   let reservaPercent = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
   let dividaPercent = rendaMensalBase > 0 ? (dividaAtual / rendaMensalBase) * 100 : 0;
@@ -3009,106 +3009,153 @@ div.innerHTML =
     return "risco";
   }
 
-  // 🟡 ATENÇÃO
+  // 🟣 INÍCIO
   if(
-    consumoPercent >= 80 ||
-    reservaPercent < 30 ||
-    dividaPercent > 30
+    entradasTotal > 0 &&
+    saidasTotal === 0 &&
+    valorGuardado === 0 &&
+    dividaAtual === 0
   ){
-    return "atencao";
+    return "inicio";
   }
 
   // 🟢 CRESCIMENTO
   if(
+    reservaPercent >= 100 &&
     consumoPercent < 70 &&
-    reservaPercent >= 60 &&
-    dividaPercent === 0
+    dividaAtual === 0
   ){
     return "crescimento";
   }
 
-  // ⚪ ESTÁVEL (zona saudável, mas ainda não crescimento)
+  // 🔵 CONSOLIDANDO
   if(
+    reservaPercent >= 60 &&
     consumoPercent < 80 &&
-    reservaPercent >= 30 &&
-    dividaPercent <= 30
+    dividaAtual === 0
   ){
-    return "estavel";
+    return "consolidando";
   }
 
-  return "estavel";
-}
- const blocosMentor = {
+  // ⚪ NEUTRO
+  if(
+    saldo > 0 &&
+    dividaAtual === 0 &&
+    consumoPercent < 80
+  ){
+    return "neutro";
+  }
 
-  crescimento: {
+  // 🟡 ATENÇÃO
+  return "atencao";
+}
+const blocosMentor = {
+
+  inicio: {
     observacao: [
-      "Olha… você está mandando bem demais.",
-      "Estou gostando de ver essa evolução.",
-      "Você está cuidando melhor do seu dinheiro."
+      "Que bom que entrou dinheiro 💛",
+      "Entrada confirmada.",
+      "Dinheiro na conta é sempre um bom começo."
     ],
     interpretacao: [
-      "Dá pra ver que você está mais consciente.",
-      "Suas decisões estão ficando mais maduras.",
-      "Isso mostra que você está levando isso a sério."
+      "Agora é o momento ideal para organizar.",
+      "Você está no controle agora.",
+      "Esse é o ponto de partida."
     ],
     orientacao: [
-      "Continua assim, tá no caminho certo.",
-      "Se manter esse ritmo, você vai longe.",
-      "Só não perde esse foco agora."
+      "Que tal separar um pouquinho para você?",
+      "Antes de gastar, pensa na sua reserva.",
+      "Uma pequena decisão agora faz diferença depois."
     ]
   },
 
-  estavel: {
+  neutro: {
     observacao: [
-      "Tá tudo sob controle por enquanto.",
-      "Sua situação está tranquila.",
-      "Você não está no vermelho, isso já é bom."
+      "Você está se mantendo estável.",
+      "Seu fluxo está sob controle.",
+      "Nada crítico acontecendo."
     ],
     interpretacao: [
-      "Mas ainda dá pra melhorar um pouquinho.",
-      "Você pode aproveitar melhor esse momento.",
-      "Ainda tem espaço pra crescer."
+      "Isso mostra equilíbrio.",
+      "Você está administrando bem.",
+      "Está tudo caminhando normalmente."
     ],
     orientacao: [
-      "Que tal tentar guardar um pouco mais?",
-      "Talvez revisar um gasto já ajude.",
-      "Um pequeno ajuste já faz diferença."
+      "Se começar a guardar, você evolui rápido.",
+      "Talvez seja hora de fortalecer sua reserva.",
+      "Pequenos ajustes podem melhorar ainda mais."
     ]
   },
 
   atencao: {
     observacao: [
-      "Ei… cuidado com esses gastos.",
-      "Você está gastando quase tudo que entra.",
-      "Sua reserva está ficando baixa."
+      "Seus gastos estão começando a pesar.",
+      "Sua margem está diminuindo.",
+      "O ritmo pode apertar mais adiante."
     ],
     interpretacao: [
-      "Isso pode apertar mais pra frente.",
-      "Se continuar assim, pode complicar.",
-      "Está começando a ficar desconfortável."
+      "Isso pode comprometer sua segurança.",
+      "Vale revisar alguns pontos.",
+      "Talvez esteja gastando mais do que deveria."
     ],
     orientacao: [
-      "Vamos dar uma segurada essa semana?",
-      "Tenta cortar algo pequeno já.",
-      "Um pouquinho de controle agora evita dor de cabeça."
+      "Reduz um pouco essa semana.",
+      "Reveja despesas variáveis.",
+      "Organiza antes que vire problema."
     ]
   },
 
   risco: {
     observacao: [
-      "Amigo… a coisa está apertando.",
-      "Seu dinheiro está indo embora rápido demais.",
-      "Você está entrando numa zona perigosa."
+      "Sua estrutura ficou frágil.",
+      "O dinheiro está saindo rápido demais.",
+      "Sua margem de segurança está muito baixa."
     ],
     interpretacao: [
       "Isso não é sustentável.",
-      "Se nada mudar, pode virar problema sério.",
-      "Sua margem de segurança quase sumiu."
+      "Você precisa ajustar agora.",
+      "A situação exige atenção imediata."
     ],
     orientacao: [
-      "Para tudo e reorganiza agora.",
-      "Corta gastos urgentes.",
-      "Você precisa respirar financeiramente."
+      "Pause gastos desnecessários.",
+      "Reorganize suas prioridades.",
+      "Foque em estabilizar primeiro."
+    ]
+  },
+
+  consolidando: {
+    observacao: [
+      "Sua reserva já está tomando forma.",
+      "Você está fortalecendo sua base.",
+      "Seu comportamento está mais consciente."
+    ],
+    interpretacao: [
+      "Isso mostra disciplina.",
+      "Você está construindo segurança real.",
+      "Seu padrão está melhorando."
+    ],
+    orientacao: [
+      "Continue assim.",
+      "Mantendo esse ritmo você evolui rápido.",
+      "Agora é manter consistência."
+    ]
+  },
+
+  crescimento: {
+    observacao: [
+      "Seu padrão financeiro está forte.",
+      "Você está construindo estabilidade real.",
+      "Seu comportamento mudou de nível."
+    ],
+    interpretacao: [
+      "Isso é maturidade financeira.",
+      "Você está à frente da maioria.",
+      "Sua estrutura está saudável."
+    ],
+    orientacao: [
+      "Agora é pensar em crescer.",
+      "Considere metas maiores.",
+      "Você está pronto para o próximo passo."
     ]
   }
 
