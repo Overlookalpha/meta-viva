@@ -3216,7 +3216,7 @@ div.innerHTML =
 
   }, tempo);
 }
-  function verificarEvolucaoPerfil(){
+ function verificarEvolucaoPerfil(){
 
   const ordemPerfis = [
     "Crítico",
@@ -3231,6 +3231,9 @@ div.innerHTML =
   const nivelAtualIndex = ordemPerfis.indexOf(userProfile);
   if(nivelAtualIndex === -1) return;
 
+  // Se já está no último nível, não faz nada
+  if(nivelAtualIndex >= ordemPerfis.length - 1) return;
+
   // 🔹 Cálculo dos indicadores
   let reservaPercent = 0;
   if(metaMensal > 0){
@@ -3242,39 +3245,36 @@ div.innerHTML =
     consumoPercent = (saidasTotal / entradasTotal) * 100;
   }
 
-  let dividaPercent = 0;
-  if(rendaMensalBase > 0){
-    dividaPercent = (dividaAtual / rendaMensalBase) * 100;
-  }
+  // Próximo nível possível
+  const proximoNivelIndex = nivelAtualIndex + 1;
 
-  let novoNivelIndex = nivelAtualIndex;
+  let podeSubir = false;
 
   // 🔴 Crítico → Iniciante
-  if(reservaPercent >= 30){
-    novoNivelIndex = Math.max(novoNivelIndex, 1);
+  if(userProfile === "Crítico" && reservaPercent >= 30){
+    podeSubir = true;
   }
 
   // 🟡 Iniciante → Em Evolução
-  if(reservaPercent >= 60 && consumoPercent < 90){
-    novoNivelIndex = Math.max(novoNivelIndex, 2);
+  else if(userProfile === "Iniciante" && reservaPercent >= 60 && consumoPercent < 90){
+    podeSubir = true;
   }
 
   // 🔵 Em Evolução → Intermediário
-  if(reservaPercent >= 100 && dividaAtual === 0){
-    novoNivelIndex = Math.max(novoNivelIndex, 3);
+  else if(userProfile === "Em Evolução" && reservaPercent >= 100 && dividaAtual === 0){
+    podeSubir = true;
   }
 
   // 🟢 Intermediário → Estável
-  if(reservaPercent >= 150 && consumoPercent < 70 && dividaAtual === 0){
-    novoNivelIndex = Math.max(novoNivelIndex, 4);
+  else if(userProfile === "Intermediário" && reservaPercent >= 150 && consumoPercent < 70 && dividaAtual === 0){
+    podeSubir = true;
   }
 
-  if(novoNivelIndex > nivelAtualIndex){
+  if(podeSubir){
 
     const perfilAntigo = userProfile;
-    const metaAntiga = metaMensal;
 
-    userProfile = ordemPerfis[novoNivelIndex];
+    userProfile = ordemPerfis[proximoNivelIndex];
 
     const plano = planosPerfil[userProfile];
     if(plano){
@@ -3287,7 +3287,6 @@ div.innerHTML =
     atualizarProgresso();
 
     console.log("Evoluiu de", perfilAntigo, "para", userProfile);
-
   }
 
 }
