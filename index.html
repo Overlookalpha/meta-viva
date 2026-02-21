@@ -3120,21 +3120,28 @@ div.innerHTML =
 }
   function ativarEvellyn(){
 
-    let estado = calcularEstadoMentor();
+    let saldoAtual = saldo || 0;
+    let entradasAtuais = entradasTotal || 0;
+    let saidasAtuais = saidasTotal || 0;
 
-    let blocos = blocosMentor[estado];
-    if(!blocos) return;
+    let mensagem = "";
 
-    let parte1 = escolherAleatorio(blocos.parte1);
-    let parte2 = escolherAleatorio(blocos.parte2);
-    let parte3 = escolherAleatorio(blocos.parte3);
+    if(entradasAtuais === 0){
+        mensagem = "Sistema iniciado. Nenhuma renda registrada ainda. Registre uma entrada para análise financeira.";
+    }
+    else if(saidasAtuais > entradasAtuais){
+        mensagem = "Alerta crítico. Suas saídas superam suas entradas. Ajuste imediato necessário.";
+    }
+    else if(saidasAtuais >= entradasAtuais * 0.8){
+        mensagem = "Zona de atenção. Seu consumo está acima de 80% da renda.";
+    }
+    else{
+        mensagem = "Situação estável. Seu padrão financeiro está sob controle.";
+    }
 
-    let mensagemFinal = parte1 + " " + parte2 + " " + parte3;
-
-    mostrarMensagemMentor(mensagemFinal);
-    falar(mensagemFinal);
-    adicionarNotificacao("mentor", mensagemFinal);
-
+    mostrarMensagemMentor(mensagem);
+    falar(mensagem);
+    adicionarNotificacao("mentor", mensagem);
 }
  function mostrarMensagemMentor(texto){
 
@@ -3203,9 +3210,7 @@ div.innerHTML =
   });
 
 }
-  function ativarEvellyn(){
-    alert("Evellyn ativada");
-}
+
 </script>
 
 </body>
