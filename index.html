@@ -3119,19 +3119,33 @@ div.innerHTML =
   mostrarMensagemMentor(mensagem);
 }
  function mostrarMensagemMentor(texto){
- adicionarNotificacao("alerta", texto);
-  const banner = document.getElementById("mentorBanner");
 
+  const banner = document.getElementById("mentorBanner");
   if(!banner) return;
 
-  banner.innerText = texto;
+  banner.innerHTML = `
+    <div style="font-weight:600; font-size:13px; margin-bottom:8px; opacity:0.8;">
+      🤖 EVELLYN // ANÁLISE FINANCEIRA
+    </div>
+    <div style="font-size:14px; line-height:1.5;">
+      ${texto}
+    </div>
+  `;
+
   banner.style.display = "block";
 
+  // Voz
   if ('speechSynthesis' in window) {
     const fala = new SpeechSynthesisUtterance(texto);
     fala.lang = 'pt-PT';
+    fala.rate = 0.95;
+    fala.pitch = 0.9; // mais robótico
+    speechSynthesis.cancel();
     speechSynthesis.speak(fala);
   }
+
+  // Enviar para notificações
+  adicionarNotificacao("analise", texto);
 
   setTimeout(() => {
     banner.style.display = "none";
