@@ -409,7 +409,7 @@ button{
 </button>
     <!-- 🔔 NOTIFICAÇÃO -->
     <div style="position:relative;">
-  <button
+  <button onclick="abrirTela('telaNotificacoes')"
     style="
       background:transparent !important;
       border:none;
@@ -962,6 +962,20 @@ button{
 </div>
 
   <div id="conteudoRelatorio" style="margin-top:20px;"></div>
+
+</div>
+
+<!-- TELA NOTIFICAÇÕES -->
+<div id="telaNotificacoes" class="screen">
+
+  <button onclick="fecharTela('telaNotificacoes')" 
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2 style="margin-top:0;">🔔 Notificações</h2>
+
+  <div id="listaNotificacoes" style="margin-top:20px;"></div>
 
 </div>
 
