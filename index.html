@@ -2999,6 +2999,13 @@ div.innerHTML =
   if(entradasTotal < rendaMensalBase * 0.3){
     return "estavel";
   }
+    if(
+    consumoPercent >= 80 ||
+    (reservaPercent < 30 && entradasTotal > 0) ||
+    dividaPercent > 30
+    ){
+    return "atencao";
+    }
 
   let consumoPercent = (saidasTotal / entradasTotal) * 100;
   let reservaPercent = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
