@@ -2119,7 +2119,7 @@ else if(porcentagem >= 80){
 
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
-
+  analisarSituacaoFinanceira();
   fecharTela("telaSaida");
   atualizarTelaCategorias();
 }
@@ -2217,6 +2217,7 @@ historicoEntradas.push(registroEntrada);
   document.getElementById("nomeClienteInput").value = "";
   document.getElementById("valorEntradaInput").value = "";
   adicionarNotificacao("sucesso", "Entrada registrada com sucesso!");
+  analisarSituacaoFinanceira();
   fecharTela("telaEntrada");
   abrirAba("home");
   
@@ -2437,6 +2438,7 @@ historicoEntradas.push(registroEntrada);
   atualizarDividaHeader();
   // Limpa campo
   document.getElementById("valorEmprestimoInput").value = "";
+  analisarSituacaoFinanceira();
 
 }
   function pagarEmprestimo(){
@@ -2476,6 +2478,7 @@ historicoEntradas.push(registroEntrada);
   atualizarDividaHeader();
   // Limpa campo
   document.getElementById("valorPagamentoInput").value = "";
+  analisarSituacaoFinanceira();
 
 }
   function atualizarDividaHeader(){
