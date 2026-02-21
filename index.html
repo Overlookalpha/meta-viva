@@ -2634,8 +2634,12 @@ div.innerHTML =
   "</span>" +
   "<br><br>" +
   "<button onclick='pagarConta(" + index + ")' " +
-  "style='background:#00c896;border:none;padding:6px 10px;border-radius:6px;color:white;cursor:pointer;'>" +
-  "✔ Marcar como Paga</button>";
+"style='background:#00c896;border:none;padding:6px 10px;border-radius:6px;color:white;'>" +
+"✓ Marcar como Paga</button>" +
+"<br><br>" +
+"<button onclick='excluirConta(" + index + ")' " +
+"style='background:#ff4d4f;border:none;padding:6px 10px;border-radius:6px;color:white;'>" +
+"🗑 Excluir</button>";
   container.appendChild(div);
 
   });
@@ -2743,6 +2747,20 @@ div.innerHTML =
  function pagarConta(index){
 
   const conta = contas[index];
+  if(conta.recorrente){
+
+  const novaData = new Date(conta.vencimento);
+  novaData.setMonth(novaData.getMonth() + 1);
+
+  contas.push({
+    nome: conta.nome,
+    valor: conta.valor,
+    vencimento: novaData.toISOString().split("T")[0],
+    paga: false,
+    recorrente: true
+  });
+
+}
 
   if(conta.valor > saldo){
     alert("Saldo insuficiente para pagar esta conta.");
@@ -2787,6 +2805,13 @@ if(conta.recorrente){
 
   atualizarListaContas();
   atualizarResumoContas();
+}
+  function excluirConta(index){
+  if(confirm("Tem certeza que deseja excluir esta conta?")){
+    contas.splice(index, 1);
+    atualizarContas();
+    atualizarResumoContas();
+  }
 }
   function atualizarProgresso(){
 
