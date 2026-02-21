@@ -3119,27 +3119,7 @@ div.innerHTML =
   mostrarMensagemMentor(mensagem);
 }
   function ativarEvellyn(){
-   console.log("FUNÇÃO NOVA ATIVAR EVELLYN EXECUTADA");
-    let saldoAtual = saldo || 0;
-    let entradasAtuais = entradasTotal || 0;
-    let saidasAtuais = saidasTotal || 0;
-
-    let mensagem = "";
-
-    if(entradasAtuais === 0){
-        mensagem = "Sistema iniciado. Nenhuma renda registrada ainda. Registre uma entrada para análise financeira.";
-    }
-    else if(saidasAtuais > entradasAtuais){
-        mensagem = "Alerta crítico. Suas saídas superam suas entradas. Ajuste imediato necessário.";
-    }
-    else if(saidasAtuais >= entradasAtuais * 0.8){
-        mensagem = "Zona de atenção. Seu consumo está acima de 80% da renda.";
-    }
-    else{
-        mensagem = "Situação estável. Seu padrão financeiro está sob controle.";
-    }
-
-    mostrarMensagemMentor(mensagem);
+    analisarSituacaoFinanceira(true);
 }
  function mostrarMensagemMentor(texto){
 
