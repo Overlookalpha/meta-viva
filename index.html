@@ -156,6 +156,11 @@ button{
 .screen.active{
   display:block;
 }
+  .fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.5s ease;
+}
 </style>
 </head>
 
@@ -2951,10 +2956,7 @@ div.innerHTML =
 
   const app = document.querySelector(".app");
   app.appendChild(div);
-
-  setTimeout(() => {
-    div.remove();
-  }, 4000);
+  autoRemoverNotificacao(div, 4000);
 }
   function atualizarIconeNotificacao(){
 
@@ -3202,6 +3204,16 @@ div.innerHTML =
 
   });
 
+}
+  function autoRemoverNotificacao(elemento, tempo = 8000) {
+  setTimeout(() => {
+    elemento.classList.add("fade-out");
+
+    setTimeout(() => {
+      elemento.remove();
+    }, 500);
+
+  }, tempo);
 }
 </script>
 
