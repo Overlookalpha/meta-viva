@@ -314,6 +314,15 @@ button{
 <!-- HOME -->
 <div id="home" class="hidden">
 
+  <!-- 🔔 BANNER DO MENTOR -->
+  <div id="mentorBanner" 
+       style="display:none;
+              background:#111;
+              padding:15px;
+              border-radius:8px;
+              margin-bottom:15px;">
+  </div>
+
   <div style="
     width:100%;
     display:flex;
@@ -968,12 +977,15 @@ let saldo = 0;
 let dividaAtual = 0;
 // ===== SISTEMA 10% OPCIONAL =====
 let sistema10Ativo = false;
+let estadoMentorAtual = "estavel";
 let pendenteEntradas = 0;
 let pendenteSaidas = 0;
 // 🔔 SISTEMA DE NOTIFICAÇÕES
 let notificacoes = [];
 let notificacoesNaoLidas = 0;
 let desafioAtualIndex = null;
+// 🔊 CONTROLE DE VOZ
+let vozAtivada = true;
 let rendaMensalBase = 0;
 let moedaUsuario = "€";
 let categorias = [];
@@ -2830,6 +2842,7 @@ div.innerHTML =
   notificacoesNaoLidas++;
 
   mostrarNotificacaoTemporaria(tipo, mensagem);
+  falar(mensagem);
   atualizarIconeNotificacao();
 }
   function mostrarNotificacaoTemporaria(tipo, mensagem){
@@ -2877,6 +2890,169 @@ div.innerHTML =
   } else {
     badge.style.display = "none";
   }
+}
+  function falar(texto){
+
+  if(!vozAtivada) return;
+
+  if(!('speechSynthesis' in window)) return;
+
+  const mensagem = new SpeechSynthesisUtterance(texto);
+
+  mensagem.lang = "pt-PT";
+  mensagem.rate = 0.95;   // levemente mais suave
+  mensagem.pitch = 1.05;  // tom mais amigável
+  mensagem.volume = 1;
+
+  // Evita sobreposição
+  speechSynthesis.cancel();
+
+  speechSynthesis.speak(mensagem);
+}
+  function calcularEstadoMentor(){
+
+  // 🔴 RISCO
+  if(saldo <= 0){
+    return "risco";
+  }
+
+  if(saidasTotal > entradasTotal && entradasTotal > 0){
+    return "risco";
+  }
+
+  // 🟡 ATENÇÃO
+  if(entradasTotal > 0 && saidasTotal >= entradasTotal * 0.8){
+    return "atencao";
+  }
+
+  if(metaMensal > 0 && valorGuardado < metaMensal * 0.3){
+    return "atencao";
+  }
+
+  // 🟢 CRESCIMENTO
+  if(
+    entradasTotal > saidasTotal &&
+    valorGuardado >= metaMensal * 0.5
+  ){
+    return "crescimento";
+  }
+
+  // ⚪ ESTÁVEL (padrão)
+  return "estavel";
+}
+  const blocosMentor = {
+
+  crescimento: {
+    observacao: [
+      "Seu fluxo financeiro está positivo.",
+      "Suas entradas estão superando suas saídas.",
+      "Sua reserva está evoluindo de forma consistente."
+    ],
+    interpretacao: [
+      "Isso demonstra disciplina nas suas decisões.",
+      "Seu comportamento está alinhado com crescimento.",
+      "Você está fortalecendo sua estrutura financeira."
+    ],
+    orientacao: [
+      "Continue mantendo esse padrão.",
+      "Se sustentar esse ritmo, sua meta será alcançada mais rápido.",
+      "Esse é o tipo de consistência que gera estabilidade."
+    ]
+  },
+
+  estavel: {
+    observacao: [
+      "Sua situação financeira está estável no momento.",
+      "Não há sinais críticos no seu fluxo atual.",
+      "Seu padrão está equilibrado."
+    ],
+    interpretacao: [
+      "Isso indica controle, mas ainda há espaço para evolução.",
+      "Você está mantendo sua estrutura.",
+      "A estabilidade é positiva, mas crescimento exige intenção."
+    ],
+    orientacao: [
+      "Talvez seja hora de buscar pequena otimização.",
+      "Revisar categorias pode ajudar a evoluir.",
+      "Um pequeno ajuste pode acelerar seus resultados."
+    ]
+  },
+
+  atencao: {
+    observacao: [
+      "Seus gastos estão consumindo grande parte das suas entradas.",
+      "Sua margem de segurança está diminuindo.",
+      "Seu nível de reserva está abaixo do ideal."
+    ],
+    interpretacao: [
+      "Isso começa a pressionar sua estrutura financeira.",
+      "Seu comportamento recente exige mais cautela.",
+      "Há sinais de alerta no seu padrão."
+    ],
+    orientacao: [
+      "Recomendo revisar despesas variáveis.",
+      "Talvez seja hora de ajustar prioridades.",
+      "Um controle mais rígido esta semana pode evitar problemas."
+    ]
+  },
+
+  risco: {
+    observacao: [
+      "Seu saldo entrou em zona crítica.",
+      "Suas saídas estão superando suas entradas.",
+      "Sua estrutura financeira está fragilizada."
+    ],
+    interpretacao: [
+      "Isso compromete sua estabilidade.",
+      "Seu padrão atual não é sustentável.",
+      "A margem de segurança foi reduzida."
+    ],
+    orientacao: [
+      "É essencial reduzir gastos imediatamente.",
+      "Reorganize suas prioridades agora.",
+      "Ajustes rápidos podem evitar consequências maiores."
+    ]
+  }
+
+};
+  function escolherAleatorio(lista){
+  return lista[Math.floor(Math.random() * lista.length)];
+}
+ function analisarSituacaoFinanceira(forcar = false){
+
+  let novoEstado = calcularEstadoMentor();
+
+  // Se não for forçado e o estado não mudou, não fala
+  if(!forcar && novoEstado === estadoMentorAtual){
+    return;
+  }
+
+  let blocos = blocosMentor[novoEstado];
+
+  if(!blocos) return;
+
+  let observacao = escolherAleatorio(blocos.observacao);
+  let interpretacao = escolherAleatorio(blocos.interpretacao);
+  let orientacao = escolherAleatorio(blocos.orientacao);
+
+  let mensagem = observacao + " " + interpretacao + " " + orientacao;
+
+  estadoMentorAtual = novoEstado;
+
+  mostrarMensagemMentor(mensagem);
+}
+  function mostrarMensagemMentor(texto){
+
+  const banner = document.getElementById("mentorBanner");
+
+  if(!banner) return;
+
+  banner.innerText = texto;
+  banner.style.display = "block";
+
+  setTimeout(() => {
+    banner.style.display = "none";
+  }, 8000);
 }
 </script>
 
