@@ -3152,40 +3152,17 @@ function analisarContextoCompleto(tipoEvento = null){
   let mensagem = "";
 
   if(estadoNovo === "crescimento"){
-    mensagem = 🎉 Sua reserva está em ${reservaPercent.toFixed(0)}% da meta. Você está construindo segurança de verdade. Continue assim.;
+    mensagem = "🎉 Sua reserva está em " + reservaPercent.toFixed(0) + "% da meta. Você está construindo segurança de verdade. Continue assim.";
   }
   else if(estadoNovo === "risco"){
-    mensagem = 😬 Você já usou ${consumo.toFixed(0)}% do que ganhou. Se continuar assim pode apertar. Tente reduzir alguns gastos esta semana.;
+    mensagem = "😬 Você já usou " + consumo.toFixed(0) + "% do que ganhou. Se continuar assim pode apertar. Tente reduzir alguns gastos esta semana.";
   }
   else if(estadoNovo === "atencao"){
-    mensagem = ⚠️ Seus gastos estão altos e sua reserva está em ${reservaPercent.toFixed(0)}%. Melhor ajustar agora para não apertar depois.;
+    mensagem = "⚠️ Seus gastos estão altos e sua reserva está em " + reservaPercent.toFixed(0) + "%. Melhor ajustar agora para não apertar depois.";
   }
   else{
-    mensagem = Tudo está equilibrado no momento. Continue acompanhando seus números.;
+    mensagem = "Tudo está equilibrado no momento. Continue acompanhando seus números.";
   }
-
-  mostrarMensagemMentor(mensagem);
-}
- function analisarSituacaoFinanceira(forcar = false){
-
-  let novoEstado = calcularEstadoMentor();
-
-  // Se não for forçado e o estado não mudou, não fala
-  if(!forcar && novoEstado === estadoMentorAtual){
-    return;
-  }
-
-  let blocos = blocosMentor[novoEstado];
-
-  if(!blocos) return;
-
-  let observacao = escolherAleatorio(blocos.observacao);
-  let interpretacao = escolherAleatorio(blocos.interpretacao);
-  let orientacao = escolherAleatorio(blocos.orientacao);
-
-  let mensagem = observacao + " " + interpretacao + " " + orientacao;
-
-  estadoMentorAtual = novoEstado;
 
   mostrarMensagemMentor(mensagem);
 }
