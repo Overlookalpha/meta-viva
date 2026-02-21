@@ -562,7 +562,41 @@ button{
   <p>
     Falta: <span id="reservaFaltaTexto">0</span>
   </p>
+  <div id="blocoSistema10" style="margin-top:25px; display:none;">
 
+  <hr style="opacity:0.2; margin-bottom:20px;">
+
+  <h3>📊 Separação 10%</h3>
+
+  <p>
+    📥 10% das Entradas: 
+    <span id="pendenteEntradasTexto">0.00</span>
+  </p>
+
+  <p>
+    📤 10% das Saídas: 
+    <span id="pendenteSaidasTexto">0.00</span>
+  </p>
+
+  <p>
+    <strong>Total a Separar: 
+      <span id="pendenteTotalTexto">0.00</span>
+    </strong>
+  </p>
+
+  <div style="margin-top:15px;">
+    <input 
+      type="number" 
+      id="valorSepararManualInput"
+      placeholder="Quanto você quer separar agora"
+      style="width:100%; padding:10px; border-radius:6px; border:none;">
+  </div>
+
+  <button class="primary" style="margin-top:10px;" onclick="separarManual10()">
+    Separar Agora
+  </button>
+
+</div>
   <div style="margin-top:20px;">
     <input 
       type="number" 
