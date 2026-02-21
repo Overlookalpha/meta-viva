@@ -2989,33 +2989,50 @@ div.innerHTML =
 }
   function calcularEstadoMentor(){
 
-  // 🔴 RISCO
-  if(saldo <= 0){
-    return "risco";
+  if(entradasTotal === 0){
+    return "estavel";
   }
 
-  if(saidasTotal > entradasTotal && entradasTotal > 0){
+  let consumoPercent = (saidasTotal / entradasTotal) * 100;
+  let reservaPercent = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
+  let dividaPercent = rendaMensalBase > 0 ? (dividaAtual / rendaMensalBase) * 100 : 0;
+
+  // 🔴 RISCO
+  if(
+    consumoPercent >= 95 ||
+    saldo <= rendaMensalBase * 0.1 ||
+    dividaPercent > 60
+  ){
     return "risco";
   }
 
   // 🟡 ATENÇÃO
-  if(entradasTotal > 0 && saidasTotal >= entradasTotal * 0.8){
-    return "atencao";
-  }
-
-  if(metaMensal > 0 && valorGuardado < metaMensal * 0.3){
+  if(
+    consumoPercent >= 80 ||
+    reservaPercent < 30 ||
+    dividaPercent > 30
+  ){
     return "atencao";
   }
 
   // 🟢 CRESCIMENTO
   if(
-    entradasTotal > saidasTotal &&
-    valorGuardado >= metaMensal * 0.5
+    consumoPercent < 70 &&
+    reservaPercent >= 60 &&
+    dividaPercent === 0
   ){
     return "crescimento";
   }
 
-  // ⚪ ESTÁVEL (padrão)
+  // ⚪ ESTÁVEL (zona saudável, mas ainda não crescimento)
+  if(
+    consumoPercent < 80 &&
+    reservaPercent >= 30 &&
+    dividaPercent <= 30
+  ){
+    return "estavel";
+  }
+
   return "estavel";
 }
   const blocosMentor = {
