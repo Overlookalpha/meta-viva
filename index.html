@@ -970,6 +970,9 @@ let dividaAtual = 0;
 let sistema10Ativo = false;
 let pendenteEntradas = 0;
 let pendenteSaidas = 0;
+// 🔔 SISTEMA DE NOTIFICAÇÕES
+let notificacoes = [];
+let notificacoesNaoLidas = 0;
 let desafioAtualIndex = null;
 let rendaMensalBase = 0;
 let moedaUsuario = "€";
@@ -2201,7 +2204,7 @@ historicoEntradas.push(registroEntrada);
   // Limpa campos
   document.getElementById("nomeClienteInput").value = "";
   document.getElementById("valorEntradaInput").value = "";
-
+  adicionarNotificacao("sucesso", "Entrada registrada com sucesso!");
   fecharTela("telaEntrada");
   abrirAba("home");
   
@@ -2811,6 +2814,64 @@ div.innerHTML =
   document.getElementById("pendenteTotalTexto").innerText =
     moedaUsuario + " " + (pendenteEntradas + pendenteSaidas).toFixed(2);
 
+}
+  function adicionarNotificacao(tipo, mensagem){
+
+  const agora = new Date();
+
+  notificacoes.unshift({
+    tipo: tipo,
+    mensagem: mensagem,
+    data: agora.toLocaleDateString("pt-PT"),
+    hora: agora.toLocaleTimeString("pt-PT"),
+    lida: false
+  });
+
+  notificacoesNaoLidas++;
+
+  mostrarNotificacaoTemporaria(tipo, mensagem);
+  atualizarIconeNotificacao();
+}
+  function mostrarNotificacaoTemporaria(tipo, mensagem){
+
+  let cor = "#00c896"; // sucesso padrão
+
+  if(tipo === "alerta") cor = "#f4b400";
+  if(tipo === "erro") cor = "#ff4d4d";
+  if(tipo === "info") cor = "#3b82f6";
+
+  const div = document.createElement("div");
+
+  div.style.position = "fixed";
+  div.style.top = "20px";
+  div.style.right = "20px";
+  div.style.background = cor;
+  div.style.padding = "15px 20px";
+  div.style.borderRadius = "10px";
+  div.style.boxShadow = "0 4px 20px rgba(0,0,0,0.3)";
+  div.style.zIndex = "9999";
+  div.style.color = "white";
+  div.style.fontSize = "14px";
+  div.innerText = mensagem;
+
+  document.body.appendChild(div);
+
+  setTimeout(() => {
+    div.remove();
+  }, 4000);
+}
+  function atualizarIconeNotificacao(){
+
+  const badge = document.getElementById("badgeNotificacao");
+
+  if(!badge) return;
+
+  if(notificacoesNaoLidas > 0){
+    badge.style.display = "inline-block";
+    badge.innerText = notificacoesNaoLidas;
+  } else {
+    badge.style.display = "none";
+  }
 }
 </script>
 
