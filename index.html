@@ -1474,6 +1474,7 @@ function abrirAba(id){
     if(falta < 0) falta = 0;
 
     document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
+    atualizarSistema10Visual();
   }
 
   // Mostra a aba clicada
@@ -2049,6 +2050,10 @@ function confirmarSaida(){
 
   saldo -= valor;
   saidasTotal += valor;
+  // 🔥 SISTEMA 10%
+if(sistema10Ativo){
+  pendenteSaidas += valor * 0.10;
+}
 
   categorias[indexCategoria].subcategorias[indexSub].total += valor;
   // 🔥 Verificar limite da categoria
@@ -2154,6 +2159,10 @@ else if(porcentagem >= 80){
   // Soma valores
   entradasTotal += valor;
   saldo += valor;
+  // 🔥 SISTEMA 10%
+if(sistema10Ativo){
+  pendenteEntradas += valor * 0.10;
+}
   // 🔥 Criar registro com data e mês
 let agora = new Date();
 
@@ -2705,6 +2714,35 @@ div.innerHTML =
     alert("Sistema 10% ativado.");
   } else {
     alert("Sistema 10% desativado.");
+  }
+
+}
+
+  function atualizarSistema10Visual(){
+
+  const bloco = document.getElementById("blocoSistema10");
+
+  if(!bloco) return;
+
+  if(sistema10Ativo){
+
+    bloco.style.display = "block";
+
+    document.getElementById("pendenteEntradasTexto").innerText =
+      moedaUsuario + " " + pendenteEntradas.toFixed(2);
+
+    document.getElementById("pendenteSaidasTexto").innerText =
+      moedaUsuario + " " + pendenteSaidas.toFixed(2);
+
+    let total = pendenteEntradas + pendenteSaidas;
+
+    document.getElementById("pendenteTotalTexto").innerText =
+      moedaUsuario + " " + total.toFixed(2);
+
+  } else {
+
+    bloco.style.display = "none";
+
   }
 
 }
