@@ -1675,6 +1675,11 @@ function abrirTela(id){
   }
 
   document.getElementById(id).classList.add("active");
+  if(id === "telaNotificacoes"){
+  renderizarNotificacoes();
+  notificacoesNaoLidas = 0;
+  atualizarIconeNotificacao();
+  }
 }
 
 function fecharTela(id){
@@ -3132,6 +3137,40 @@ div.innerHTML =
   setTimeout(() => {
     banner.style.display = "none";
   }, 8000);
+}
+  function renderizarNotificacoes(){
+
+  const container = document.getElementById("listaNotificacoes");
+
+  if(!container) return;
+
+  container.innerHTML = "";
+
+  if(notificacoes.length === 0){
+    container.innerHTML = "Nenhuma notificação.";
+    return;
+  }
+
+  notificacoes.forEach(n => {
+
+    const div = document.createElement("div");
+
+    div.style.background = "rgba(255,255,255,0.08)";
+    div.style.padding = "12px";
+    div.style.borderRadius = "8px";
+    div.style.marginBottom = "10px";
+
+    div.innerHTML = `
+      <strong>${n.mensagem}</strong><br>
+      <span style="font-size:12px;opacity:0.6;">
+        ${n.data} ${n.hora}
+      </span>
+    `;
+
+    container.appendChild(div);
+
+  });
+
 }
 </script>
 
