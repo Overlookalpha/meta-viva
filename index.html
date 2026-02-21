@@ -1057,6 +1057,11 @@ let notificacoesNaoLidas = 0;
 let desafioAtualIndex = null;
 // 🔊 CONTROLE DE VOZ
 let vozAtivada = true;
+let estadoMentorAtual = "estavel";
+// 📊 Snapshot anterior para comparação inteligente
+let consumoAnterior = 0;
+let reservaAnterior = 0;
+let dividaAnterior = 0;
 let rendaMensalBase = 0;
 let moedaUsuario = "€";
 let categorias = [];
@@ -3095,6 +3100,72 @@ div.innerHTML =
 };
   function escolherAleatorio(lista){
   return lista[Math.floor(Math.random() * lista.length)];
+}
+  // ===== NOVO CÉREBRO CENTRAL DA EVELYN =====
+function analisarContextoCompleto(tipoEvento = null){
+
+  // 📊 Indicadores atuais
+  let consumo = entradasTotal > 0 
+    ? (saidasTotal / entradasTotal) * 100 
+    : 0;
+
+  let reservaPercent = metaMensal > 0 
+    ? (valorGuardado / metaMensal) * 100 
+    : 0;
+
+  let dividaPercent = rendaMensalBase > 0 
+    ? (dividaAtual / rendaMensalBase) * 100 
+    : 0;
+
+  let estadoNovo = "estavel";
+
+  // 🔴 RISCO
+  if(consumo >= 90 || dividaPercent > 60 || saldo <= 0){
+    estadoNovo = "risco";
+  }
+  // 🟡 ATENÇÃO
+  else if(consumo >= 80 || dividaPercent > 30 || reservaPercent < 30){
+    estadoNovo = "atencao";
+  }
+  // 🟢 CRESCIMENTO
+  else if(reservaPercent >= 70 && consumo < 70 && dividaPercent === 0){
+    estadoNovo = "crescimento";
+  }
+
+  // 📌 Verificar mudança relevante
+  let mudouEstado = estadoNovo !== estadoMentorAtual;
+
+  let mudouConsumo = Math.abs(consumo - consumoAnterior) >= 10;
+  let mudouReserva = Math.abs(reservaPercent - reservaAnterior) >= 10;
+  let mudouDivida = Math.abs(dividaPercent - dividaAnterior) >= 10;
+
+  if(!mudouEstado && !mudouConsumo && !mudouReserva && !mudouDivida){
+    return; // silêncio inteligente
+  }
+
+  // Atualizar snapshot
+  estadoMentorAtual = estadoNovo;
+  consumoAnterior = consumo;
+  reservaAnterior = reservaPercent;
+  dividaAnterior = dividaPercent;
+
+  // 🧠 Montar mensagem simples
+  let mensagem = "";
+
+  if(estadoNovo === "crescimento"){
+    mensagem = 🎉 Sua reserva está em ${reservaPercent.toFixed(0)}% da meta. Você está construindo segurança de verdade. Continue assim.;
+  }
+  else if(estadoNovo === "risco"){
+    mensagem = 😬 Você já usou ${consumo.toFixed(0)}% do que ganhou. Se continuar assim pode apertar. Tente reduzir alguns gastos esta semana.;
+  }
+  else if(estadoNovo === "atencao"){
+    mensagem = ⚠️ Seus gastos estão altos e sua reserva está em ${reservaPercent.toFixed(0)}%. Melhor ajustar agora para não apertar depois.;
+  }
+  else{
+    mensagem = Tudo está equilibrado no momento. Continue acompanhando seus números.;
+  }
+
+  mostrarMensagemMentor(mensagem);
 }
  function analisarSituacaoFinanceira(forcar = false){
 
