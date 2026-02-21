@@ -3216,7 +3216,7 @@ div.innerHTML =
 
   }, tempo);
 }
- function verificarEvolucaoPerfil(){
+function verificarEvolucaoPerfil(){
 
   const ordemPerfis = [
     "Crítico",
@@ -3231,50 +3231,43 @@ div.innerHTML =
   const nivelAtualIndex = ordemPerfis.indexOf(userProfile);
   if(nivelAtualIndex === -1) return;
 
-  // Se já está no último nível, não faz nada
-  if(nivelAtualIndex >= ordemPerfis.length - 1) return;
+  const proximoNivel = nivelAtualIndex + 1;
 
-  // 🔹 Cálculo dos indicadores
-  let reservaPercent = 0;
-  if(metaMensal > 0){
-    reservaPercent = (valorGuardado / metaMensal) * 100;
-  }
+  if(proximoNivel >= ordemPerfis.length) return;
 
-  let consumoPercent = 0;
-  if(entradasTotal > 0){
-    consumoPercent = (saidasTotal / entradasTotal) * 100;
-  }
+  // 🔎 Verificações estruturais
 
-  // Próximo nível possível
-  const proximoNivelIndex = nivelAtualIndex + 1;
+  let temDivida = dividaAtual > 0;
+  let saldoNegativo = saldo < 0;
 
-  let podeSubir = false;
+  // Verificar contas vencidas
+  let contasVencidas = false;
 
-  // 🔴 Crítico → Iniciante
-  if(userProfile === "Crítico" && reservaPercent >= 30){
-    podeSubir = true;
-  }
+  const hoje = new Date();
 
-  // 🟡 Iniciante → Em Evolução
-  else if(userProfile === "Iniciante" && reservaPercent >= 60 && consumoPercent < 90){
-    podeSubir = true;
-  }
+  contas.forEach(conta => {
+    if(conta.paga) return;
 
-  // 🔵 Em Evolução → Intermediário
-  else if(userProfile === "Em Evolução" && reservaPercent >= 100 && dividaAtual === 0){
-    podeSubir = true;
-  }
+    const vencimento = new Date(conta.vencimento);
+    if(vencimento < hoje){
+      contasVencidas = true;
+    }
+  });
 
-  // 🟢 Intermediário → Estável
-  else if(userProfile === "Intermediário" && reservaPercent >= 150 && consumoPercent < 70 && dividaAtual === 0){
-    podeSubir = true;
-  }
+  // Verificar se já guardou pelo menos 1 meta completa
+  let metaCumprida = valorGuardado >= metaMensal;
 
-  if(podeSubir){
+  // ✅ Condição de evolução
+  if(
+    !temDivida &&
+    !saldoNegativo &&
+    !contasVencidas &&
+    metaCumprida
+  ){
 
     const perfilAntigo = userProfile;
 
-    userProfile = ordemPerfis[proximoNivelIndex];
+    userProfile = ordemPerfis[proximoNivel];
 
     const plano = planosPerfil[userProfile];
     if(plano){
