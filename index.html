@@ -2690,13 +2690,13 @@ div.innerHTML =
   }
 
 }
-  function salvarConta(){
+ function salvarConta(){
 
-  const nome = document.getElementById("novaContaNome").value;
-  const valor = parseFloat(document.getElementById("novaContaValor").value);
-  const vencimento = document.getElementById("novaContaVencimento").value;
+  const nome = document.getElementById("nomeContaInput").value;
+  const valor = parseFloat(document.getElementById("valorContaInput").value);
+  const vencimento = document.getElementById("vencimentoContaInput").value;
   const recorrente = document.getElementById("contaRecorrente").checked;
-  console.log("Recorrente marcado:", recorrente);
+
   if(!nome || isNaN(valor) || !vencimento){
     alert("Preencha todos os campos.");
     return;
@@ -2707,13 +2707,12 @@ div.innerHTML =
     valor: valor,
     vencimento: vencimento,
     paga: false,
-    recorrente: recorrente,
+    recorrente: recorrente
   });
 
-
-  document.getElementById("nomeContaInput").value
-  document.getElementById("novaContaValor").value = "";
-  document.getElementById("novaContaVencimento").value = "";
+  document.getElementById("nomeContaInput").value = "";
+  document.getElementById("valorContaInput").value = "";
+  document.getElementById("vencimentoContaInput").value = "";
 
   fecharTela("telaNovaConta");
   atualizarListaContas();
