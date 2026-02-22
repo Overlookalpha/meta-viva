@@ -3049,7 +3049,7 @@ console.log("clicou pagarConta");
 }
  function falar(texto){
 
-  if(!vozAtivada) return;
+  if(document.getElementById("mutarEvellyn")?.checked) return;
   if(!('speechSynthesis' in window)) return;
 
   const mensagem = new SpeechSynthesisUtterance(texto);
@@ -3516,7 +3516,11 @@ verificarContasVencendo();
 
   if(checkbox){
     checkbox.addEventListener("change", function(){
-      vozAtivada = !this.checked;
+
+      if(this.checked){
+        speechSynthesis.cancel();   // para imediatamente qualquer fala
+      }
+
     });
   }
 
