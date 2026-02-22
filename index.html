@@ -20,45 +20,44 @@ body{
   color:white;
   display:flex;
   justify-content:center;
-  overflow-x:hidden;
 }
-
 .app{
-  width:100%;
-  max-width:500px;
-  height:100dvh;
-  padding:10px;
+  width:500px;
+  min-height:100vh;
+  padding:20px;
   box-sizing:border-box;
-  position:relative;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
+  position:relative;   /* IMPORTANTE */
+  overflow:hidden;     /* impede scroll lateral */
 }
 
 .container{
-  width:100%;
+  width:90%;
   max-width:500px;
   text-align:center;
   margin:0 auto;
 }
 
 h1{
-  font-size:26px;
-  margin-bottom:6px;
+  font-size:60px;
+  margin-bottom:10px;
 }
 
 h2{
-  margin-top:15px;
-  font-size:18px;
+  margin-top:20px;
 }
 
 button{
-  padding:8px 14px;
+  padding:12px 25px;
   border:none;
   border-radius:8px;
-  margin-top:10px;
+  margin-top:20px;
   cursor:pointer;
-  font-size:14px;
+  font-size:16px;
+}
+.btnAcao{
+  padding:10px 15px;
+  font-size:15px;
+  height:55px;
 }
 
 .primary{
@@ -78,74 +77,62 @@ button{
 
 .optionItem{
   display:block;
-  margin:8px 0;
+  margin:10px 0;
   text-align:left;
   background:rgba(255,255,255,0.1);
-  padding:8px;
+  padding:10px;
   border-radius:6px;
 }
 
 #progressText{
-  font-size:13px;
+  font-size:14px;
   opacity:0.7;
 }
-
-/* MENU */
+/* PADRÃO MENU LATERAL */
 
 .menuBtn{
-  width:42px;
-  height:42px;
+  height:48px;
+  width:100%;
   border:none;
-  border-radius:12px;
+  border-radius:10px;
   background:rgba(255,255,255,0.08);
   color:white;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:20px;
+  text-align:left;
+  padding:0 15px;
+  font-size:15px;
   cursor:pointer;
   transition:0.2s;
-  margin-bottom:8px;
-  padding:0;
 }
 
 .menuBtn:hover{
   background:rgba(255,255,255,0.15);
 }
 
-/* CARDS HOME */
+.menuBtn:hover{
+  background:rgba(255,255,255,0.15);
+}
 
 .cardResumo{
   background:rgba(255,255,255,0.1);
-  padding:8px;
+  padding:12px;              /* antes era 25px */
   border-radius:12px;
-  min-height:75px;
+  transition:0.2s;
+  min-height:100px;          /* controla altura */
   display:flex;
   flex-direction:column;
   justify-content:center;
-  font-size:13px;
-}
-
-.cardResumo h3{
-  margin:4px 0 0 0;
-  font-size:15px;
-}
-
-.cardResumo p{
-  margin:0;
-  font-size:12px;
 }
 
 .cardResumo:hover{
   background:rgba(255,255,255,0.15);
 }
 
-/* BOTÕES AÇÃO */
-
 .btnAcao{
-  padding:6px;
-  font-size:13px;
-  height:40px;
+  padding:10px;
+  border-radius:8px;
+  border:none;
+  font-size:14px;
+  cursor:pointer;
 }
 
 .btnEntrada{
@@ -158,16 +145,16 @@ button{
   color:white;
 }
 
-/* TELAS SOBREPOSTAS */
+/* TELAS QUE ABREM POR CIMA */
 
 .screen{
   position:absolute;
   top:0;
   left:0;
   width:100%;
-  height:100dvh;
+  height:100vh;
   background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  padding:15px;
+  padding:20px;
   box-sizing:border-box;
   display:none;
   z-index:10;
@@ -177,49 +164,42 @@ button{
 .screen.active{
   display:block;
 }
-
-.fade-out{
-  opacity:0;
-  transform:translateY(-10px);
-  transition:all 0.5s ease;
+  .fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.5s ease;
 }
+  @media (max-width:768px){
+  .cardResumo{
+    padding:12px;
+    min-height:95px;
+  }
+}
+  @media (max-width:768px){
 
-/* MOBILE */
-
-@media (max-width:768px){
-
+  /* empilha menu e conteúdo */
   #home > div{
     flex-direction:column !important;
   }
 
+  /* menu ocupa 100% */
   #home > div > div:first-child{
     width:100% !important;
-    margin-bottom:15px;
+    margin-bottom:20px;
   }
 
+  /* conteúdo ocupa 100% */
   #home > div > div:last-child{
     width:100% !important;
   }
 
 }
-
 </style>
 </head>
 
 <body>
 
 <div class="app">
-<!-- MENU FIXO SUPERIOR -->
-<div id="menu" style="display:flex; gap:8px; margin-bottom:15px; flex-wrap:wrap;">
-  <button class="menuBtn" onclick="abrirAba('home')">🏠</button>
-  <button class="menuBtn" onclick="abrirAba('desafios')">🎯</button>
-  <button class="menuBtn" onclick="abrirAba('categorias')">📂</button>
-  <button class="menuBtn" onclick="abrirAba('relatorios')">📊</button>
-  <button class="menuBtn" onclick="abrirAba('reserva')">💰</button>
-  <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦</button>
-  <button class="menuBtn" onclick="abrirAba('contas')">🧾</button>
-  <button class="menuBtn" onclick="abrirAba('configuracoes')">⚙️</button>
-</div>
 
 <!-- LANDING -->
 <div id="landing" style="position:relative;">
@@ -389,6 +369,26 @@ button{
     gap:20px;
     align-items:flex-start;
   ">
+    <!-- COLUNA 1 - MENU -->
+    <div style="width:30%;">
+
+      <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
+
+        <button class="menuBtn" onclick="abrirAba('home')">🏠 Home</button>
+        <button class="menuBtn" onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
+         🎯 Desafios
+        </button>
+        <button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">🗂️ Categorias</button>
+        <button class="menuBtn" onclick="abrirTela('telaRelatorio'); preencherFiltrosRelatorio(); gerarRelatorio();">📊 Relatórios</button>
+        <button class="menuBtn" onclick="abrirAba('reserva')">💰 Reserva</button>
+        <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦 Empréstimo</button>
+        <button class="menuBtn" onclick="abrirAba('contas')">🧾 Contas a Pagar</button>
+        <button class="menuBtn" onclick="abrirAba('configuracoes')">⚙️ Configurações</button>
+
+      </div>
+
+    </div>
+
     <!-- COLUNA 2 - CONTEÚDO -->
     <div style="width:60%;">
 
@@ -3549,19 +3549,6 @@ verificarContasVencendo();
   }
 
 });
-</script>
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
-    navigator.serviceWorker.register("service-worker.js")
-      .then(function() {
-        console.log("Service Worker registrado");
-      })
-      .catch(function(error) {
-        console.log("Erro no Service Worker:", error);
-      });
-  });
-}
 </script>
 
 </body>
