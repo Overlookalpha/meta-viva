@@ -2731,25 +2731,33 @@ for(let i = 0; i < repetirMeses; i++){
   atualizarListaContas();
   atualizarResumoContas();
 }
- function salvarNovaConta(){
+function salvarNovaConta(){
 
   const nome = document.getElementById("nomeContaInput").value;
   const valor = parseFloat(document.getElementById("valorContaInput").value);
   const vencimento = document.getElementById("vencimentoContaInput").value;
+  const repetirMeses = parseInt(document.getElementById("repetirMeses").value) || 1;
 
   if(!nome || isNaN(valor) || !vencimento){
     alert("Preencha todos os campos corretamente.");
     return;
   }
 
-  contas.push({
-    nome: nome,
-    valor: valor,
-    vencimento: vencimento,
-    paga: false
-  });
+  for(let i = 0; i < repetirMeses; i++){
 
-  alert("Conta adicionada com sucesso!");
+    const dataBase = new Date(vencimento);
+    dataBase.setMonth(dataBase.getMonth() + i);
+
+    contas.push({
+      nome: nome,
+      valor: valor,
+      vencimento: dataBase.toISOString().split("T")[0],
+      paga: false
+    });
+
+  }
+
+  alert("Conta(s) adicionada(s) com sucesso!");
 
   atualizarListaContas();
   atualizarResumoContas();
