@@ -3343,6 +3343,10 @@ const blocosMentor = {
   });
 
 }
+  function excluirNotificacao(index){
+  notificacoes.splice(index, 1);
+  renderizarNotificacoes();
+}
   function autoRemoverNotificacao(elemento, tempo = 8000) {
   setTimeout(() => {
     elemento.classList.add("fade-out");
