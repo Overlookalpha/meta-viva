@@ -753,6 +753,12 @@ button{
     style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
     ← Voltar
   </button>
+  <div style="margin-top:20px;">
+  <label style="display:flex;align-items:center;gap:8px;font-size:14px;">
+    <input type="checkbox" id="mutarEvellyn">
+    Mutar Evellyn 🔇
+  </label>
+</div>
 
   <h3 style="margin-top:20px;">🔧 Ajuste Manual de Saldo</h3>
 
@@ -1064,6 +1070,7 @@ let pendenteEntradas = 0;
 let pendenteSaidas = 0;
 // 🔔 SISTEMA DE NOTIFICAÇÕES
 let notificacoes = [];
+let evellynMutada = false;
 let notificacoesNaoLidas = 0;
 let desafioAtualIndex = null;
 // 🔊 CONTROLE DE VOZ
@@ -3040,22 +3047,33 @@ console.log("clicou pagarConta");
     badge.style.display = "none";
   }
 }
-  function falar(texto){
+ function falar(texto){
 
   if(!vozAtivada) return;
   if(!('speechSynthesis' in window)) return;
 
   const mensagem = new SpeechSynthesisUtterance(texto);
 
-  const vozes = speechSynthesis.getVoices();
+  // Garante que as vozes estejam carregadas
+  let vozes = speechSynthesis.getVoices();
+
+  if(!vozes.length){
+    speechSynthesis.onvoiceschanged = () => {
+      falar(texto);
+    };
+    return;
+  }
 
   // 🔥 Tenta pegar voz brasileira feminina
-  const vozBR = vozes.find(v =>
-    v.lang === "pt-BR" && v.name.toLowerCase().includes("female")
+  const vozBRFeminina = vozes.find(v =>
+    v.lang === "pt-BR" &&
+    (v.name.toLowerCase().includes("female") ||
+     v.name.toLowerCase().includes("mulher") ||
+     v.name.toLowerCase().includes("brasil"))
   );
 
-  if(vozBR){
-    mensagem.voice = vozBR;
+  if(vozBRFeminina){
+    mensagem.voice = vozBRFeminina;
   } else {
     // Se não achar feminina, pega qualquer pt-BR
     const qualquerBR = vozes.find(v => v.lang === "pt-BR");
