@@ -3312,7 +3312,7 @@ const blocosMentor = {
     return;
   }
 
-  notificacoes.forEach(n => {
+  notificacoes.forEach((n, index) => {
 
     const div = document.createElement("div");
 
@@ -3321,12 +3321,22 @@ const blocosMentor = {
     div.style.borderRadius = "8px";
     div.style.marginBottom = "10px";
 
-    div.innerHTML = `
-      <strong>${n.mensagem}</strong><br>
-      <span style="font-size:12px;opacity:0.6;">
-        ${n.data} ${n.hora}
-      </span>
-    `;
+   div.innerHTML =
+  "<div style='display:flex; justify-content:space-between; align-items:flex-start;'>" +
+
+    "<div style='flex:1;'>" +
+      "<strong>" + n.mensagem + "</strong><br>" +
+      "<span style='font-size:12px;opacity:0.6;'>" +
+        n.data + " " + n.hora +
+      "</span>" +
+    "</div>" +
+
+    "<button onclick='excluirNotificacao(" + index + ")' " +
+      "style='background:#ff4d4d;border:none;color:white;padding:4px 8px;border-radius:6px;cursor:pointer;margin-left:10px;'>" +
+      "✕" +
+    "</button>" +
+
+  "</div>";
 
     container.appendChild(div);
 
