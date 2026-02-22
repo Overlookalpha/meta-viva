@@ -2696,13 +2696,12 @@ div.innerHTML =
   const valor = parseFloat(document.getElementById("novaContaValor").value);
   const vencimento = document.getElementById("novaContaVencimento").value;
   const recorrente = document.getElementById("contaRecorrente").checked;
-
+  console.log("Recorrente marcado:", recorrente);
   if(!nome || isNaN(valor) || !vencimento){
     alert("Preencha todos os campos.");
     return;
   }
-    
-  console.log("Recorrente marcado:", recorrente);
+     
   contas.push({
     nome: nome,
     valor: valor,
