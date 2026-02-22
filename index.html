@@ -3047,41 +3047,27 @@ console.log("clicou pagarConta");
     badge.style.display = "none";
   }
 }
- function falar(texto){
+function falar(texto){
 
-  if(document.getElementById("mutarEvellyn")?.checked) return;
+  if(document.getElementById("mutarEvellyn")?.checked){
+    speechSynthesis.cancel();
+    return;
+  }
+
   if(!('speechSynthesis' in window)) return;
 
   const mensagem = new SpeechSynthesisUtterance(texto);
 
-  // Garante que as vozes estejam carregadas
-  let vozes = speechSynthesis.getVoices();
+  const vozes = speechSynthesis.getVoices();
 
-  if(!vozes.length){
-    speechSynthesis.onvoiceschanged = () => {
-      falar(texto);
-    };
-    return;
+  const vozBR = vozes.find(v => v.lang === "pt-BR");
+
+  if(!vozBR){
+    console.log("Voz pt-BR não encontrada");
+    return; // 🔥 IMPORTANTE: não deixa cair para pt-PT
   }
 
-  // 🔥 Tenta pegar voz brasileira feminina
-  const vozBRFeminina = vozes.find(v =>
-    v.lang === "pt-BR" &&
-    (v.name.toLowerCase().includes("female") ||
-     v.name.toLowerCase().includes("mulher") ||
-     v.name.toLowerCase().includes("brasil"))
-  );
-
-  if(vozBRFeminina){
-    mensagem.voice = vozBRFeminina;
-  } else {
-    // Se não achar feminina, pega qualquer pt-BR
-    const qualquerBR = vozes.find(v => v.lang === "pt-BR");
-    if(qualquerBR){
-      mensagem.voice = qualquerBR;
-    }
-  }
-
+  mensagem.voice = vozBR;
   mensagem.lang = "pt-BR";
   mensagem.rate = 0.95;
   mensagem.pitch = 1.05;
