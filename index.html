@@ -111,9 +111,13 @@ button{
 
 .cardResumo{
   background:rgba(255,255,255,0.1);
-  padding:25px;
+  padding:12px;              /* antes era 25px */
   border-radius:12px;
   transition:0.2s;
+  min-height:100px;          /* controla altura */
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
 }
 
 .cardResumo:hover{
