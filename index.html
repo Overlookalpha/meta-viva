@@ -1008,6 +1008,10 @@ button{
   <input type="date" id="vencimentoContaInput"
     style="width:100%;padding:8px;border-radius:6px;border:none;">
 
+  <label style="margin-top:10px;">Repetir por (meses):</label>
+  <input type="number" id="repetirMeses" min="1" value="1"
+       style="width:100%;padding:8px;margin-top:5px;border-radius:6px;border:none;">
+
   <label style="display:flex;align-items:center;gap:8px;margin-top:10px;">
   <input type="checkbox" id="contaRecorrente">
   Repetir todo mês
@@ -2696,21 +2700,29 @@ div.innerHTML =
   const nome = document.getElementById("novaContaNome").value;
   const valor = parseFloat(document.getElementById("novaContaValor").value);
   const vencimento = document.getElementById("novaContaVencimento").value;
-  const recorrente = document.getElementById("contaRecorrente").checked;
+ 
 
   if(!nome || isNaN(valor) || !vencimento){
     alert("Preencha todos os campos.");
     return;
   }
 
+  const repetirMeses = parseInt(document.getElementById("repetirMeses").value) || 1;
+
+for(let i = 0; i < repetirMeses; i++){
+
+  const dataOriginal = new Date(vencimento);
+  dataOriginal.setMonth(dataOriginal.getMonth() + i);
+
   contas.push({
     nome: nome,
     valor: valor,
-    vencimento: vencimento,
-    paga: false,
-    recorrente: recorrente,
+    vencimento: dataOriginal.toISOString().split("T")[0],
+    paga: false
   });
 
+}
+  document.getElementById("repetirMeses").value = 1;
   document.getElementById("novaContaNome").value = "";
   document.getElementById("novaContaValor").value = "";
   document.getElementById("novaContaVencimento").value = "";
