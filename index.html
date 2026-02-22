@@ -1,6 +1,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -1012,7 +1013,7 @@ button{
   Repetir todo mês
 </label>
 
-   <button onclick="salvarConta()"
+  <button onclick="salvarNovaConta()"
     style="margin-top:20px;background:#00c896;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
     Salvar Conta
   </button>
@@ -2690,29 +2691,29 @@ div.innerHTML =
   }
 
 }
- function salvarConta(){
+  function salvarConta(){
 
-  const nome = document.getElementById("nomeContaInput").value;
-  const valor = parseFloat(document.getElementById("valorContaInput").value);
-  const vencimento = document.getElementById("vencimentoContaInput").value;
+  const nome = document.getElementById("novaContaNome").value;
+  const valor = parseFloat(document.getElementById("novaContaValor").value);
+  const vencimento = document.getElementById("novaContaVencimento").value;
   const recorrente = document.getElementById("contaRecorrente").checked;
 
   if(!nome || isNaN(valor) || !vencimento){
     alert("Preencha todos os campos.");
     return;
   }
-     
+
   contas.push({
     nome: nome,
     valor: valor,
     vencimento: vencimento,
     paga: false,
-    recorrente: recorrente
+    recorrente: recorrente,
   });
 
-  document.getElementById("nomeContaInput").value = "";
-  document.getElementById("valorContaInput").value = "";
-  document.getElementById("vencimentoContaInput").value = "";
+  document.getElementById("novaContaNome").value = "";
+  document.getElementById("novaContaValor").value = "";
+  document.getElementById("novaContaVencimento").value = "";
 
   fecharTela("telaNovaConta");
   atualizarListaContas();
