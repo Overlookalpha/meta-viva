@@ -2627,7 +2627,9 @@ else{
 }
 
 div.innerHTML =
-  "<strong>" + conta.nome + "</strong><br>" +
+ "<strong>" + conta.nome +
+(conta.totalParcelas > 1 ? " (" + conta.parcelaAtual + "/" + conta.totalParcelas + ")" : "") +
+"</strong><br>" +
   "Valor: " + moedaUsuario + " " + conta.valor.toFixed(2) + "<br>" +
   "Vencimento: " + conta.vencimento + "<br>" +
   "<span style='color:" + corStatus + "; font-weight:600;'>" +
@@ -2710,11 +2712,15 @@ for(let i = 0; i < repetirMeses; i++){
   const dataOriginal = new Date(vencimento);
   dataOriginal.setMonth(dataOriginal.getMonth() + i);
 
+ for(let i = 0; i < repetir; i++){
+
   contas.push({
     nome: nome,
     valor: valor,
-    vencimento: dataOriginal.toISOString().split("T")[0],
-    paga: false
+    vencimento: novaData,
+    paga: false,
+    parcelaAtual: i + 1,
+    totalParcelas: repetir
   });
 
 }
