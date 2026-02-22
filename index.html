@@ -2746,12 +2746,19 @@ function salvarNovaConta(){
     const dataBase = new Date(vencimento);
     dataBase.setMonth(dataBase.getMonth() + i);
 
-    contas.push({
-      nome: nome,
-      valor: valor,
-      vencimento: dataBase.toISOString().split("T")[0],
-      paga: false
-    });
+   contas.push({
+    nome: nome,
+    valor: valor,
+    vencimento: dataBase.toISOString().split("T")[0],
+    paga: false,
+    alertas: {
+    d3: false,
+    d2: false,
+    d1: false,
+    hoje: false,
+    vencida: false
+  }
+  });
 
   }
 
@@ -3397,6 +3404,64 @@ function verificarEvolucaoPerfil(){
   }
 
 }
+  function verificarContasVencendo(){
+
+  const hoje = new Date();
+
+  contas.forEach(conta => {
+
+    if(conta.paga) return;
+
+    const vencimento = new Date(conta.vencimento);
+    const diffTime = vencimento - hoje;
+    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    // 🔵 3 dias
+    if(diffDias === 3 && !conta.alertas.d3){
+      adicionarNotificacao("info",
+        "📅 A conta " + conta.nome + " vence em 3 dias."
+      );
+      conta.alertas.d3 = true;
+    }
+
+    // 🟡 2 dias
+    if(diffDias === 2 && !conta.alertas.d2){
+      adicionarNotificacao("alerta",
+        "⚠️ A conta " + conta.nome + " vence em 2 dias."
+      );
+      conta.alertas.d2 = true;
+    }
+
+    // 🟠 1 dia
+    if(diffDias === 1 && !conta.alertas.d1){
+      adicionarNotificacao("alerta",
+        "⏳ A conta " + conta.nome + " vence amanhã."
+      );
+      conta.alertas.d1 = true;
+    }
+
+    // 🔴 Hoje
+    if(diffDias === 0 && !conta.alertas.hoje){
+      adicionarNotificacao("erro",
+        "🚨 A conta " + conta.nome + " vence hoje!"
+      );
+      conta.alertas.hoje = true;
+    }
+
+    // ☠️ Vencida
+    if(diffDias < 0 && !conta.alertas.vencida){
+      adicionarNotificacao("erro",
+        "❌ A conta " + conta.nome + " está vencida!"
+      );
+      conta.alertas.vencida = true;
+    }
+
+  });
+
+}
+  // 🔔 ATIVAR VERIFICAÇÃO AUTOMÁTICA
+setInterval(verificarContasVencendo, 60000);
+verificarContasVencendo();
 </script>
 
 </body>
