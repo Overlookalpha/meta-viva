@@ -2733,6 +2733,8 @@ for(let i = 0; i < repetirMeses; i++){
 }
 function salvarNovaConta(){
 
+  console.log("Repetir meses:", document.getElementById("repetirMeses").value);
+
   const nome = document.getElementById("nomeContaInput").value;
   const valor = parseFloat(document.getElementById("valorContaInput").value);
   const vencimento = document.getElementById("vencimentoContaInput").value;
