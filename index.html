@@ -366,17 +366,45 @@ button{
 
   <div style="display:flex; flex-direction:column; gap:10px;">
 
-    <button class="menuBtn" onclick="abrirAba('home')">🏠</button>
-    <button class="menuBtn" onclick="abrirAba('desafios')">🎯</button>
-    <button class="menuBtn" onclick="abrirAba('categorias')">📂</button>
-    <button type="button" class="menuBtn"
+    <button class="menuBtn"
+onclick="abrirAba('home')">
+🏠
+</button>
+
+<button class="menuBtn"
+onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
+🎯
+</button>
+
+<button class="menuBtn"
+onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">
+📁
+</button>
+
+<button class="menuBtn"
 onclick="abrirTela('telaRelatorio'); preencherFiltrosRelatorio(); gerarRelatorio();">
 📊
 </button>
-    <button class="menuBtn" onclick="abrirAba('reserva')">💰</button>
-    <button class="menuBtn" onclick="abrirAba('emprestimo')">🏦</button>
-    <button class="menuBtn" onclick="abrirAba('contas')">🧾</button>
-    <button class="menuBtn" onclick="abrirAba('configuracoes')">⚙️</button>
+
+<button class="menuBtn"
+onclick="abrirAba('reserva')">
+💰
+</button>
+
+<button class="menuBtn"
+onclick="abrirAba('emprestimo')">
+🏦
+</button>
+
+<button class="menuBtn"
+onclick="abrirAba('contas')">
+🧾
+</button>
+
+<button class="menuBtn"
+onclick="abrirAba('configuracoes')">
+⚙️
+</button>
 
   </div>
 
