@@ -3510,6 +3510,17 @@ function verificarEvolucaoPerfil(){
   // 🔔 ATIVAR VERIFICAÇÃO AUTOMÁTICA
 setInterval(verificarContasVencendo, 60000);
 verificarContasVencendo();
+  document.addEventListener("DOMContentLoaded", function(){
+
+  const checkbox = document.getElementById("mutarEvellyn");
+
+  if(checkbox){
+    checkbox.addEventListener("change", function(){
+      vozAtivada = !this.checked;
+    });
+  }
+
+});
 </script>
 
 </body>
