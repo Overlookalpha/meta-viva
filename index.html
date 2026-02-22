@@ -2710,6 +2710,8 @@ div.innerHTML =
     recorrente: recorrente,
   });
 
+  localStorage.setItem("contas", JSON.stringify(contas));
+
   document.getElementById("novaContaNome").value = "";
   document.getElementById("novaContaValor").value = "";
   document.getElementById("novaContaVencimento").value = "";
