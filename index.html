@@ -3041,19 +3041,33 @@ console.log("clicou pagarConta");
   function falar(texto){
 
   if(!vozAtivada) return;
-
   if(!('speechSynthesis' in window)) return;
 
   const mensagem = new SpeechSynthesisUtterance(texto);
 
-  mensagem.lang = "pt-PT";
-  mensagem.rate = 0.95;   // levemente mais suave
-  mensagem.pitch = 1.05;  // tom mais amigável
+  const vozes = speechSynthesis.getVoices();
+
+  // 🔥 Tenta pegar voz brasileira feminina
+  const vozBR = vozes.find(v =>
+    v.lang === "pt-BR" && v.name.toLowerCase().includes("female")
+  );
+
+  if(vozBR){
+    mensagem.voice = vozBR;
+  } else {
+    // Se não achar feminina, pega qualquer pt-BR
+    const qualquerBR = vozes.find(v => v.lang === "pt-BR");
+    if(qualquerBR){
+      mensagem.voice = qualquerBR;
+    }
+  }
+
+  mensagem.lang = "pt-BR";
+  mensagem.rate = 0.95;
+  mensagem.pitch = 1.05;
   mensagem.volume = 1;
 
-  // Evita sobreposição
   speechSynthesis.cancel();
-
   speechSynthesis.speak(mensagem);
 }
   function calcularEstadoMentor(){
