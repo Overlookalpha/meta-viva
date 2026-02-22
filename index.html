@@ -1822,25 +1822,23 @@ for (let palavra in mapaEmojis) {
 }
 function atualizarParcelasVisuais(){
 
-  const desafio = desafios[desafioAtualIndex];
-  const area = document.getElementById("areaParcelas");
+    const desafio = desafios[desafioAtualIndex];
+    const area = document.getElementById("areaParcelas");
 
-  area.innerHTML = "";
+    area.innerHTML = "";
 
-  for(let i = 0; i < desafio.partes; i++){
+    for(let i = 0; i < desafio.partes; i++){
 
-    const span = document.createElement("span");
+        const span = document.createElement("span");
 
-    if(i < desafio.parcelasPagas){
-      span.innerText = "🟢";
-    } else {
-      span.innerText = desafio.emoji;
+        if(i < desafio.parcelasPagas){
+            span.innerText = "🟢";
+        } else {
+            span.innerText = desafio.emoji;
+        }
+
+        area.appendChild(span);
     }
-
-    span.style.marginRight = "10px";
-
-    area.appendChild(span);
-  }
 
 }
  function pagarParcela(){
