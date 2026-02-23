@@ -32,8 +32,13 @@ body{
   box-sizing:border-box;
   position:relative;
   overflow:hidden;
-}
 
+  display:flex;
+  flex-direction:column;
+}
+  #landing{
+  margin:auto 0;
+}
 .container{
   width:90%;
   max-width:500px;
@@ -207,13 +212,7 @@ button{
 <div class="app">
 
 <!-- LANDING -->
-<div id="landing" style="
-  position:relative;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  height:100%;
-">
+<div id="landing" style="position:relative;">
 
   <h1 style="
       font-size:80px;
