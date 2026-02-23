@@ -3645,17 +3645,14 @@ verificarContasVencendo();
 
   leitor.readAsDataURL(arquivo);
 }
-  // 🔄 Carrega foto salva ao iniciar
-document.addEventListener("DOMContentLoaded", function(){
-
-  const fotoSalva = localStorage.getItem("fotoPerfilSalva");
-
-  if(fotoSalva){
-    const img = document.getElementById("fotoPerfil");
+ // 🔄 Carrega foto salva
+const fotoSalva = localStorage.getItem("fotoPerfilSalva");
+if(fotoSalva){
+  const img = document.getElementById("fotoPerfil");
+  if(img){
     img.src = fotoSalva;
   }
-
-});
+}
 </script>
 <script>
   if ("serviceWorker" in navigator) {
