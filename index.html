@@ -953,36 +953,7 @@ onclick="abrirAba('configuracoes')">
     <p style="margin-top:15px;">Escolha um emoji:</p>
 
   <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-  <button class="menuBtn" onclick="abrirTela('telaHome')">🏠</button>
-
-<button class="menuBtn" onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
-🎯
-</button>
-
-<button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">
-📂
-</button>
-
-<button class="menuBtn" onclick="abrirTela('telaRelatorio'); preencherFiltrosRelatorio(); gerarRelatorio();">
-📊
-</button>
-
-<button class="menuBtn" onclick="abrirTela('telaReserva')">
-💰
-</button>
-
-<button class="menuBtn" onclick="abrirAba('emprestimo')">
-🏦
-</button>
-
-<button class="menuBtn" onclick="abrirAba('contas')">
-🧾
-</button>
-
-<button class="menuBtn" onclick="abrirAba('configuracoes')">
-⚙️
-</button>
-</div>
+  
 
     <button onclick="criarDesafioPersonalizado()" 
       style="
@@ -994,7 +965,29 @@ onclick="abrirAba('configuracoes')">
         color:white;
         cursor:pointer;
       ">
-      Criar Desafio
+      Criar Desafio<div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:10px;">
+
+<button type="button" onclick="selecionarEmoji('✈️')" style="font-size:40px; background:none; border:none; cursor:pointer;">✈️</button>
+
+<button type="button" onclick="selecionarEmoji('📱')" style="font-size:40px; background:none; border:none; cursor:pointer;">📱</button>
+
+<button type="button" onclick="selecionarEmoji('💻')" style="font-size:40px; background:none; border:none; cursor:pointer;">💻</button>
+
+<button type="button" onclick="selecionarEmoji('🚗')" style="font-size:40px; background:none; border:none; cursor:pointer;">🚗</button>
+
+<button type="button" onclick="selecionarEmoji('🎁')" style="font-size:40px; background:none; border:none; cursor:pointer;">🎁</button>
+
+<button type="button" onclick="selecionarEmoji('🐷')" style="font-size:40px; background:none; border:none; cursor:pointer;">🐷</button>
+
+<button type="button" onclick="selecionarEmoji('🎂')" style="font-size:40px; background:none; border:none; cursor:pointer;">🎂</button>
+
+<button type="button" onclick="selecionarEmoji('💰')" style="font-size:40px; background:none; border:none; cursor:pointer;">💰</button>
+
+<button type="button" onclick="selecionarEmoji('📦')" style="font-size:40px; background:none; border:none; cursor:pointer;">📦</button>
+
+<button type="button" onclick="selecionarEmoji('🎯')" style="font-size:40px; background:none; border:none; cursor:pointer;">🎯</button>
+
+</div>
     </button>
 
   </div>
