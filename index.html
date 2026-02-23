@@ -457,9 +457,13 @@ onclick="abrirAba('configuracoes')">
        style="display:none">
     <!-- INFOS -->
     <div>
-      <h3 style="margin:0; font-size:14px;">
-  Nome do Usuário
-</h3>
+     <h3 id="nomeUsuario"
+     style="margin:0; font-size:14px; cursor:pointer;">
+     Nome do Usuário
+     </h3>
+      <input type="text"
+       id="inputNome"
+       style="display:none; font-size:14px; padding:2px; border-radius:4px; border:none;">
 
       <p id="perfilTipo" style="margin:0; font-size:10px; opacity:0.7;">
         Perfil: —
@@ -3649,6 +3653,33 @@ input.addEventListener("change", function(event){
 const fotoSalva = localStorage.getItem("fotoPerfilSalva");
 if(fotoSalva){
   foto.src = fotoSalva;
+}
+  const nomeEl = document.getElementById("nomeUsuario");
+const inputNome = document.getElementById("inputNome");
+
+// clicar no nome vira input
+nomeEl.addEventListener("click", function(){
+  inputNome.value = nomeEl.textContent;
+  nomeEl.style.display = "none";
+  inputNome.style.display = "inline-block";
+  inputNome.focus();
+});
+
+// ao sair do input salva
+inputNome.addEventListener("blur", function(){
+  const novoNome = inputNome.value.trim();
+  if(novoNome !== ""){
+    nomeEl.textContent = novoNome;
+    localStorage.setItem("nomeUsuarioSalvo", novoNome);
+  }
+  inputNome.style.display = "none";
+  nomeEl.style.display = "block";
+});
+
+// carregar nome salvo
+const nomeSalvo = localStorage.getItem("nomeUsuarioSalvo");
+if(nomeSalvo){
+  nomeEl.textContent = nomeSalvo;
 }
 </script>
 <script>
