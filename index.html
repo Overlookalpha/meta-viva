@@ -91,24 +91,25 @@ button{
 /* PADRÃO MENU LATERAL */
 
 .menuBtn{
-  background:none;
+  height:48px;
+  width:100%;
   border:none;
-  padding:0;
-  margin:8px 0;
-
-  min-width:50px;
-  min-height:50px;
-
-  font-size:24px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
+  border-radius:10px;
+  background:rgba(255,255,255,0.08);
+  color:white;
+  text-align:left;
+  padding:0 15px;
+  font-size:15px;
   cursor:pointer;
+  transition:0.2s;
 }
 
 .menuBtn:hover{
-  transform:scale(1.1);
+  background:rgba(255,255,255,0.15);
+}
+
+.menuBtn:hover{
+  background:rgba(255,255,255,0.15);
 }
 
 .cardResumo{
@@ -143,7 +144,6 @@ button{
   background:#ff3b30;
   color:white;
 }
-
 /* TELAS QUE ABREM POR CIMA */
 
 .screen{
