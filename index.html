@@ -176,22 +176,18 @@ button{
     min-height:95px;
   }
 }
-  @media (max-width:768px){
+ @media (max-width:768px){
 
-  /* empilha menu e conteúdo */
   #home > div{
-    flex-direction:column !important;
+    flex-direction:row !important;
   }
 
-  /* menu ocupa 100% */
   #home > div > div:first-child{
-    width:100% !important;
-    margin-bottom:20px;
+    width:60px !important;
   }
 
-  /* conteúdo ocupa 100% */
   #home > div > div:last-child{
-    width:100% !important;
+    flex:1 !important;
   }
 
 }
