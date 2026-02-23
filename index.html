@@ -192,6 +192,14 @@ button{
   }
 
 }
+  .verticalCenter{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;   /* centro vertical */
+  align-items:center;       /* centro horizontal */
+  text-align:center;
+}
 </style>
 </head>
 
@@ -200,7 +208,7 @@ button{
 <div class="app">
 
 <!-- LANDING -->
-<div id="landing" style="position:relative;">
+<div id="landing" class="verticalCenter">
 
   <h1 style="
       font-size:80px;
