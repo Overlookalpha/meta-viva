@@ -5,6 +5,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -436,30 +437,23 @@ onclick="abrirAba('configuracoes')">
 ">
 
   <!-- BLOCO ESQUERDA (foto + infos) -->
- <!-- BLOCO ESQUERDA (foto + infos) -->
-<div style="display:flex; align-items:center; gap:15px;">
+  <div style="display:flex; align-items:center; gap:15px;">
 
-  <!-- FOTO -->
-  <img id="fotoPerfil"
-       src="https://via.placeholder.com/60"
-       onclick="document.getElementById('inputFoto').click()"
-       style="
-          width:40px;
-height:40px;
-border-radius:50%;
-object-fit:cover;
-border:2px solid #00c896;
-cursor:pointer;
-       ">
+   <!-- FOTO -->
+<img id="fotoPerfil"
+    src="https://via.placeholder.com/60"
+    style="
+        width:40px;
+        height:40px;
+        border-radius:50%;
+        object-fit:cover;
+        border:2px solid #00c896;
+        position:relative;
+        top:-30px;
+    ">
 
-  <!-- INPUT ESCONDIDO -->
-  <input type="file"
-         id="inputFoto"
-         accept="image/*"
-         style="display:none"
-         onchange="carregarFoto(event)">
-
-</div>
+    <!-- INFOS -->
+    <div>
       <h3 style="margin:0; font-size:14px;">
   Nome do Usuário
 </h3>
@@ -3626,31 +3620,6 @@ verificarContasVencendo();
   }
 
 });
-  function carregarFoto(event){
-
-  const arquivo = event.target.files[0];
-  if(!arquivo) return;
-
-  const leitor = new FileReader();
-
-  leitor.onload = function(e){
-    const img = document.getElementById("fotoPerfil");
-    img.src = e.target.result;
-
-    // salva no navegador
-    localStorage.setItem("fotoPerfilSalva", e.target.result);
-  };
-
-  leitor.readAsDataURL(arquivo);
-}
- // 🔄 Carrega foto salva
-const fotoSalva = localStorage.getItem("fotoPerfilSalva");
-if(fotoSalva){
-  const img = document.getElementById("fotoPerfil");
-  if(img){
-    img.src = fotoSalva;
-  }
-}
 </script>
 <script>
   if ("serviceWorker" in navigator) {
