@@ -21,20 +21,16 @@ body{
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
   color:white;
+
   display:flex;
   justify-content:center;
+
+  min-height:100svh;  /* 👈 troca aqui */
 }
 .app{
   width:100%;
   max-width:500px;
-  height:100vh;
-  padding:12px;
-  box-sizing:border-box;
-  position:relative;
-  overflow:hidden;
-
-  display:flex;
-  flex-direction:column;
+  min-height:100svh;   /* 👈 troca aqui também */
 }
 
 .container{
