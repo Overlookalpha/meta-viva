@@ -381,8 +381,8 @@ button{
 
   <div style="display:flex; flex-direction:column; gap:10px;">
 
-    <button class="menuBtn"
-onclick="abrirAba('home')">
+  <button class="menuBtn"
+onclick="abrirTela('telaHome')">
 🏠
 </button>
 
@@ -777,6 +777,22 @@ onclick="abrirAba('configuracoes')">
       Separar Agora
     </button>
 
+  </div>
+
+</div>
+
+  <!-- TELA HOME -->
+<div id="telaHome" class="screen">
+
+  <button onclick="fecharTela('telaHome')" 
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:20px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2>🏠 Painel Principal</h2>
+
+  <div style="margin-top:20px;">
+    Aqui vai ficar o conteúdo da Home nova.
   </div>
 
 </div>
