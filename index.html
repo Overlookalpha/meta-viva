@@ -3805,6 +3805,32 @@ const nomeSalvo = localStorage.getItem("nomeUsuarioSalvo");
 if(nomeSalvo){
   nomeEl.textContent = nomeSalvo;
 }
+  const frasesDiagnostico = {
+
+  critico: [
+    "Sua estrutura está comprometida.",
+    "Seu caixa entrou em zona de risco.",
+    "O saldo disponível não cobre seus compromissos."
+  ],
+
+  pressaoMeta: [
+    "Sua margem está totalmente direcionada para bater a meta.",
+    "Neste momento, qualquer gasto extra compromete seu objetivo mensal.",
+    "Seu foco precisa estar na meta antes de novos consumos."
+  ],
+
+  saudavel: [
+    "Sua estrutura financeira está equilibrada.",
+    "Você mantém margem segura neste momento.",
+    "Seu caixa está organizado e sob controle.",
+    "Há espaço para movimentação consciente."
+  ]
+
+};
+
+function fraseAleatoria(lista){
+  return lista[Math.floor(Math.random() * lista.length)];
+}
  function diagnosticoHome(){
 
   // 1️⃣ Somar entradas pelo histórico
@@ -3885,30 +3911,50 @@ if(nomeSalvo){
   mensagem += "<br>📌 Saldo real disponível após compromissos: "
               + moedaUsuario + " " + saldoReal.toFixed(2);
 
-  // 8️⃣ ORIENTAÇÃO ESTRATÉGICA INTELIGENTE
-  let orientacao = "";
+ // 8️⃣ ORIENTAÇÃO ESTRATÉGICA INTELIGENTE AVANÇADA
 
-  if(saldoReal <= 0){
-    orientacao = "🚨 Seu saldo real está negativo após compromissos. Suspenda imediatamente gastos não essenciais e priorize estabilizar seu caixa.";
-  }
-  else if(totalContasPendentes > saldoCalculado * 0.5){
-    orientacao = "⚠️ Mais da metade do seu saldo está comprometido com contas. Evite novos compromissos financeiros.";
-  }
-  else if(maiorCategoria && maiorValor > totalEntradas * 0.4){
-    orientacao = "📊 A categoria " + maiorCategoria +
-                 " está consumindo grande parte da sua renda. Revise esse ponto para recuperar margem.";
-  }
-  else{
-    let margemSegura = saldoReal * 0.20;
+let orientacao = "";
 
-    orientacao = "✅ Você tem " + moedaUsuario + " " + saldoReal.toFixed(2) +
-                 " livres após compromissos. Para manter segurança, limite seus gastos variáveis a aproximadamente " +
-                 moedaUsuario + " " + margemSegura.toFixed(2) + " nesta semana.";
-  }
+let hojeData = new Date();
+let ultimoDiaMes = new Date(hojeData.getFullYear(), hojeData.getMonth() + 1, 0);
+let diasRestantes = ultimoDiaMes.getDate() - hojeData.getDate();
+let semanasRestantes = Math.ceil(diasRestantes / 7);
 
-  mensagem += "<br><br><strong>🧠 Orientação Estratégica:</strong><br>" + orientacao;
+if(semanasRestantes <= 0){
+  semanasRestantes = 1;
+}
 
-  document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
+let faltaMeta = metaMensal - valorGuardado;
+if(faltaMeta < 0){
+  faltaMeta = 0;
+}
+
+let saldoAjustado = saldoReal - faltaMeta;
+
+if(saldoReal <= 0){
+
+  orientacao =
+    "🚨 " + fraseAleatoria(frasesDiagnostico.critico) +
+    " Suspenda imediatamente gastos não essenciais.";
+
+}
+else if(saldoAjustado <= 0){
+
+  orientacao =
+    "⚠️ " + fraseAleatoria(frasesDiagnostico.pressaoMeta) +
+    " Evite novos gastos variáveis até estabilizar.";
+
+}
+else{
+
+  let limiteSemanal = saldoAjustado / semanasRestantes;
+
+  orientacao =
+    "🧠 " + fraseAleatoria(frasesDiagnostico.saudavel) +
+    " Você pode gastar aproximadamente " +
+    moedaUsuario + " " + limiteSemanal.toFixed(2) +
+    " por semana até o final do mês mantendo sua meta.";
+
 }
 </script>
 <script>
