@@ -826,6 +826,26 @@ onclick="abrirAba('configuracoes')">
     style="margin-top:15px;background:#ff4d4d;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
     Pagar Empréstimo
   </button>
+  <hr style="margin:30px 0; opacity:0.2;">
+
+<h3>🏦 Sacar da Reserva</h3>
+
+<p>Valor para sacar:</p>
+<input type="number" id="valorSaqueReservaInput"
+  style="width:100%;padding:8px;border-radius:6px;border:none;">
+
+<p style="margin-top:15px;">Motivo:</p>
+<select id="motivoSaqueSelect"
+  style="width:100%;padding:8px;border-radius:6px;border:none;">
+  <option value="investimento">📈 Investimento</option>
+  <option value="bem">🛍 Compra de Bem</option>
+  <option value="planejado">💼 Uso Planejado</option>
+</select>
+
+<button onclick="sacarDaReserva()"
+  style="margin-top:15px;background:#3b82f6;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
+  Sacar da Reserva
+</button>
 
 </div>
 
@@ -2698,6 +2718,72 @@ historicoEntradas.push(registroEntrada);
   // Limpa campo
   document.getElementById("valorPagamentoInput").value = "";
   analisarSituacaoFinanceira();
+
+}
+  function sacarDaReserva(){
+
+  let valor = parseFloat(document.getElementById("valorSaqueReservaInput").value);
+  let motivo = document.getElementById("motivoSaqueSelect").value;
+
+  if(isNaN(valor) || valor <= 0){
+    alert("Digite um valor válido.");
+    return;
+  }
+
+  if(valor > valorGuardado){
+    alert("Você não tem esse valor disponível na reserva.");
+    return;
+  }
+
+  let reservaAntes = valorGuardado;
+  let reservaDepois = reservaAntes - valor;
+
+  // 🔐 Piso 30%
+  let pisoMinimo = reservaAntes * 0.30;
+
+  // ⚠️ Verificação de proteção
+  if(reservaDepois < pisoMinimo){
+
+    let confirmar = confirm(
+      "Atenção.\n\n" +
+      "Se confirmar, sua reserva ficará em " +
+      moedaUsuario + " " + reservaDepois.toFixed(2) + ".\n\n" +
+      "O mínimo recomendado para sua proteção é " +
+      moedaUsuario + " " + pisoMinimo.toFixed(2) + ".\n\n" +
+      "Deseja continuar mesmo assim?"
+    );
+
+    if(!confirmar){
+      return;
+    }
+  }
+
+  // 💸 Executa saque
+  valorGuardado -= valor;
+
+  // 🔄 Atualiza interface
+  document.getElementById("reservaValor").innerText =
+    moedaUsuario + " " + valorGuardado.toFixed(2);
+
+  // 📝 Registrar no histórico como movimentação patrimonial
+  let agora = new Date();
+
+  historicoSaidas.push({
+    data: agora.toLocaleDateString("pt-PT"),
+    hora: agora.toLocaleTimeString("pt-PT"),
+    categoria: "Reserva",
+    subcategoria: "Saque - " + motivo,
+    valor: valor
+  });
+
+  // 🔔 Mensagem da Evelyn
+  mostrarMensagemMentor(
+    "Você retirou " + moedaUsuario + " " + valor.toFixed(2) +
+    " da sua reserva. Sua proteção atual é " +
+    moedaUsuario + " " + valorGuardado.toFixed(2) + "."
+  );
+
+  document.getElementById("valorSaqueReservaInput").value = "";
 
 }
   function atualizarDividaHeader(){
