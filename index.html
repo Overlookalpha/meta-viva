@@ -3805,7 +3805,7 @@ const nomeSalvo = localStorage.getItem("nomeUsuarioSalvo");
 if(nomeSalvo){
   nomeEl.textContent = nomeSalvo;
 }
-  function diagnosticoHome(){
+ function diagnosticoHome(){
 
   // 1️⃣ Somar entradas pelo histórico
   let totalEntradas = historicoEntradas.reduce((acc, item) => {
@@ -3817,7 +3817,10 @@ if(nomeSalvo){
     return acc + item.valor;
   }, 0);
 
-  // 3️⃣ Agrupar saídas por categoria
+  // 3️⃣ Calcular saldo baseado SOMENTE no histórico
+  let saldoCalculado = totalEntradas - totalSaidas;
+
+  // 4️⃣ Agrupar saídas por categoria
   let mapaCategorias = {};
 
   historicoSaidas.forEach(item => {
@@ -3837,7 +3840,7 @@ if(nomeSalvo){
     }
   }
 
-  // 4️⃣ Somar contas pendentes
+  // 5️⃣ Somar contas pendentes
   let totalContasPendentes = 0;
   let contasVencendo = 0;
 
@@ -3857,10 +3860,10 @@ if(nomeSalvo){
     }
   });
 
-  // 5️⃣ Calcular saldo real disponível
-  let saldoReal = saldo - totalContasPendentes;
+  // 6️⃣ Saldo real após compromissos
+  let saldoReal = saldoCalculado - totalContasPendentes;
 
-  // 6️⃣ Montar mensagem
+  // 7️⃣ Montar mensagem principal
   let mensagem = "";
 
   mensagem += "💰 Entradas registradas: " + moedaUsuario + " " + totalEntradas.toFixed(2) + "<br>";
@@ -3881,6 +3884,29 @@ if(nomeSalvo){
 
   mensagem += "<br>📌 Saldo real disponível após compromissos: "
               + moedaUsuario + " " + saldoReal.toFixed(2);
+
+  // 8️⃣ ORIENTAÇÃO ESTRATÉGICA INTELIGENTE
+  let orientacao = "";
+
+  if(saldoReal <= 0){
+    orientacao = "🚨 Seu saldo real está negativo após compromissos. Suspenda imediatamente gastos não essenciais e priorize estabilizar seu caixa.";
+  }
+  else if(totalContasPendentes > saldoCalculado * 0.5){
+    orientacao = "⚠️ Mais da metade do seu saldo está comprometido com contas. Evite novos compromissos financeiros.";
+  }
+  else if(maiorCategoria && maiorValor > totalEntradas * 0.4){
+    orientacao = "📊 A categoria " + maiorCategoria +
+                 " está consumindo grande parte da sua renda. Revise esse ponto para recuperar margem.";
+  }
+  else{
+    let margemSegura = saldoReal * 0.20;
+
+    orientacao = "✅ Você tem " + moedaUsuario + " " + saldoReal.toFixed(2) +
+                 " livres após compromissos. Para manter segurança, limite seus gastos variáveis a aproximadamente " +
+                 moedaUsuario + " " + margemSegura.toFixed(2) + " nesta semana.";
+  }
+
+  mensagem += "<br><br><strong>🧠 Orientação Estratégica:</strong><br>" + orientacao;
 
   document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
 }
