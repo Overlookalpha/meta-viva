@@ -1249,6 +1249,7 @@ let rendaMensalBase = 0;
 let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
+let historicoEntradas = [];
 let contas = [];
 function selecionarEmoji(emoji){
 
@@ -1864,6 +1865,9 @@ function abrirTela(id){
   }
 
   document.getElementById(id).classList.add("active");
+  if(id === "telaHome"){
+    diagnosticoHome();
+  }
   if(id === "telaNotificacoes"){
   renderizarNotificacoes();
   notificacoesNaoLidas = 0;
@@ -3881,7 +3885,6 @@ if(nomeSalvo){
 
   document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
 }
-  diagnosticoHome();
 </script>
 <script>
   if ("serviceWorker" in navigator) {
