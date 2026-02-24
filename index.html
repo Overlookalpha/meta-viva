@@ -3802,6 +3802,56 @@ const nomeSalvo = localStorage.getItem("nomeUsuarioSalvo");
 if(nomeSalvo){
   nomeEl.textContent = nomeSalvo;
 }
+  function diagnosticoHome(){
+
+  let totalContasPendentes = 0;
+  const hoje = new Date();
+
+  contas.forEach(conta => {
+    if(conta.paga) return;
+
+    const vencimento = new Date(conta.vencimento);
+    if(vencimento >= hoje){
+      totalContasPendentes += conta.valor;
+    }
+  });
+
+  let saldoReal = saldo - totalContasPendentes;
+
+  // 🔎 Descobrir maior categoria de gasto
+  let maiorCategoria = null;
+  let maiorValor = 0;
+
+  categorias.forEach(cat => {
+    let total = cat.subcategorias.reduce((acc, sub) => acc + sub.total, 0);
+    if(total > maiorValor){
+      maiorValor = total;
+      maiorCategoria = cat.nome;
+    }
+  });
+
+  let mensagem = "";
+
+  mensagem += "💰 Saldo atual: " + moedaUsuario + " " + saldo.toFixed(2) + "<br>";
+
+  if(totalContasPendentes > 0){
+    mensagem += "🧾 Contas pendentes: " + moedaUsuario + " " + totalContasPendentes.toFixed(2) + "<br>";
+    mensagem += "📌 Saldo real disponível: " + moedaUsuario + " " + saldoReal.toFixed(2) + "<br><br>";
+  }
+
+  if(maiorCategoria && maiorValor > 0){
+    mensagem += "📊 Seu maior gasto está em <strong>" + maiorCategoria + "</strong>: "
+                + moedaUsuario + " " + maiorValor.toFixed(2) + "<br>";
+    mensagem += "👉 Vá em 📂 Categorias para revisar.";
+  }
+
+  if(saldoReal > 0 && totalContasPendentes === 0){
+    mensagem += "<br><br>🚀 Você tem dinheiro livre. Pode investir ou fortalecer sua reserva.";
+  }
+
+  document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
+}
+  diagnosticoHome();
 </script>
 <script>
   if ("serviceWorker" in navigator) {
