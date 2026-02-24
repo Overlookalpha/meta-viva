@@ -3804,50 +3804,80 @@ if(nomeSalvo){
 }
   function diagnosticoHome(){
 
+  // 1️⃣ Somar entradas pelo histórico
+  let totalEntradas = historicoEntradas.reduce((acc, item) => {
+    return acc + item.valor;
+  }, 0);
+
+  // 2️⃣ Somar saídas pelo histórico
+  let totalSaidas = historicoSaidas.reduce((acc, item) => {
+    return acc + item.valor;
+  }, 0);
+
+  // 3️⃣ Agrupar saídas por categoria
+  let mapaCategorias = {};
+
+  historicoSaidas.forEach(item => {
+    if(!mapaCategorias[item.categoria]){
+      mapaCategorias[item.categoria] = 0;
+    }
+    mapaCategorias[item.categoria] += item.valor;
+  });
+
+  let maiorCategoria = null;
+  let maiorValor = 0;
+
+  for(let categoria in mapaCategorias){
+    if(mapaCategorias[categoria] > maiorValor){
+      maiorValor = mapaCategorias[categoria];
+      maiorCategoria = categoria;
+    }
+  }
+
+  // 4️⃣ Somar contas pendentes
   let totalContasPendentes = 0;
+  let contasVencendo = 0;
+
   const hoje = new Date();
 
   contas.forEach(conta => {
     if(conta.paga) return;
 
     const vencimento = new Date(conta.vencimento);
-    if(vencimento >= hoje){
-      totalContasPendentes += conta.valor;
+    totalContasPendentes += conta.valor;
+
+    const diffTime = vencimento - hoje;
+    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if(diffDias <= 3 && diffDias >= 0){
+      contasVencendo++;
     }
   });
 
+  // 5️⃣ Calcular saldo real disponível
   let saldoReal = saldo - totalContasPendentes;
 
-  // 🔎 Descobrir maior categoria de gasto
-  let maiorCategoria = null;
-  let maiorValor = 0;
-
-  categorias.forEach(cat => {
-    let total = cat.subcategorias.reduce((acc, sub) => acc + sub.total, 0);
-    if(total > maiorValor){
-      maiorValor = total;
-      maiorCategoria = cat.nome;
-    }
-  });
-
+  // 6️⃣ Montar mensagem
   let mensagem = "";
 
-  mensagem += "💰 Saldo atual: " + moedaUsuario + " " + saldo.toFixed(2) + "<br>";
+  mensagem += "💰 Entradas registradas: " + moedaUsuario + " " + totalEntradas.toFixed(2) + "<br>";
+  mensagem += "📉 Saídas registradas: " + moedaUsuario + " " + totalSaidas.toFixed(2) + "<br><br>";
+
+  if(maiorCategoria){
+    mensagem += "📊 Maior gasto: <strong>" + maiorCategoria + "</strong> — "
+                + moedaUsuario + " " + maiorValor.toFixed(2) + "<br>";
+  }
 
   if(totalContasPendentes > 0){
     mensagem += "🧾 Contas pendentes: " + moedaUsuario + " " + totalContasPendentes.toFixed(2) + "<br>";
-    mensagem += "📌 Saldo real disponível: " + moedaUsuario + " " + saldoReal.toFixed(2) + "<br><br>";
   }
 
-  if(maiorCategoria && maiorValor > 0){
-    mensagem += "📊 Seu maior gasto está em <strong>" + maiorCategoria + "</strong>: "
-                + moedaUsuario + " " + maiorValor.toFixed(2) + "<br>";
-    mensagem += "👉 Vá em 📂 Categorias para revisar.";
+  if(contasVencendo > 0){
+    mensagem += "⚠️ Você tem " + contasVencendo + " conta(s) vencendo nos próximos dias.<br>";
   }
 
-  if(saldoReal > 0 && totalContasPendentes === 0){
-    mensagem += "<br><br>🚀 Você tem dinheiro livre. Pode investir ou fortalecer sua reserva.";
-  }
+  mensagem += "<br>📌 Saldo real disponível após compromissos: "
+              + moedaUsuario + " " + saldoReal.toFixed(2);
 
   document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
 }
