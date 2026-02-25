@@ -1244,6 +1244,7 @@ let estadoMentorAtual = "estavel";
 let pendenteEntradas = 0;
 let pendenteSaidas = 0;
 let saldoRealGlobal = 0;
+let estadoFinanceiroAtual = "neutro";
 let vozesDisponiveis = [];
 
 speechSynthesis.onvoiceschanged = function() {
@@ -3977,6 +3978,17 @@ function fraseAleatoria(lista){
   });
 
   let saldoReal = saldoCalculado - totalContasPendentes;
+  saldoRealGlobal = saldoReal;
+
+if (saldoReal <= 0) {
+  estadoFinanceiroAtual = "risco";
+}
+else if (saldoReal < totalEntradas * 0.3) {
+  estadoFinanceiroAtual = "atencao";
+}
+else {
+  estadoFinanceiroAtual = "neutro";
+}
 
   // Desafios
   let totalFaltaDesafios = 0;
