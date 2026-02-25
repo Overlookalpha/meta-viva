@@ -4007,6 +4007,31 @@ function diagnosticoHome(){
     return acc + item.valor;
   }, 0);
 
+  // 🔎 Maior fonte de renda
+let mapaClientes = {};
+let maiorCliente = null;
+let maiorValorCliente = 0;
+
+historicoEntradas.forEach(item => {
+  if(!item.cliente) return;
+
+  mapaClientes[item.cliente] = (mapaClientes[item.cliente] || 0) + item.valor;
+});
+
+for(let cliente in mapaClientes){
+  if(mapaClientes[cliente] > maiorValorCliente){
+    maiorValorCliente = mapaClientes[cliente];
+    maiorCliente = cliente;
+  }
+}
+
+  // 🔎 Percentual da maior fonte de renda
+let percentualMaiorFonte = 0;
+
+if(totalEntradas > 0){
+  percentualMaiorFonte = maiorValorCliente / totalEntradas;
+}
+  
   // 2️⃣ Somar saídas pelo histórico
   let totalSaidas = historicoSaidas.reduce((acc, item) => {
     return acc + item.valor;
@@ -4056,7 +4081,7 @@ function diagnosticoHome(){
   });
 
   // 6️⃣ Saldo real após compromissos
-  let saldoReal = saldoCalculado - totalContasPendentes;
+ let saldoReal = saldoAtual - totalContasPendentes;
   saldoRealGlobal = saldoReal;
 
   if (saldoReal <= 0) {
@@ -4090,6 +4115,10 @@ let analise = analisarEstadoFinanceiro(dadosMapeados);
 
   mensagem += "💰 Entradas registradas: " + moedaUsuario + " " + totalEntradas.toFixed(2) + "<br>";
   mensagem += "📉 Saídas registradas: " + moedaUsuario + " " + totalSaidas.toFixed(2) + "<br><br>";
+  if(maiorCliente){
+  mensagem += "🏆 Maior fonte de renda: <strong>" + maiorCliente + "</strong> — "
+              + moedaUsuario + " " + maiorValorCliente.toFixed(2) + "<br>";
+}
 
   if(maiorCategoria){
     mensagem += "📊 Maior gasto: <strong>" + maiorCategoria + "</strong> — "
@@ -4118,6 +4147,12 @@ let analise = analisarEstadoFinanceiro(dadosMapeados);
     orientacao += "Sua estrutura mantém margem positiva. ";
   }
 
+  if(percentualMaiorFonte >= 0.6){
+  orientacao += " Sua renda está fortemente concentrada em " + maiorCliente + 
+  ", representando " + Math.round(percentualMaiorFonte * 100) + "% da sua receita total. ";
+  orientacao += "Se essa fonte reduzir, sua estrutura ficará vulnerável. ";
+}
+  
   // Categoria dominante
   if(maiorCategoria && maiorValor > totalEntradas * 0.4){
     orientacao += "A categoria " + maiorCategoria + 
