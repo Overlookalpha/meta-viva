@@ -3862,98 +3862,91 @@ function fraseAleatoria(lista){
     return lista[Math.floor(Math.random() * lista.length)];
   }
 
-  // 🔹 Frases variáveis
-  const frases = {
+  // 🔹 Garantir que arrays existem
+  if(typeof historicoEntradas === "undefined") historicoEntradas = [];
+  if(typeof historicoSaidas === "undefined") historicoSaidas = [];
+  if(typeof contas === "undefined") contas = [];
+  if(typeof desafios === "undefined") desafios = [];
 
+  const frases = {
     estruturaRisco: [
       "Sua estrutura financeira está comprometida.",
       "Seu caixa entrou em zona crítica.",
       "Seu saldo real não sustenta seus compromissos."
     ],
-
     estruturaPositiva: [
       "Sua estrutura mantém margem positiva.",
       "Seu caixa está equilibrado no momento.",
       "Há margem estrutural disponível."
     ],
-
     receitaConcentrada: [
       "Sua receita está fortemente concentrada em",
       "Grande parte da sua renda depende de",
       "Sua principal dependência financeira está em"
     ],
-
     categoriaPesada: [
       "está consumindo uma parte muito elevada da sua renda.",
       "está pesando excessivamente no seu orçamento.",
       "está acima do ideal dentro da sua estrutura."
     ],
-
     metaRisco: [
       "No ritmo atual, sua meta mensal corre risco.",
       "Sua meta mensal pode não ser atingida nesse padrão.",
       "Sua meta está pressionada pelo seu fluxo atual."
     ],
-
     metaOk: [
       "Sua meta mensal está sustentável.",
       "Sua meta está dentro da sua capacidade atual.",
       "Você mantém consistência com sua meta mensal."
     ],
-
     desafioRisco: [
       "Se não houver ajuste, seus desafios podem atrasar.",
       "Se continuar assim, seus sonhos podem ser postergados.",
       "Seu ritmo atual pode comprometer seus desafios."
     ],
-
     desafioOk: [
       "Seus desafios estão viáveis dentro da sua estrutura atual.",
       "Seus sonhos estão financeiramente sustentáveis.",
       "Você está conseguindo manter seus desafios protegidos."
     ],
-
     direcionamentoRisco: [
       "Reduza imediatamente despesas variáveis e reavalie seus limites de categoria.",
       "Corte gastos não essenciais e reorganize sua estrutura agora.",
       "Ajuste seus limites antes que sua margem desapareça."
     ],
-
     direcionamentoCategoria: [
       "Revise o limite da categoria",
       "Reduza os gastos da categoria",
       "Reorganize o peso da categoria"
     ],
-
     direcionamentoDesafio: [
       "Priorize suas parcelas de desafio antes de ampliar consumo variável.",
       "Proteja seus sonhos antes de expandir seus gastos.",
       "Garanta seus desafios antes de aumentar despesas variáveis."
     ],
-
     direcionamentoOk: [
       "Mantenha disciplina. Sua estrutura está saudável e sustentável.",
       "Continue nesse ritmo. Sua organização está funcionando.",
       "Siga consistente. Sua base financeira está sólida."
     ]
-
   };
 
-  // 1️⃣ Entradas
-  let totalEntradas = historicoEntradas.reduce((acc, item) => acc + item.valor, 0);
+  // Entradas
+  let totalEntradas = historicoEntradas.reduce((acc, item) => acc + (item.valor || 0), 0);
 
-  // 2️⃣ Saídas
-  let totalSaidas = historicoSaidas.reduce((acc, item) => acc + item.valor, 0);
+  // Saídas
+  let totalSaidas = historicoSaidas.reduce((acc, item) => acc + (item.valor || 0), 0);
 
   let saldoCalculado = totalEntradas - totalSaidas;
 
-  // 🔎 Maior cliente
+  // Maior cliente
   let mapaClientes = {};
   let maiorCliente = null;
   let maiorValorCliente = 0;
 
   historicoEntradas.forEach(item => {
-    mapaClientes[item.cliente] = (mapaClientes[item.cliente] || 0) + item.valor;
+    if(!item.cliente) return;
+    mapaClientes[item.cliente] = (mapaClientes[item.cliente] || 0) + (item.valor || 0);
   });
 
   for(let cliente in mapaClientes){
@@ -3963,13 +3956,14 @@ function fraseAleatoria(lista){
     }
   }
 
-  // 🔎 Maior categoria
+  // Maior categoria
   let mapaCategorias = {};
   let maiorCategoria = null;
   let maiorValor = 0;
 
   historicoSaidas.forEach(item => {
-    mapaCategorias[item.categoria] = (mapaCategorias[item.categoria] || 0) + item.valor;
+    if(!item.categoria) return;
+    mapaCategorias[item.categoria] = (mapaCategorias[item.categoria] || 0) + (item.valor || 0);
   });
 
   for(let categoria in mapaCategorias){
@@ -3979,92 +3973,55 @@ function fraseAleatoria(lista){
     }
   }
 
-  // 🔎 Contas
+  // Contas
   let totalContasPendentes = 0;
-  const hoje = new Date();
 
   contas.forEach(conta => {
     if(conta.paga) return;
-    totalContasPendentes += conta.valor;
+    totalContasPendentes += (conta.valor || 0);
   });
 
   let saldoReal = saldoCalculado - totalContasPendentes;
 
-  // 🔎 Desafios
+  // Desafios
   let totalFaltaDesafios = 0;
 
-  if(desafios && desafios.length > 0){
-    desafios.forEach(desafio => {
-      let total = desafio.valorParcela * desafio.partes;
-      let pago = desafio.valorParcela * desafio.parcelasPagas;
-      let falta = total - pago;
-      if(falta < 0) falta = 0;
-      totalFaltaDesafios += falta;
-    });
-  }
+  desafios.forEach(desafio => {
+    let total = (desafio.valorParcela || 0) * (desafio.partes || 0);
+    let pago = (desafio.valorParcela || 0) * (desafio.parcelasPagas || 0);
+    let falta = total - pago;
+    if(falta < 0) falta = 0;
+    totalFaltaDesafios += falta;
+  });
 
-  // 🔹 Mensagem base
   let mensagem = "";
-
   mensagem += "💰 Entradas: " + moedaUsuario + " " + totalEntradas.toFixed(2) + "<br>";
   mensagem += "📉 Saídas: " + moedaUsuario + " " + totalSaidas.toFixed(2) + "<br>";
-
-  if(maiorCliente){
-    mensagem += "🧑‍💼 Principal fonte: " + maiorCliente +
-      " — " + moedaUsuario + " " + maiorValorCliente.toFixed(2) + "<br>";
-  }
-
-  if(maiorCategoria){
-    mensagem += "📊 Maior consumo: " + maiorCategoria +
-      " — " + moedaUsuario + " " + maiorValor.toFixed(2) + "<br>";
-  }
-
   mensagem += "📌 Saldo real: " + moedaUsuario + " " + saldoReal.toFixed(2);
 
-  // 🔥 Diagnóstico único integrado
   let diagnostico = "";
 
-  // Estrutura
   if(saldoReal <= 0){
     diagnostico += fraseAleatoria(frases.estruturaRisco) + " ";
   } else {
     diagnostico += fraseAleatoria(frases.estruturaPositiva) + " ";
   }
 
-  // Receita concentrada
   if(maiorCliente && maiorValorCliente > totalEntradas * 0.6){
-    diagnostico += fraseAleatoria(frases.receitaConcentrada) + " " +
-      maiorCliente + ". ";
+    diagnostico += fraseAleatoria(frases.receitaConcentrada) + " " + maiorCliente + ". ";
   }
 
-  // Categoria pesada
   if(maiorCategoria && maiorValor > totalEntradas * 0.4){
     diagnostico += "A categoria " + maiorCategoria + " " +
       fraseAleatoria(frases.categoriaPesada) + " ";
   }
 
-  // Meta
-  if(metaMensal > 0){
-    let faltaMeta = metaMensal - valorGuardado;
-    if(faltaMeta < 0) faltaMeta = 0;
-
-    if(faltaMeta > saldoReal){
-      diagnostico += fraseAleatoria(frases.metaRisco) + " ";
-    } else {
-      diagnostico += fraseAleatoria(frases.metaOk) + " ";
-    }
+  if(totalFaltaDesafios > saldoReal){
+    diagnostico += fraseAleatoria(frases.desafioRisco) + " ";
+  } else if(totalFaltaDesafios > 0){
+    diagnostico += fraseAleatoria(frases.desafioOk) + " ";
   }
 
-  // Desafios
-  if(totalFaltaDesafios > 0){
-    if(totalFaltaDesafios > saldoReal){
-      diagnostico += fraseAleatoria(frases.desafioRisco) + " ";
-    } else {
-      diagnostico += fraseAleatoria(frases.desafioOk) + " ";
-    }
-  }
-
-  // Direcionamento
   diagnostico += "<br><br><strong>Direcionamento:</strong><br>";
 
   if(saldoReal <= 0){
@@ -4084,7 +4041,10 @@ function fraseAleatoria(lista){
 
   mensagem += "<br><br><strong>🧠 Diagnóstico Estratégico:</strong><br>" + diagnostico;
 
-  document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
+  const el = document.getElementById("conteudoDiagnostico");
+  if(el){
+    el.innerHTML = mensagem;
+  }
 
 }
 </script>
