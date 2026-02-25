@@ -3857,7 +3857,7 @@ if(nomeSalvo){
 function fraseAleatoria(lista){
   return lista[Math.floor(Math.random() * lista.length)];
 }
- function diagnosticoHome(){
+function diagnosticoHome(){
 
   // 1️⃣ Somar entradas pelo histórico
   let totalEntradas = historicoEntradas.reduce((acc, item) => {
@@ -3915,15 +3915,29 @@ function fraseAleatoria(lista){
   // 6️⃣ Saldo real após compromissos
   let saldoReal = saldoCalculado - totalContasPendentes;
   saldoRealGlobal = saldoReal;
+
   if (saldoReal <= 0) {
-  estadoFinanceiroAtual = "risco";
-}
-else if (saldoReal < totalEntradas * 0.3) {
-  estadoFinanceiroAtual = "atencao";
-}
-else {
-  estadoFinanceiroAtual = "neutro";
-}
+    estadoFinanceiroAtual = "risco";
+  }
+  else if (saldoReal < totalEntradas * 0.3) {
+    estadoFinanceiroAtual = "atencao";
+  }
+  else {
+    estadoFinanceiroAtual = "neutro";
+  }
+
+  // 🔎 6.1️⃣ Analisar desafios
+  let totalFaltaDesafios = 0;
+
+  if(desafios && desafios.length > 0){
+    desafios.forEach(desafio => {
+      let total = desafio.valorParcela * desafio.partes;
+      let pago = desafio.valorParcela * desafio.parcelasPagas;
+      let falta = total - pago;
+      if(falta < 0) falta = 0;
+      totalFaltaDesafios += falta;
+    });
+  }
 
   // 7️⃣ Montar mensagem principal
   let mensagem = "";
@@ -3947,55 +3961,64 @@ else {
   mensagem += "<br>📌 Saldo real disponível após compromissos: "
               + moedaUsuario + " " + saldoReal.toFixed(2);
 
- // 8️⃣ ORIENTAÇÃO ESTRATÉGICA INTELIGENTE AVANÇADA
+  // 🔥 ORIENTAÇÃO MENTOR INTELIGENTE
 
-let orientacao = "";
+  let orientacao = "";
 
-let hojeData = new Date();
-let ultimoDiaMes = new Date(hojeData.getFullYear(), hojeData.getMonth() + 1, 0);
-let diasRestantes = ultimoDiaMes.getDate() - hojeData.getDate();
-let semanasRestantes = Math.ceil(diasRestantes / 7);
+  // Estrutura
+  if(saldoReal <= 0){
+    orientacao += "Sua estrutura está pressionada. ";
+  } else {
+    orientacao += "Sua estrutura mantém margem positiva. ";
+  }
 
-if(semanasRestantes <= 0){
-  semanasRestantes = 1;
-}
+  // Categoria dominante
+  if(maiorCategoria && maiorValor > totalEntradas * 0.4){
+    orientacao += "A categoria " + maiorCategoria + 
+    " está consumindo uma parte relevante da sua renda. ";
+  }
 
-let faltaMeta = metaMensal - valorGuardado;
-if(faltaMeta < 0){
-  faltaMeta = 0;
-}
+  // Contas
+  if(totalContasPendentes > saldoReal){
+    orientacao += "As contas pendentes estão comprometendo sua segurança financeira. ";
+  }
 
-let saldoAjustado = saldoReal - faltaMeta;
+  // Meta
+  let faltaMeta = metaMensal - valorGuardado;
+  if(faltaMeta < 0) faltaMeta = 0;
 
-if(saldoReal <= 0){
+  if(faltaMeta > saldoReal){
+    orientacao += "Sua meta mensal corre risco no ritmo atual. ";
+  }
 
-  orientacao =
-    "🚨 " + fraseAleatoria(frasesDiagnostico.critico) +
-    " Suspenda imediatamente gastos não essenciais.";
+  // Desafios (SONHOS PRIORIDADE)
+  if(totalFaltaDesafios > 0){
+    if(totalFaltaDesafios > saldoReal){
+      orientacao += "Se não houver ajuste, seus desafios podem atrasar. ";
+    } else {
+      orientacao += "Seus desafios estão viáveis dentro da sua estrutura atual. ";
+    }
+  }
 
-}
-else if(saldoAjustado <= 0){
+  // 🎯 Direcionamento claro com ícones reais do app
+  orientacao += "<br><br><strong>Direcionamento:</strong><br>";
 
-  orientacao =
-    "⚠️ " + fraseAleatoria(frasesDiagnostico.pressaoMeta) +
-    " Evite novos gastos variáveis até estabilizar.";
+  if(saldoReal <= 0){
+    orientacao += "Reduza despesas variáveis e vá até a aba 💰 Reserva para fortalecer sua base.";
+  }
+  else if(maiorCategoria && maiorValor > totalEntradas * 0.4){
+    orientacao += "Revise essa categoria ou ajuste seus limites para proteger seus 🎯 Desafios.";
+  }
+  else if(totalFaltaDesafios > 0){
+    orientacao += "Priorize seus 🎯 Desafios antes de ampliar gastos variáveis.";
+  }
+  else{
+    orientacao += "Sua estrutura está saudável. Considere reforçar sua 💰 Reserva ou acelerar seus 🎯 Desafios.";
+  }
 
-}
-else{
+  mensagem += "<br><br><strong>🧠 Diagnóstico Estratégico:</strong><br>" + orientacao;
 
-  let limiteSemanal = saldoAjustado / semanasRestantes;
-
-  orientacao =
-    "🧠 " + fraseAleatoria(frasesDiagnostico.saudavel) +
-    " Você pode gastar aproximadamente " +
-    moedaUsuario + " " + limiteSemanal.toFixed(2) +
-    " por semana até o final do mês mantendo sua meta.";
-
-}
-
-mensagem += "<br><br><strong>🧠 Orientação Estratégica:</strong><br>" + orientacao;
-
-document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
+  document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
 
 }
 </script>
