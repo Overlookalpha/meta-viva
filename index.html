@@ -1233,6 +1233,7 @@ let sistema10Ativo = false;
 let estadoMentorAtual = "estavel";
 let pendenteEntradas = 0;
 let pendenteSaidas = 0;
+let saldoRealGlobal = 0;
 let vozesDisponiveis = [];
 
 speechSynthesis.onvoiceschanged = function() {
@@ -3329,7 +3330,7 @@ function falar(texto){
   // 🔴 RISCO
   if(
     consumoPercent >= 95 ||
-    saldo <= rendaMensalBase * 0.1 ||
+    saldoRealGlobal <= 0 ||
     dividaPercent > 60
   ){
     return "risco";
@@ -3888,6 +3889,7 @@ function fraseAleatoria(lista){
 
   // 6️⃣ Saldo real após compromissos
   let saldoReal = saldoCalculado - totalContasPendentes;
+  saldoRealGlobal = saldoReal;
 
   // 7️⃣ Montar mensagem principal
   let mensagem = "";
