@@ -1,4 +1,4 @@
-
+let saldo
 
 
 
@@ -2473,19 +2473,28 @@ historicoEntradas.push(registroEntrada);
   if(!userProfile){
   generateProfile();
 }
-  // Atualiza barra da meta
-  atualizarProgresso();
+ // Atualiza barra da meta
+atualizarProgresso();
 
-  // 🔥 Se tela de desafios estiver aberta, atualiza também
-  carregarPlanoDesafio();
+// Se tela de desafios estiver aberta, atualiza
+carregarPlanoDesafio();
 
-  // Limpa campos
-  document.getElementById("nomeClienteInput").value = "";
-  document.getElementById("valorEntradaInput").value = "";
-  analisarSituacaoFinanceira(true);
-  verificarEvolucaoPerfil();
-  fecharTela("telaEntrada");
-  abrirAba("home");
+// Limpa campos
+document.getElementById("nomeClienteInput").value = "";
+document.getElementById("valorEntradaInput").value = "";
+
+// Atualiza estado financeiro (CÉREBRO PRINCIPAL)
+diagnosticoHome();
+
+// Agora sim a Evellyn fala com base no novo estado
+analisarSituacaoFinanceira(true);
+
+// Atualiza perfil se necessário
+verificarEvolucaoPerfil();
+
+// Fecha tela e volta para home
+fecharTela("telaEntrada");
+abrirAba("home");
   
 }
 
@@ -3492,7 +3501,7 @@ const blocosMentor = {
 }
  function analisarSituacaoFinanceira(forcar = false){
    
-  let novoEstado = calcularEstadoMentor();
+  let novoEstado = estadoFinanceiroAtual;
 
   // Se não for forçado e o estado não mudou, não fala
   if(!forcar && novoEstado === estadoMentorAtual){
@@ -3890,6 +3899,15 @@ function fraseAleatoria(lista){
   // 6️⃣ Saldo real após compromissos
   let saldoReal = saldoCalculado - totalContasPendentes;
   saldoRealGlobal = saldoReal;
+  if (saldoReal <= 0) {
+  estadoFinanceiroAtual = "risco";
+}
+else if (saldoReal < totalEntradas * 0.3) {
+  estadoFinanceiroAtual = "atencao";
+}
+else {
+  estadoFinanceiroAtual = "neutro";
+}
 
   // 7️⃣ Montar mensagem principal
   let mensagem = "";
