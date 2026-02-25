@@ -3857,6 +3857,149 @@ if(nomeSalvo){
 function fraseAleatoria(lista){
   return lista[Math.floor(Math.random() * lista.length)];
 }
+  function mapearEstadoFinanceiro(){
+
+  let totalEntradas = historicoEntradas.reduce((acc, item) => acc + item.valor, 0);
+  let totalSaidas = historicoSaidas.reduce((acc, item) => acc + item.valor, 0);
+
+  let saldoBase = totalEntradas - totalSaidas;
+
+  let totalContasPendentes = 0;
+  contas.forEach(conta => {
+    if(!conta.paga){
+      totalContasPendentes += conta.valor;
+    }
+  });
+
+  let saldoReal = saldoBase - totalContasPendentes;
+
+  // Maior cliente
+  let mapaClientes = {};
+  historicoEntradas.forEach(item => {
+    if(!mapaClientes[item.cliente]){
+      mapaClientes[item.cliente] = 0;
+    }
+    mapaClientes[item.cliente] += item.valor;
+  });
+
+  let maiorCliente = null;
+  let maiorValorCliente = 0;
+
+  for(let cliente in mapaClientes){
+    if(mapaClientes[cliente] > maiorValorCliente){
+      maiorValorCliente = mapaClientes[cliente];
+      maiorCliente = cliente;
+    }
+  }
+
+  // Categorias
+  let mapaCategorias = {};
+  historicoSaidas.forEach(item => {
+    if(!mapaCategorias[item.categoria]){
+      mapaCategorias[item.categoria] = 0;
+    }
+    mapaCategorias[item.categoria] += item.valor;
+  });
+
+  let maiorCategoria = null;
+  let maiorValorCategoria = 0;
+
+  for(let categoria in mapaCategorias){
+    if(mapaCategorias[categoria] > maiorValorCategoria){
+      maiorValorCategoria = mapaCategorias[categoria];
+      maiorCategoria = categoria;
+    }
+  }
+
+  // Desafios
+  let totalFaltaDesafios = 0;
+
+  desafios.forEach(desafio => {
+    let total = desafio.valorParcela * desafio.partes;
+    let pago = desafio.valorParcela * desafio.parcelasPagas;
+    let falta = total - pago;
+    if(falta < 0) falta = 0;
+    totalFaltaDesafios += falta;
+  });
+
+  return {
+    totalEntradas,
+    totalSaidas,
+    saldoReal,
+    totalContasPendentes,
+    maiorCliente,
+    maiorValorCliente,
+    maiorCategoria,
+    maiorValorCategoria,
+    totalFaltaDesafios
+  };
+
+}
+  function analisarEstadoFinanceiro(dados){
+
+  let analise = {
+    estrutura: "",
+    riscoConsumo: false,
+    riscoConcentracao: false,
+    riscoDesafios: false,
+    excessoCapital: false,
+    problemaDominante: ""
+  };
+
+  // 1️⃣ Estrutura base
+  if(dados.saldoReal <= 0){
+    analise.estrutura = "colapso";
+  }
+  else if(dados.saldoReal < dados.totalEntradas * 0.3){
+    analise.estrutura = "fragil";
+  }
+  else{
+    analise.estrutura = "estavel";
+  }
+
+  // 2️⃣ Consumo excessivo
+  if(dados.totalSaidas > dados.totalEntradas * 0.7){
+    analise.riscoConsumo = true;
+  }
+
+  // 3️⃣ Concentração de renda
+  if(dados.maiorValorCliente > dados.totalEntradas * 0.6){
+    analise.riscoConcentracao = true;
+  }
+
+  // 4️⃣ Pressão de desafios
+  if(dados.totalFaltaDesafios > dados.saldoReal){
+    analise.riscoDesafios = true;
+  }
+
+  // 5️⃣ Excesso de capital parado
+  if(dados.saldoReal > dados.totalEntradas * 0.8){
+    analise.excessoCapital = true;
+  }
+
+  // 🎯 Definir problema dominante
+  if(analise.estrutura === "colapso"){
+    analise.problemaDominante = "estrutura";
+  }
+  else if(analise.riscoConsumo){
+    analise.problemaDominante = "consumo";
+  }
+  else if(analise.riscoDesafios){
+    analise.problemaDominante = "desafios";
+  }
+  else if(analise.riscoConcentracao){
+    analise.problemaDominante = "concentracao";
+  }
+  else if(analise.excessoCapital){
+    analise.problemaDominante = "crescimento";
+  }
+  else{
+    analise.problemaDominante = "equilibrio";
+  }
+
+  return analise;
+
+}
 function diagnosticoHome(){
 
   // 1️⃣ Somar entradas pelo histórico
@@ -3925,7 +4068,10 @@ function diagnosticoHome(){
   else {
     estadoFinanceiroAtual = "neutro";
   }
-
+ // 🧠 Novo Motor Inteligente
+let dadosMapeados = mapearEstadoFinanceiro();
+let analise = analisarEstadoFinanceiro(dadosMapeados);
+  
   // 🔎 6.1️⃣ Analisar desafios
   let totalFaltaDesafios = 0;
 
