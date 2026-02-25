@@ -3862,12 +3862,6 @@ function fraseAleatoria(lista){
     return lista[Math.floor(Math.random() * lista.length)];
   }
 
-  // 🔹 Garantir que arrays existem
-  if(typeof historicoEntradas === "undefined") historicoEntradas = [];
-  if(typeof historicoSaidas === "undefined") historicoSaidas = [];
-  if(typeof contas === "undefined") contas = [];
-  if(typeof desafios === "undefined") desafios = [];
-
   const frases = {
     estruturaRisco: [
       "Sua estrutura financeira está comprometida.",
