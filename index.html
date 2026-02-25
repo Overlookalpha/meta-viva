@@ -207,6 +207,17 @@ button{
   overflow: hidden;
   text-overflow: ellipsis;
 }
+  #contas {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.areaRolavel {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 40px;
+}
 </style>
 </head>
 
@@ -899,7 +910,7 @@ onclick="abrirAba('configuracoes')">
     cursor:pointer;">
   ➕ Nova Conta
 </button>
-  <div id="listaContas"></div>
+ <div id="listaContas" class="areaRolavel"></div>
 
 </div>
 
