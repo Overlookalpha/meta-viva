@@ -1261,6 +1261,10 @@ let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
 let contas = [];
+const contasSalvas = localStorage.getItem("contasSalvas");
+if (contasSalvas) {
+    contas = JSON.parse(contasSalvas);
+}
 function selecionarEmoji(emoji){
 
   emojiSelecionado = emoji;
@@ -2986,6 +2990,7 @@ for(let i = 0; i < repetirMeses; i++){
   });
 
 }
+  localStorage.setItem("contasSalvas", JSON.stringify(contas));
   document.getElementById("repetirMeses").value = 1;
   document.getElementById("novaContaNome").value = "";
   document.getElementById("novaContaValor").value = "";
