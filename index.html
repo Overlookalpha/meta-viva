@@ -4188,10 +4188,15 @@ window.addEventListener("load", function(){
 
   const usuarioConfigurado = localStorage.getItem("usuarioConfigurado");
 
+  // 🔥 Primeiro fecha TODAS as telas principais
+  document.querySelectorAll(".tela").forEach(t => {
+    t.classList.add("hidden");
+  });
+
   if(usuarioConfigurado === "true"){
-      abrirAba("home");
+      document.getElementById("home").classList.remove("hidden");
   } else {
-      abrirAba("telaPesquisa");
+      document.getElementById("telaPesquisa").classList.remove("hidden");
   }
 
   atualizarInterface();
