@@ -4204,21 +4204,21 @@ window.doc = doc;
 /* ========= MANTER LOGIN ========= */
 
 onAuthStateChanged(auth, (user) => {
+
   if (user) {
     console.log("Usuário logado:", user.email);
 
-    // Esconde landing inicial (botão Criar Meu Plano)
-    const landingBtn = document.querySelector(".primary");
-    if (landingBtn) landingBtn.closest("div")?.classList.add("hidden");
+    // Pula landing e quiz
+    document.getElementById("landing")?.classList.add("hidden");
+    document.getElementById("quiz")?.classList.add("hidden");
 
-    // Esconde login se existir
-    const login = document.getElementById("login");
-    if (login) login.classList.add("hidden");
+    // Mostra home
+    document.getElementById("home")?.classList.remove("hidden");
 
-    // Mostra HOME
-    const home = document.getElementById("home");
-    if (home) home.classList.remove("hidden");
+  } else {
+    console.log("Usuário não logado");
   }
+
 });
 </script>
   
