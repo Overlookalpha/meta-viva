@@ -4215,8 +4215,7 @@ window.addEventListener("load", function(){
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { 
   getAuth, 
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword 
+  createUserWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { 
   getFirestore, 
@@ -4237,12 +4236,14 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🔥 DEIXA GLOBAL
+// 🔥 TORNA GLOBAL
 window.auth = auth;
 window.db = db;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.setDoc = setDoc;
 window.doc = doc;
+
+console.log("Firebase pronto");
 
 </script>
 </body>
