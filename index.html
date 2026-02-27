@@ -1643,6 +1643,7 @@ async function createAccount(){
 
   try {
 
+    // TENTA CRIAR USUÁRIO
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
@@ -1652,15 +1653,24 @@ async function createAccount(){
       criadoEm: new Date()
     });
 
-    alert("Usuário criado com sucesso no Firebase!");
-
-    document.getElementById("login").classList.add("hidden");
-    document.getElementById("setupRenda").classList.remove("hidden");
+    alert("Conta criada com sucesso!");
 
   } catch(error) {
-    alert("Erro: " + error.message);
-    console.log(error);
+
+    if(error.code === "auth/email-already-in-use"){
+
+      // SE JÁ EXISTE → FAZ LOGIN
+      await signInWithEmailAndPassword(auth, email, password);
+      alert("Login realizado com sucesso!");
+
+    } else {
+      alert("Erro: " + error.message);
+      return;
+    }
   }
+
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("setupRenda").classList.remove("hidden");
 }
 
 function abrirDesafios(){
@@ -4173,6 +4183,7 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 window.setDoc = setDoc;
 window.doc = doc;
 window.auth = auth;
