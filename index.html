@@ -1266,6 +1266,7 @@ let sistema10Ativo = false;
 let estadoMentorAtual = "estavel";
 let pendenteEntradas = 0;
 let pendenteSaidas = 0;
+let usuarioUID = null;
 let saldoRealGlobal = 0;
 let estadoFinanceiroAtual = "neutro";
 let vozesDisponiveis = [];
@@ -1629,7 +1630,7 @@ if(plano){
   atualizarProgresso();
 }
 
-function createAccount(){
+async function createAccount(){
 
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
@@ -1640,12 +1641,27 @@ function createAccount(){
     return;
   }
 
-  alert("Conta criada com sucesso!");
+  try {
 
-  document.getElementById("login").classList.add("hidden");  // ESCONDE LOGIN
-  document.getElementById("setupRenda").classList.remove("hidden");
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
+    await setDoc(doc(db, "usuarios", user.uid), {
+      nome: name,
+      email: email,
+      criadoEm: new Date()
+    });
+
+    alert("Usuário criado com sucesso no Firebase!");
+
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("setupRenda").classList.remove("hidden");
+
+  } catch(error) {
+    alert("Erro: " + error.message);
+    console.log(error);
   }
+}
 
 function abrirDesafios(){
   document.getElementById("areaDesafios").classList.remove("hidden");
@@ -4138,5 +4154,29 @@ function diagnosticoHome(){
     });
   }
 </script>
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
+  authDomain: "meta-viva.firebaseapp.com",
+  projectId: "meta-viva",
+  storageBucket: "meta-viva.firebasestorage.app",
+  messagingSenderId: "1074879232126",
+  appId: "1:1074879232126:web:547c2c867e3a9e677b402f"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+window.auth = auth;
+window.db = db;
+
+</script>
+  
 </body>
 </html>
