@@ -2727,8 +2727,9 @@ abrirAba("home");
   atualizarDividaHeader();
   // Limpa campo
   document.getElementById("valorEmprestimoInput").value = "";
-  analisarSituacaoFinanceira();
-
+  console.log("diagnosticoHome foi chamada após empréstimo");
+   diagnosticoHome();
+   analisarSituacaoFinanceira(true);
 }
   function pagarEmprestimo(){
   alert("Função pagar chamada");
