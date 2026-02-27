@@ -1663,7 +1663,7 @@ if(plano){
   atualizarProgresso();
 }
 
-async function createAccount(){
+function createAccount(){
 
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
@@ -1674,30 +1674,12 @@ async function createAccount(){
     return;
   }
 
-  try {
+  alert("Conta criada com sucesso!");
 
-    // 🔥 CRIA USUÁRIO NO AUTH
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+  document.getElementById("login").classList.add("hidden");  // ESCONDE LOGIN
+  document.getElementById("setupRenda").classList.remove("hidden");
 
-    const user = userCredential.user;
-
-    // 🔥 SALVA DADOS NO FIRESTORE
-    await setDoc(doc(db, "usuarios", user.uid), {
-      nome: name,
-      email: email,
-      criadoEm: new Date()
-    });
-
-    alert("Usuário criado com sucesso no Firebase!");
-
-    document.getElementById("login").classList.add("hidden");
-    document.getElementById("setupRenda").classList.remove("hidden");
-
-  } catch(error) {
-    alert("Erro: " + error.message);
-    console.log(error);
   }
-}
 
 function abrirDesafios(){
   document.getElementById("areaDesafios").classList.remove("hidden");
@@ -4214,17 +4196,10 @@ window.addEventListener("load", function(){
  <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword 
-} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { 
-  getFirestore, 
-  setDoc, 
-  doc 
-} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+// Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
   authDomain: "meta-viva.firebaseapp.com",
@@ -4234,16 +4209,11 @@ const firebaseConfig = {
   appId: "1:1074879232126:web:547c2c867e3a9e677b402f"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-
-// 🔥 DEIXA GLOBAL
-window.auth = auth;
-window.db = db;
-window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
-window.setDoc = setDoc;
-window.doc = doc;
+console.log("Firebase conectado com sucesso");
 
 </script>
 </body>
