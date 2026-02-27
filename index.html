@@ -4166,39 +4166,29 @@ function diagnosticoHome(){
 </script>
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp } from "...firebase-app.js";
 import { 
   getAuth, 
   createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword 
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "...firebase-auth.js";
+import { getFirestore, doc, setDoc } from "...firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
-  authDomain: "meta-viva.firebaseapp.com",
-  projectId: "meta-viva",
-  storageBucket: "meta-viva.firebasestorage.app",
-  messagingSenderId: "1074879232126",
-  appId: "1:1074879232126:web:547c2c867e3a9e677b402f"
-};
+const firebaseConfig = { ... };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    // Usuário está logado
     document.getElementById("login").classList.add("hidden");
     document.getElementById("setupRenda").classList.remove("hidden");
   } else {
-    // Usuário não está logado
     document.getElementById("login").classList.remove("hidden");
   }
 });
-
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 window.setDoc = setDoc;
