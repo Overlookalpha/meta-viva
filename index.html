@@ -2692,8 +2692,43 @@ abrirAba("home");
 
   atualizarTelaCategorias();
 }
-  function gerarPDF(){
+ function gerarPDF(){
+
+  const relatorio = document.getElementById("conteudoRelatorio");
+
+  if(!relatorio){
+    alert("Relatório não encontrado.");
+    return;
+  }
+
+  const conteudoOriginal = document.body.innerHTML;
+
+  document.body.innerHTML = `
+    <html>
+      <head>
+        <title>Relatório Financeiro</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            color: #000;
+          }
+          h3 {
+            margin-top: 30px;
+          }
+        </style>
+      </head>
+      <body>
+        <h1>Relatório Financeiro</h1>
+        ${relatorio.innerHTML}
+      </body>
+    </html>
+  `;
+
   window.print();
+
+  document.body.innerHTML = conteudoOriginal;
+  location.reload();
 }
   function pegarEmprestimo(){
 
