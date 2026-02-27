@@ -4186,6 +4186,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // Usuário está logado
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("setupRenda").classList.remove("hidden");
+  } else {
+    // Usuário não está logado
+    document.getElementById("login").classList.remove("hidden");
+  }
+});
+
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.signInWithEmailAndPassword = signInWithEmailAndPassword;
 window.setDoc = setDoc;
