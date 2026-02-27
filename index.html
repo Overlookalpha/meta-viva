@@ -3896,9 +3896,6 @@ if(nomeSalvo){
 
 };
 
-function fraseAleatoria(lista){
-  return lista[Math.floor(Math.random() * lista.length)];
-}
 function diagnosticoHome(){
 
   // 1️⃣ Somar entradas pelo histórico
@@ -3906,44 +3903,44 @@ function diagnosticoHome(){
     return acc + item.valor;
   }, 0);
 
+  // 📅 Data atual (usada no sistema inteiro)
+  const hoje = new Date();
+  const mesAtual = hoje.getMonth();
+  const anoAtual = hoje.getFullYear();
+
   // 🔥 Calcular principal origem de receita (mês atual)
+  let mapaEntradas = {};
+  let principalOrigem = null;
+  let maiorEntrada = 0;
 
-let mapaEntradas = {};
-let principalOrigem = null;
-let maiorEntrada = 0;
+  historicoEntradas.forEach(item => {
 
-const hoje = new Date();
-const mesAtual = hoje.getMonth();
-const anoAtual = hoje.getFullYear();
+    const dataEntrada = new Date(item.ano, item.mes - 1);
 
-historicoEntradas.forEach(item => {
+    if(dataEntrada.getMonth() === mesAtual &&
+       dataEntrada.getFullYear() === anoAtual){
 
-  const dataEntrada = new Date(item.ano, item.mes - 1);
+      if(!mapaEntradas[item.cliente]){
+        mapaEntradas[item.cliente] = 0;
+      }
 
-  if(dataEntrada.getMonth() === mesAtual &&
-     dataEntrada.getFullYear() === anoAtual){
-
-    if(!mapaEntradas[item.cliente]){
-      mapaEntradas[item.cliente] = 0;
+      mapaEntradas[item.cliente] += item.valor;
     }
+  });
 
-    mapaEntradas[item.cliente] += item.valor;
+  for(let nome in mapaEntradas){
+    if(mapaEntradas[nome] > maiorEntrada){
+      maiorEntrada = mapaEntradas[nome];
+      principalOrigem = nome;
+    }
   }
-});
-
-for(let nome in mapaEntradas){
-  if(mapaEntradas[nome] > maiorEntrada){
-    maiorEntrada = mapaEntradas[nome];
-    principalOrigem = nome;
-  }
-}
 
   // 2️⃣ Somar saídas pelo histórico
   let totalSaidas = historicoSaidas.reduce((acc, item) => {
     return acc + item.valor;
   }, 0);
 
-  // 4️⃣ Agrupar saídas por categoria
+  // 3️⃣ Agrupar saídas por categoria
   let mapaCategorias = {};
 
   historicoSaidas.forEach(item => {
@@ -3963,60 +3960,53 @@ for(let nome in mapaEntradas){
     }
   }
 
-  // 5️⃣ Somar contas pendentes
- let totalContasPendentes = 0;
-let contasVencendo = 0;
+  // 4️⃣ Somar contas pendentes DO MÊS ATUAL
+  let totalContasPendentes = 0;
+  let contasVencendo = 0;
 
-const hoje = new Date();
-const mesAtual = hoje.getMonth();
-const anoAtual = hoje.getFullYear();
+  contas.forEach(conta => {
 
-contas.forEach(conta => {
+    if(conta.paga) return;
 
-  if(conta.paga) return;
+    const vencimento = new Date(conta.vencimento);
 
-  const vencimento = new Date(conta.vencimento);
+    const mesConta = vencimento.getMonth();
+    const anoConta = vencimento.getFullYear();
 
-  const mesConta = vencimento.getMonth();
-  const anoConta = vencimento.getFullYear();
+    if(mesConta === mesAtual && anoConta === anoAtual){
 
-  // 🔥 Só considera contas do mês atual
-  if(mesConta === mesAtual && anoConta === anoAtual){
+      totalContasPendentes += conta.valor;
 
-    totalContasPendentes += conta.valor;
+      const diffTime = vencimento - hoje;
+      const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    const diffTime = vencimento - hoje;
-    const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if(diffDias <= 3 && diffDias >= 0){
-      contasVencendo++;
+      if(diffDias <= 3 && diffDias >= 0){
+        contasVencendo++;
+      }
     }
+  });
 
+  // 5️⃣ Saldo real do mês
+  let saldoReal = saldo - totalContasPendentes;
+  saldoRealGlobal = saldoReal;
+
+  if (dividaAtual > 0 && saldoReal <= 0) {
+    estadoFinanceiroAtual = "risco";
+  }
+  else if (dividaAtual > 0) {
+    estadoFinanceiroAtual = "atencao";
+  }
+  else if (saldoReal <= 0) {
+    estadoFinanceiroAtual = "risco";
+  }
+  else if (saldoReal < totalEntradas * 0.3) {
+    estadoFinanceiroAtual = "atencao";
+  }
+  else {
+    estadoFinanceiroAtual = "neutro";
   }
 
-});
-  // 6️⃣ Saldo real após compromissos
-  // 🔥 Usar o saldo REAL do sistema (já sem reserva)
-   let saldoReal = saldo - totalContasPendentes;
-   saldoRealGlobal = saldoReal;
-
- if (dividaAtual > 0 && saldoReal <= 0) {
-  estadoFinanceiroAtual = "risco";
-}
-else if (dividaAtual > 0) {
-  estadoFinanceiroAtual = "atencao";
-}
-else if (saldoReal <= 0) {
-  estadoFinanceiroAtual = "risco";
-}
-else if (saldoReal < totalEntradas * 0.3) {
-  estadoFinanceiroAtual = "atencao";
-}
-else {
-  estadoFinanceiroAtual = "neutro";
-}
-
-  // 🔎 6.1️⃣ Analisar desafios
+  // 6️⃣ Analisar desafios
   let totalFaltaDesafios = 0;
 
   if(desafios && desafios.length > 0){
@@ -4029,15 +4019,17 @@ else {
     });
   }
 
-  // 7️⃣ Montar mensagem principal
+  // 7️⃣ Montar mensagem
   let mensagem = "";
 
   mensagem += "💰 Entradas registradas: " + moedaUsuario + " " + totalEntradas.toFixed(2) + "<br>";
+
   if(principalOrigem){
-  mensagem += "<br>🏆 Principal origem de receita neste mês: <strong>" 
-              + principalOrigem + "</strong> — "
-              + moedaUsuario + " " + maiorEntrada.toFixed(2) + "<br>";
-}
+    mensagem += "🏆 Principal origem de receita neste mês: <strong>" 
+                + principalOrigem + "</strong> — "
+                + moedaUsuario + " " + maiorEntrada.toFixed(2) + "<br>";
+  }
+
   mensagem += "📉 Saídas registradas: " + moedaUsuario + " " + totalSaidas.toFixed(2) + "<br><br>";
 
   if(maiorCategoria){
@@ -4046,39 +4038,34 @@ else {
   }
 
   if(totalContasPendentes > 0){
-    mensagem += "🧾 Contas pendentes neste mês: " + moedaUsuario + " " + totalContasPendentes.toFixed(2) + "<br>";
+    mensagem += "🧾 Contas a pagar neste mês: " + moedaUsuario + " " + totalContasPendentes.toFixed(2) + "<br>";
   }
 
   if(contasVencendo > 0){
     mensagem += "⚠️ Você tem " + contasVencendo + " conta(s) vencendo nos próximos dias.<br>";
   }
 
-  mensagem += "<br>📌 Saldo real disponível neste mês após compromissos: ";
+  mensagem += "<br>📌 Saldo real disponível neste mês após compromissos: "
               + moedaUsuario + " " + saldoReal.toFixed(2);
 
-  // 🔥 ORIENTAÇÃO MENTOR INTELIGENTE
-
+  // 🧠 ORIENTAÇÃO INTELIGENTE
   let orientacao = "";
 
-  // Estrutura
   if(saldoReal <= 0){
     orientacao += "Sua estrutura está pressionada. ";
   } else {
     orientacao += "Sua estrutura mantém margem positiva. ";
   }
 
-  // Categoria dominante
   if(maiorCategoria && maiorValor > totalEntradas * 0.4){
     orientacao += "A categoria " + maiorCategoria + 
     " está consumindo uma parte relevante da sua renda. ";
   }
 
-  // Contas
   if(totalContasPendentes > saldoReal){
-    orientacao += "As contas pendentes estão comprometendo sua segurança financeira. ";
+    orientacao += "As contas do mês estão comprometendo sua segurança financeira. ";
   }
 
-  // Meta
   let faltaMeta = metaMensal - valorGuardado;
   if(faltaMeta < 0) faltaMeta = 0;
 
@@ -4086,7 +4073,6 @@ else {
     orientacao += "Sua meta mensal corre risco no ritmo atual. ";
   }
 
-  // Desafios (SONHOS PRIORIDADE)
   if(totalFaltaDesafios > 0){
     if(totalFaltaDesafios > saldoReal){
       orientacao += "Se não houver ajuste, seus desafios podem atrasar. ";
@@ -4095,7 +4081,6 @@ else {
     }
   }
 
-  // 🎯 Direcionamento claro com ícones reais do app
   orientacao += "<br><br><strong>Direcionamento:</strong><br>";
 
   if(saldoReal <= 0){
@@ -4114,7 +4099,6 @@ else {
   mensagem += "<br><br><strong>🧠 Diagnóstico Estratégico:</strong><br>" + orientacao;
 
   document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
-
 }
 </script>
 <script>
