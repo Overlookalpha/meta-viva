@@ -1603,7 +1603,9 @@ if(plano){
    }
   generateProfile();
   console.log("Perfil gerado:", userProfile);
-
+  
+  document.getElementById("landing").classList.add("hidden");
+  document.getElementById("quiz").classList.add("hidden");
   document.getElementById("setupRenda").classList.add("hidden");
   document.getElementById("login").classList.add("hidden");
   document.getElementById("result").classList.add("hidden");
