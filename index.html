@@ -2772,15 +2772,15 @@ abrirAba("home");
   atualizarDividaHeader();
   // Limpa campo
   document.getElementById("valorPagamentoInput").value = "";
-  analisarSituacaoFinanceira();
+  diagnosticoHome();
+  analisarSituacaoFinanceira(false);
 
 }
   function sacarDaReserva(){
 
   let valor = parseFloat(document.getElementById("valorSaqueReservaInput").value);
   let motivo = document.getElementById("motivoSaqueSelect").value;
-
-  if(isNaN(valor) || valor <= 0){
+    if(isNaN(valor) || valor <= 0){
     alert("Digite um valor válido.");
     return;
   }
