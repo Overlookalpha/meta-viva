@@ -2138,13 +2138,11 @@ function atualizarParcelasVisuais(){
   atualizarListaDesafios();
 
 }
-  function confirmarRenda(){
+ async function confirmarRenda(){
 
   let valor = parseFloat(document.getElementById("rendaInput").value);
   moedaUsuario = document.getElementById("moedaSelect").value;
-  // Atualiza saldo e reserva imediatamente
-  document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
-  document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
+
   if(isNaN(valor) || valor <= 0){
     alert("Digite um valor válido.");
     return;
@@ -2157,7 +2155,6 @@ function atualizarParcelasVisuais(){
     generateProfile();
   }
 
-  // 🔥 Calcula meta baseada no perfil
   const plano = planosPerfil[userProfile];
 
   if(plano){
@@ -2165,6 +2162,20 @@ function atualizarParcelasVisuais(){
   }
 
   gerarCategoriasBase();
+
+  // 🔥🔥🔥 SALVAR NO FIRESTORE AQUI 🔥🔥🔥
+  const user = auth.currentUser;
+
+  if(user){
+    await setDoc(doc(db, "usuarios", user.uid), {
+      rendaBase: rendaMensalBase,
+      saldo: saldo,
+      reserva: valorGuardado,
+      moeda: moedaUsuario,
+      perfil: userProfile,
+      meta: metaMensal
+    });
+  }
 
   document.getElementById("setupRenda").classList.add("hidden");
 
@@ -4203,20 +4214,54 @@ window.doc = doc;
 
 /* ========= MANTER LOGIN ========= */
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
 
   if (user) {
-    console.log("Usuário logado:", user.email);
 
-    // Pula landing e quiz
-    document.getElementById("landing")?.classList.add("hidden");
-    document.getElementById("quiz")?.classList.add("hidden");
+    const userRef = doc(db, "usuarios", user.uid);
+    const snap = await getDoc(userRef);
 
-    // Mostra home
-    document.getElementById("home")?.classList.remove("hidden");
+    if (snap.exists()) {
+
+      const dados = snap.data();
+
+      // 🔥 Carregar variáveis globais corretamente
+      saldo = dados.saldo || 0;
+      valorGuardado = dados.reserva || 0;
+      rendaMensalBase = dados.rendaBase || 0;
+      moedaUsuario = dados.moeda || "€";
+      userProfile = dados.perfil || null;
+      metaMensal = dados.meta || 0;
+
+      // 🔥 Atualizar interface
+      document.getElementById("saldoValor").innerText =
+        moedaUsuario + " " + saldo.toFixed(2);
+
+      document.getElementById("reservaValor").innerText =
+        moedaUsuario + " " + valorGuardado.toFixed(2);
+
+      document.getElementById("metaValor").innerText =
+        moedaUsuario + " " + metaMensal.toFixed(2);
+
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("setupRenda").classList.add("hidden");
+      document.getElementById("home").classList.remove("hidden");
+
+    } else {
+
+      // Usuário existe no Auth mas ainda não configurou renda
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("home").classList.add("hidden");
+      document.getElementById("setupRenda").classList.remove("hidden");
+
+    }
 
   } else {
-    console.log("Usuário não logado");
+
+    document.getElementById("login").classList.remove("hidden");
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("setupRenda").classList.add("hidden");
+
   }
 
 });
