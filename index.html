@@ -1723,6 +1723,10 @@ let historicoEntradas = [];
   document.getElementById("entradaValor").innerText = moedaUsuario + " " + entradasTotal.toFixed(2);
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   atualizarProgresso();
+    const user = auth.currentUser;
+if (user) {
+  salvarDadosUsuario(user);
+}
   }
 
 function adicionarSaida(){
@@ -4184,12 +4188,12 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { 
-  getFirestore, 
-  doc, 
-  setDoc 
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
   authDomain: "meta-viva.firebaseapp.com",
@@ -4202,6 +4206,18 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+async function salvarDadosUsuario(user) {
+
+  const userRef = doc(db, "usuarios", user.uid);
+
+  await updateDoc(userRef, {
+    saldo: saldo,
+    reserva: valorGuardado,
+    rendaBase: rendaMensalBase,
+    moeda: moedaUsuario
+  });
+
+}
 
 /* ========= EXPOR PARA O SCRIPT GRANDE ========= */
 
