@@ -2751,6 +2751,8 @@ abrirAba("home");
 
   // Sai do saldo
   saldo -= valor;
+  estadoFinanceiroAtual = "risco";
+  analisarSituacaoFinanceira(true);
 
   // Volta para reserva
   valorGuardado += valor;
