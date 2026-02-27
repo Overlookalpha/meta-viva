@@ -210,6 +210,29 @@ button{
   overflow-y: auto;
   max-height: 60vh;
 }
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+
+  html, body {
+    width: 500px !important;
+    margin: 0 auto !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  button,
+  .voltar,
+  .no-print {
+    display: none !important;
+  }
+
+}
 </style>
 </head>
 
