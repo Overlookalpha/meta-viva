@@ -4205,11 +4205,11 @@ window.doc = doc;
 
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    document.getElementById("login").classList.add("hidden");
-    document.getElementById("setupRenda").classList.remove("hidden");
+    console.log("Usuário já está logado:", user.email);
+  } else {
+    console.log("Nenhum usuário logado");
   }
 });
-
 </script>
   
 </body>
