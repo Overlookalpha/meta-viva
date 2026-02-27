@@ -1603,9 +1603,7 @@ if(plano){
    }
   generateProfile();
   console.log("Perfil gerado:", userProfile);
-  
-  document.getElementById("landing").classList.add("hidden");
-  document.getElementById("quiz").classList.add("hidden");
+
   document.getElementById("setupRenda").classList.add("hidden");
   document.getElementById("login").classList.add("hidden");
   document.getElementById("result").classList.add("hidden");
@@ -1701,12 +1699,12 @@ async function createAccount(){
 }
 
 function abrirDesafios(){
- // document.getElementById("areaDesafios").classList.remove("hidden");
+  document.getElementById("areaDesafios").classList.remove("hidden");
 
   // Rola suavemente até a área de desafios
-  //document.getElementById("areaDesafios").scrollIntoView({
-   // behavior: "smooth"
-  //});
+  document.getElementById("areaDesafios").scrollIntoView({
+    behavior: "smooth"
+  });
 }
   
 function concluirDesafio(){
@@ -4188,15 +4186,10 @@ window.addEventListener("load", function(){
 
   const usuarioConfigurado = localStorage.getItem("usuarioConfigurado");
 
-  // 🔥 Primeiro fecha TODAS as telas principais
-  document.querySelectorAll(".tela").forEach(t => {
-    t.classList.add("hidden");
-  });
-
   if(usuarioConfigurado === "true"){
-      document.getElementById("home").classList.remove("hidden");
+      abrirAba("home");
   } else {
-      document.getElementById("telaPesquisa").classList.remove("hidden");
+      abrirAba("telaPesquisa");
   }
 
   atualizarInterface();
@@ -4222,7 +4215,8 @@ window.addEventListener("load", function(){
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { 
   getAuth, 
-  createUserWithEmailAndPassword 
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword 
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 import { 
   getFirestore, 
@@ -4243,14 +4237,12 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// 🔥 TORNA GLOBAL
+// 🔥 DEIXA GLOBAL
 window.auth = auth;
 window.db = db;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.setDoc = setDoc;
 window.doc = doc;
-
-console.log("Firebase pronto");
 
 </script>
 </body>
