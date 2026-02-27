@@ -1285,40 +1285,6 @@ let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
 let contas = [];
-function salvarSistema(){
-
-  const dados = {
-    saldo,
-    valorGuardado,
-    historicoEntradas,
-    historicoSaidas,
-    contas,
-    desafios,
-    dividaAtual,
-    metaMensal
-  };
-
-  localStorage.setItem("metaVivaDados", JSON.stringify(dados));
-}
-  function carregarSistema(){
-
-  const dadosSalvos = localStorage.getItem("metaVivaDados");
-
-  if(dadosSalvos){
-
-    const dados = JSON.parse(dadosSalvos);
-
-    saldo = dados.saldo || 0;
-    valorGuardado = dados.valorGuardado || 0;
-    historicoEntradas = dados.historicoEntradas || [];
-    historicoSaidas = dados.historicoSaidas || [];
-    contas = dados.contas || [];
-    desafios = dados.desafios || [];
-    dividaAtual = dados.dividaAtual || 0;
-    metaMensal = dados.metaMensal || 0;
-
-  }
-}
 const contasSalvas = localStorage.getItem("contasSalvas");
 if (contasSalvas) {
     contas = JSON.parse(contasSalvas);
@@ -2173,8 +2139,6 @@ function atualizarParcelasVisuais(){
   }
 
   gerarCategoriasBase();
-  localStorage.setItem("usuarioConfigurado", "true");
-  salvarSistema();
 
   document.getElementById("setupRenda").classList.add("hidden");
 
@@ -2565,7 +2529,7 @@ analisarSituacaoFinanceira(true);
 
 // Atualiza perfil se necessário
 verificarEvolucaoPerfil();
-salvarSistema();
+
 // Fecha tela e volta para home
 fecharTela("telaEntrada");
 abrirAba("home");
@@ -4161,25 +4125,6 @@ function diagnosticoHome(){
   document.getElementById("conteudoDiagnostico").innerHTML = mensagem;
 }
 </script>
-  <script>
-
-window.addEventListener("load", function(){
-
-  carregarSistema();
-
-  const usuarioConfigurado = localStorage.getItem("usuarioConfigurado");
-
-  if(usuarioConfigurado === "true"){
-      abrirAba("home");
-  } else {
-      abrirAba("telaPesquisa");
-  }
-
-  atualizarInterface();
-  diagnosticoHome();
-});
-
-</script>
 <script>
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", function() {
@@ -4192,29 +4137,6 @@ window.addEventListener("load", function(){
         });
     });
   }
-</script>
- <script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
-  authDomain: "meta-viva.firebaseapp.com",
-  projectId: "meta-viva",
-  storageBucket: "meta-viva.firebasestorage.app",
-  messagingSenderId: "1074879232126",
-  appId: "1:1074879232126:web:547c2c867e3a9e677b402f"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-console.log("Firebase conectado com sucesso");
-
 </script>
 </body>
 </html>
