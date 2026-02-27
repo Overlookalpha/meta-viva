@@ -3869,9 +3869,6 @@ function diagnosticoHome(){
     return acc + item.valor;
   }, 0);
 
-  // 3️⃣ Calcular saldo baseado SOMENTE no histórico
-  let saldoCalculado = totalEntradas - totalSaidas;
-
   // 4️⃣ Agrupar saídas por categoria
   let mapaCategorias = {};
 
@@ -3913,11 +3910,12 @@ function diagnosticoHome(){
   });
 
   // 6️⃣ Saldo real após compromissos
-  let saldoReal = saldoCalculado - totalContasPendentes;
-  saldoRealGlobal = saldoReal;
+  // 🔥 Usar o saldo REAL do sistema (já sem reserva)
+   let saldoReal = saldo - totalContasPendentes;
+   saldoRealGlobal = saldoReal;
 
   if (saldoReal <= 0) {
-    estadoFinanceiroAtual = "risco";
+  estadoFinanceiroAtual = "risco";
   }
   else if (saldoReal < totalEntradas * 0.3) {
     estadoFinanceiroAtual = "atencao";
