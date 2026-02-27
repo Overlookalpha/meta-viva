@@ -3920,15 +3920,21 @@ function diagnosticoHome(){
    let saldoReal = saldo - totalContasPendentes;
    saldoRealGlobal = saldoReal;
 
-  if (saldoReal <= 0) {
+ if (dividaAtual > 0 && saldoReal <= 0) {
   estadoFinanceiroAtual = "risco";
-  }
-  else if (saldoReal < totalEntradas * 0.3) {
-    estadoFinanceiroAtual = "atencao";
-  }
-  else {
-    estadoFinanceiroAtual = "neutro";
-  }
+}
+else if (dividaAtual > 0) {
+  estadoFinanceiroAtual = "atencao";
+}
+else if (saldoReal <= 0) {
+  estadoFinanceiroAtual = "risco";
+}
+else if (saldoReal < totalEntradas * 0.3) {
+  estadoFinanceiroAtual = "atencao";
+}
+else {
+  estadoFinanceiroAtual = "neutro";
+}
 
   // 🔎 6.1️⃣ Analisar desafios
   let totalFaltaDesafios = 0;
