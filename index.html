@@ -5,7 +5,6 @@
 
 
 
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -2758,6 +2757,11 @@ abrirAba("home");
 
   // Reduz dívida
   dividaAtual -= valor;
+  adicionarNotificacao(
+    "sucesso",
+    "Você reduziu sua dívida em " + moedaUsuario + " " + valor.toFixed(2) +
+    ". Continue fortalecendo sua estrutura."
+  );
 
   // Atualiza interface principal
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
