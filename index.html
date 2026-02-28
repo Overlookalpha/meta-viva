@@ -4289,6 +4289,8 @@ onAuthStateChanged(auth, async (user) => {
 
     historicoEntradas = dados.entradas || [];
     historicoSaidas = dados.saidas || [];
+    entradasTotal = historicoEntradas.reduce((acc, item) => acc + item.valor, 0);
+    saidasTotal = historicoSaidas.reduce((acc, item) => acc + item.valor, 0);
     categorias = dados.categorias || [];
     if(categorias.length === 0 && rendaMensalBase && userProfile){
     gerarCategoriasBase();
