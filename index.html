@@ -4247,6 +4247,7 @@ onAuthStateChanged(auth, async (user) => {
     moedaUsuario = dados.moeda || "€";
     userProfile = dados.perfil;
     metaMensal = dados.meta || 0;
+    
 
     historicoEntradas = dados.entradas || [];
     historicoSaidas = dados.saidas || [];
@@ -4263,6 +4264,7 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("login").classList.add("hidden");
     document.getElementById("setupRenda").classList.add("hidden");
     document.getElementById("home").classList.remove("hidden");
+    goToHome();
 
   } else {
 
