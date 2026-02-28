@@ -1596,11 +1596,13 @@ function goToLogin(){
 }
 
 function goToHome(){
- const plano = planosPerfil[userProfile];
 
-if(plano){
-   metaMensal = rendaMensalBase * plano.porcentagem;
-   }
+  const plano = planosPerfil[userProfile];
+
+  if(plano){
+    metaMensal = rendaMensalBase * plano.porcentagem;
+  }
+
   generateProfile();
   console.log("Perfil gerado:", userProfile);
 
@@ -1608,18 +1610,21 @@ if(plano){
   document.getElementById("login").classList.add("hidden");
   document.getElementById("result").classList.add("hidden");
   document.getElementById("home").classList.remove("hidden");
+
   document.getElementById("perfilTipo").innerText = "Perfil: " + userProfile;
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
   document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("reservaValor").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
-  // ===== ATIVAR PLANO AUTOMÁTICO DO PERFIL =====
 
+  // 🔥 PROTEÇÃO PARA answers (evita erro quando não veio do quiz)
+  let objetivo = (typeof answers !== "undefined" && answers[0])
+    ? answers[0][0]
+    : null;
 
- 
-  let objetivo = answers[0][0];
   let desafio = "";
   let estrategia = "";
+
   if(objetivo === "Comprar um carro"){
     estrategia = "Criar fundo específico para o carro e guardar 15% mensalmente.";
   }
@@ -1629,39 +1634,27 @@ if(plano){
   else if(objetivo === "Criar reserva de emergência"){
     estrategia = "Construir reserva equivalente a 6 meses de despesas.";
   }
-  
 
   if(userProfile === "Crítico"){
     desafio = "Anotar todos os gastos por 7 dias.";
-
   }
-
   else if(userProfile === "Iniciante"){
     desafio = "Guardar 5% da sua renda por 30 dias.";
-
   }
-
   else if(userProfile === "Intermediário"){
     desafio = "Criar reserva de 3 meses.";
-
   }
-
   else if(userProfile === "Estável"){
     desafio = "Investir para crescimento.";
-
   }
-
   else{
     desafio = "Organizar despesas fixas.";
-
   }
-  // document.getElementById("homeDescricaoPlano").innerText = estrategia;
-  // document.getElementById("homeDesafioTexto").innerText = desafio;
+
   atualizarDividaHeader();
   atualizarResumoContas();
   atualizarProgresso();
 }
-
 function abrirDesafios(){
   document.getElementById("areaDesafios").classList.remove("hidden");
 
