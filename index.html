@@ -1861,7 +1861,9 @@ function guardarNaReserva(){
   document.getElementById("valorGuardarInput").value = "";
   atualizarProgresso();
   abrirAba("home");
+  console.log("ANTES DE SALVAR:", valorGuardado);
   salvarEstadoCompleto();
+  console.log("DEPOIS DE SALVAR:", valorGuardado);
 }
 
 function carregarPlanoDesafio(){
@@ -4287,6 +4289,7 @@ onAuthStateChanged(auth, async (user) => {
     // 🔥 Documento completo → carregar memória
     saldo = dados.saldo || 0;
     valorGuardado = dados.reserva || 0;
+    console.log("CARREGOU DO FIREBASE:", valorGuardado);
     rendaMensalBase = dados.rendaBase;
     moedaUsuario = dados.moeda || "€";
     userProfile = dados.perfil;
