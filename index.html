@@ -1644,7 +1644,7 @@ async function createAccount(){
   try {
 
     // TENTA CRIAR USUÁRIO
-   const userCredential = await window.createUserWithEmailAndPassword(auth, email, password);
+   const userCredential = await window.signInWithEmailAndPassword(window.auth, email, password);
     const user = userCredential.user;
 
     await setDoc(doc(db, "usuarios", user.uid), {
@@ -1660,7 +1660,7 @@ async function createAccount(){
     if(error.code === "auth/email-already-in-use"){
 
       // SE JÁ EXISTE → FAZ LOGIN
-      await window.signInWithEmailAndPassword(auth, email, password);
+      await window.createUserWithEmailAndPassword(window.auth, email, password);
       alert("Login realizado com sucesso!");
 
     } else {
