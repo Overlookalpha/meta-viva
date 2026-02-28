@@ -3203,6 +3203,7 @@ console.log("clicou pagarConta");
     contas.splice(index, 1);
     atualizarListaContas();
     atualizarResumoContas();
+    autoSalvar();
   }
 }
   function atualizarProgresso(){
@@ -4315,6 +4316,10 @@ onAuthStateChanged(auth, async (user) => {
   }
 
 });
+    
+    function autoSalvar(){
+  salvarEstadoCompleto();
+}
     
 async function createAccount(){
 
