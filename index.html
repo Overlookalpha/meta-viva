@@ -234,6 +234,16 @@ button{
   }
 
 }
+.btnLogout{
+  background:#ff4d4f;
+  border:none;
+  padding:6px 12px;
+  border-radius:6px;
+  color:white;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:bold;
+}
 </style>
 </head>
 
@@ -391,20 +401,7 @@ button{
 
 <!-- HOME -->
 <div id="home" class="hidden" style="margin-top:40px; position:relative;">
-  <button onclick="logout()" 
-  style="
-    position:absolute;
-    top:10px;
-    right:10px;
-    background:#ff4d4f;
-    border:none;
-    padding:6px 12px;
-    border-radius:6px;
-    color:white;
-    cursor:pointer;
-    font-size:12px;
-    font-weight:bold;
-  ">
+ <button onclick="logout()" class="btnLogout">
   Sair
 </button>
 
@@ -533,8 +530,7 @@ onclick="abrirAba('configuracoes')">
   </div>
 
   <!-- BLOCO DIREITA (ações) -->
-  <div style="display:flex; gap:12px;">
-
+   <div class="topHeader">
     <!-- 🧠 MENTOR -->
   <button onclick="analisarSituacaoFinanceira(true)"
   style="
