@@ -242,8 +242,7 @@ button{
 <div class="app">
 
 <!-- LANDING -->
-<div id="landing" style="position:relative;">
-
+<div id="landing" class="hidden" style="position:relative;">
   <h1 style="
       font-size:80px;
       margin-bottom:15px;
@@ -1260,6 +1259,7 @@ const mapaEmojis = {
   "caixa": "📦"
 };
 let saldo = 0;
+let appInicializado = false;
 let dividaAtual = 0;
 // ===== SISTEMA 10% OPCIONAL =====
 let sistema10Ativo = false;
@@ -1458,7 +1458,10 @@ const questions = [
 
 ];
 
-function start(){
+function start() {
+
+  if (appInicializado) return;
+
   document.getElementById("landing").classList.add("hidden");
   document.getElementById("quiz").classList.remove("hidden");
   currentQuestion = 0;
@@ -4211,6 +4214,8 @@ window.doc = doc;
 onAuthStateChanged(auth, async (user) => {
 
   if(user){
+
+  appInicializado = true;
 
     const userRef = doc(db, "usuarios", user.uid);
     const snap = await getDoc(userRef);
