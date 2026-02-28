@@ -4193,6 +4193,7 @@ import {
   doc,
   setDoc,
   updateDoc
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
@@ -4260,9 +4261,15 @@ onAuthStateChanged(auth, async (user) => {
       document.getElementById("metaValor").innerText =
         moedaUsuario + " " + metaMensal.toFixed(2);
 
-      document.getElementById("login").classList.add("hidden");
-      document.getElementById("setupRenda").classList.add("hidden");
-      document.getElementById("home").classList.remove("hidden");
+      // 🔥 ESCONDE TODAS AS TELAS INICIAIS
+document.getElementById("landing").classList.add("hidden");
+document.getElementById("quiz").classList.add("hidden");
+document.getElementById("result").classList.add("hidden");
+document.getElementById("login").classList.add("hidden");
+document.getElementById("setupRenda").classList.add("hidden");
+
+// 🔥 MOSTRA SÓ O HOME
+document.getElementById("home").classList.remove("hidden");
 
     } else {
 
