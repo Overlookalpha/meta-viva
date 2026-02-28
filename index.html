@@ -2767,18 +2767,18 @@ salvarEstadoCompleto();
   atualizarTelaCategorias();
   salvarEstadoCompleto();
 }
- function gerarPDF(){
+ function gerarPDF() {
 
   const relatorio = document.getElementById("conteudoRelatorio");
 
-  if(!relatorio){
+  if (!relatorio) {
     alert("Relatório não encontrado.");
     return;
   }
 
-  const conteudoOriginal = document.body.innerHTML;
+  const janela = window.open('', '', 'width=800,height=900');
 
-  document.body.innerHTML = `
+  janela.document.write(`
     <html>
       <head>
         <title>Relatório Financeiro</title>
@@ -2788,9 +2788,22 @@ salvarEstadoCompleto();
             padding: 40px;
             color: #000;
           }
+
+          h1 {
+            text-align: center;
+            margin-bottom: 40px;
+          }
+
           h3 {
             margin-top: 30px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
           }
+
+          .bloco {
+            margin-bottom: 20px;
+          }
+
         </style>
       </head>
       <body>
@@ -2798,12 +2811,10 @@ salvarEstadoCompleto();
         ${relatorio.innerHTML}
       </body>
     </html>
-  `;
+  `);
 
-  window.print();
-
-  document.body.innerHTML = conteudoOriginal;
-  location.reload();
+  janela.document.close();
+  janela.print();
 }
   function pegarEmprestimo(){
 
