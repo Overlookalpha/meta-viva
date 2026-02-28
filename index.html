@@ -1662,7 +1662,7 @@ function goToHome(){
 }
 function abrirDesafios(){
   document.getElementById("areaDesafios").classList.remove("hidden");
-
+atualizarListaDesafios();
   // Rola suavemente até a área de desafios
   document.getElementById("areaDesafios").scrollIntoView({
     behavior: "smooth"
@@ -2034,7 +2034,7 @@ for (let palavra in mapaEmojis) {
     `;
 
     container.appendChild(item);
-   salvarEstadoCompleto();
+   
   });
 
 }
@@ -4295,7 +4295,8 @@ onAuthStateChanged(auth, async (user) => {
     userProfile = dados.perfil;
     metaMensal = dados.meta || 0;
     dividaAtual = dados.divida || 0;
-    
+    desafios = dados.desafios || [];
+    atualizarListaDesafios();
 
     historicoEntradas = dados.entradas || [];
     historicoSaidas = dados.saidas || [];
