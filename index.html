@@ -4297,6 +4297,11 @@ onAuthStateChanged(auth, async (user) => {
     historicoEntradas = dados.entradas || [];
     historicoSaidas = dados.saidas || [];
     categorias = dados.categorias || [];
+    if(categorias.length === 0 && rendaMensalBase && userProfile){
+    gerarCategoriasBase();
+   await salvarEstadoCompleto();
+  }
+    atualizarTelaCategorias();
     contas = dados.contas || [];
     desafios = dados.desafios || [];
 
