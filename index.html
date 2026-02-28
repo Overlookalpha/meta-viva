@@ -4213,47 +4213,56 @@ window.doc = doc;
 
 onAuthStateChanged(auth, async (user) => {
 
-  if(user){
+  if (user) {
 
-  appInicializado = true;
+    appInicializado = true;
 
     const userRef = doc(db, "usuarios", user.uid);
     const snap = await getDoc(userRef);
 
-    if(snap.exists()){
+    if (!snap.exists()) {
 
-      const dados = snap.data();
-
-      saldo = dados.saldo || 0;
-      valorGuardado = dados.reserva || 0;
-      rendaMensalBase = dados.rendaBase || 0;
-      moedaUsuario = dados.moeda || "€";
-      userProfile = dados.perfil || null;
-      metaMensal = dados.meta || 0;
-
-      historicoEntradas = dados.entradas || [];
-      historicoSaidas = dados.saidas || [];
-      categorias = dados.categorias || [];
-      contas = dados.contas || [];
-      desafios = dados.desafios || [];
-
-      if(dados.sistema10){
-        sistema10Ativo = dados.sistema10.ativo || false;
-        pendenteEntradas = dados.sistema10.pendenteEntradas || 0;
-        pendenteSaidas = dados.sistema10.pendenteSaidas || 0;
-      }
-
+      // 🔥 Documento não existe → precisa configurar
       document.getElementById("login").classList.add("hidden");
-      document.getElementById("setupRenda").classList.add("hidden");
-      document.getElementById("home").classList.remove("hidden");
+      document.getElementById("home").classList.add("hidden");
+      document.getElementById("setupRenda").classList.remove("hidden");
+      return;
+    }
 
-    } else {
+    const dados = snap.data();
+
+    // 🔥 Documento existe mas ainda não tem renda/perfil
+    if (!dados.rendaBase || !dados.perfil) {
 
       document.getElementById("login").classList.add("hidden");
       document.getElementById("home").classList.add("hidden");
       document.getElementById("setupRenda").classList.remove("hidden");
-
+      return;
     }
+
+    // 🔥 Documento completo → carregar memória
+    saldo = dados.saldo || 0;
+    valorGuardado = dados.reserva || 0;
+    rendaMensalBase = dados.rendaBase;
+    moedaUsuario = dados.moeda || "€";
+    userProfile = dados.perfil;
+    metaMensal = dados.meta || 0;
+
+    historicoEntradas = dados.entradas || [];
+    historicoSaidas = dados.saidas || [];
+    categorias = dados.categorias || [];
+    contas = dados.contas || [];
+    desafios = dados.desafios || [];
+
+    if (dados.sistema10) {
+      sistema10Ativo = dados.sistema10.ativo || false;
+      pendenteEntradas = dados.sistema10.pendenteEntradas || 0;
+      pendenteSaidas = dados.sistema10.pendenteSaidas || 0;
+    }
+
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("setupRenda").classList.add("hidden");
+    document.getElementById("home").classList.remove("hidden");
 
   } else {
 
