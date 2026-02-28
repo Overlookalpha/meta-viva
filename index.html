@@ -1630,51 +1630,6 @@ if(plano){
   atualizarProgresso();
 }
 
-async function createAccount(){
-
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  if(!name || !email || !password){
-    alert("Preencha todos os campos.");
-    return;
-  }
-
-  try {
-
-    // 🔥 TENTA CRIAR USUÁRIO
-    const userCredential =
-      await createUserWithEmailAndPassword(window.auth, email, password);
-
-    const user = userCredential.user;
-
-    await setDoc(doc(window.db, "usuarios", user.uid), {
-      nome: name,
-      email: email,
-      criadoEm: new Date()
-    });
-
-    alert("Conta criada com sucesso!");
-
-  } catch(error) {
-
-    if(error.code === "auth/email-already-in-use"){
-
-      // 🔥 SE JÁ EXISTE → FAZ LOGIN
-      await signInWithEmailAndPassword(window.auth, email, password);
-
-      alert("Login realizado com sucesso!");
-
-    } else {
-      alert("Erro: " + error.message);
-      return;
-    }
-  }
-
-  document.getElementById("login").classList.add("hidden");
-  document.getElementById("setupRenda").classList.remove("hidden");
-}
 function abrirDesafios(){
   document.getElementById("areaDesafios").classList.remove("hidden");
 
@@ -4209,6 +4164,52 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+async function createAccount(){
+
+  const name = document.getElementById("name").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if(!name || !email || !password){
+    alert("Preencha todos os campos.");
+    return;
+  }
+
+  try {
+
+    // 🔥 TENTA CRIAR USUÁRIO
+    const userCredential =
+      await createUserWithEmailAndPassword(auth, email, password);
+
+    const user = userCredential.user;
+
+    await setDoc(doc(db, "usuarios", user.uid), {
+      nome: name,
+      email: email,
+      criadoEm: new Date()
+    });
+
+    alert("Conta criada com sucesso!");
+
+  } catch(error) {
+
+    if(error.code === "auth/email-already-in-use"){
+
+      // 🔥 SE JÁ EXISTE → FAZ LOGIN
+      await signInWithEmailAndPassword(auth, email, password);
+
+      alert("Login realizado com sucesso!");
+
+    } else {
+      alert("Erro: " + error.message);
+      return;
+    }
+  }
+
+  document.getElementById("login").classList.add("hidden");
+  document.getElementById("setupRenda").classList.remove("hidden");
+}
+  window.createAccount = createAccount;
 async function salvarDadosUsuario(user) {
 
   const userRef = doc(db, "usuarios", user.uid);
