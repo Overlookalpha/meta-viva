@@ -1286,6 +1286,35 @@ let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
 let contas = [];
+async function salvarEstadoCompleto(){
+
+  const user = auth.currentUser;
+  if(!user) return;
+
+  await updateDoc(doc(db, "usuarios", user.uid), {
+
+    saldo: saldo,
+    reserva: valorGuardado,
+    rendaBase: rendaMensalBase,
+    moeda: moedaUsuario,
+    perfil: userProfile,
+    meta: metaMensal,
+
+    entradas: historicoEntradas,
+    saidas: historicoSaidas,
+    categorias: categorias,
+    contas: contas,
+    desafios: desafios,
+
+    sistema10: {
+      ativo: sistema10Ativo,
+      pendenteEntradas: pendenteEntradas,
+      pendenteSaidas: pendenteSaidas
+    }
+
+  });
+
+}
 const contasSalvas = localStorage.getItem("contasSalvas");
 if (contasSalvas) {
     contas = JSON.parse(contasSalvas);
@@ -2424,6 +2453,7 @@ else if(porcentagem >= 80){
   analisarSituacaoFinanceira();
   fecharTela("telaSaida");
   atualizarTelaCategorias();
+  salvarEstadoCompleto();
 }
 
  function adicionarSubcategoria(){
@@ -2531,7 +2561,7 @@ verificarEvolucaoPerfil();
 // Fecha tela e volta para home
 fecharTela("telaEntrada");
 abrirAba("home");
-  
+salvarEstadoCompleto();  
 }
 
  function gerarRelatorio(){
@@ -2787,6 +2817,7 @@ abrirAba("home");
   console.log("diagnosticoHome foi chamada após empréstimo");
    diagnosticoHome();
    analisarSituacaoFinanceira(true);
+  salvarEstadoCompleto();
 }
   function pagarEmprestimo(){
   alert("Função pagar chamada");
@@ -2834,7 +2865,7 @@ abrirAba("home");
   document.getElementById("valorPagamentoInput").value = "";
   diagnosticoHome();
   analisarSituacaoFinanceira(false);
-
+  salvarEstadoCompleto();
 }
   function sacarDaReserva(){
 
@@ -2899,7 +2930,7 @@ abrirAba("home");
   );
 
   document.getElementById("valorSaqueReservaInput").value = "";
-
+  salvarEstadoCompleto();
 }
   function atualizarDividaHeader(){
 
@@ -3214,7 +3245,7 @@ console.log("clicou pagarConta");
   document.getElementById("ajusteSaldoInput").value = "";
 
   alert("Saldo ajustado com sucesso!");
-
+  salvarEstadoCompleto();
 }
   function toggleSistema10(){
 
@@ -3302,6 +3333,7 @@ console.log("clicou pagarConta");
 
   atualizarSistema10Visual();
   document.getElementById("valorSepararManualInput").value = "";
+  salvarEstadoCompleto();
 }
   function atualizarTelaSistema10(){
 
@@ -4176,6 +4208,58 @@ window.updateDoc = updateDoc;
 window.getDoc = getDoc;
 window.doc = doc;
 
+onAuthStateChanged(auth, async (user) => {
+
+  if(user){
+
+    const userRef = doc(db, "usuarios", user.uid);
+    const snap = await getDoc(userRef);
+
+    if(snap.exists()){
+
+      const dados = snap.data();
+
+      saldo = dados.saldo || 0;
+      valorGuardado = dados.reserva || 0;
+      rendaMensalBase = dados.rendaBase || 0;
+      moedaUsuario = dados.moeda || "€";
+      userProfile = dados.perfil || null;
+      metaMensal = dados.meta || 0;
+
+      historicoEntradas = dados.entradas || [];
+      historicoSaidas = dados.saidas || [];
+      categorias = dados.categorias || [];
+      contas = dados.contas || [];
+      desafios = dados.desafios || [];
+
+      if(dados.sistema10){
+        sistema10Ativo = dados.sistema10.ativo || false;
+        pendenteEntradas = dados.sistema10.pendenteEntradas || 0;
+        pendenteSaidas = dados.sistema10.pendenteSaidas || 0;
+      }
+
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("setupRenda").classList.add("hidden");
+      document.getElementById("home").classList.remove("hidden");
+
+    } else {
+
+      document.getElementById("login").classList.add("hidden");
+      document.getElementById("home").classList.add("hidden");
+      document.getElementById("setupRenda").classList.remove("hidden");
+
+    }
+
+  } else {
+
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("setupRenda").classList.add("hidden");
+    document.getElementById("login").classList.remove("hidden");
+
+  }
+
+});
+    
 async function createAccount(){
 
   const name = document.getElementById("name").value;
