@@ -4168,6 +4168,10 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 window.auth = auth;
 window.db = db;
+window.setDoc = setDoc;
+window.updateDoc = updateDoc;
+window.getDoc = getDoc;
+window.doc = doc;
 
 async function createAccount(){
 
