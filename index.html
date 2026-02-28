@@ -2033,7 +2033,7 @@ for (let palavra in mapaEmojis) {
     `;
 
     container.appendChild(item);
-
+   salvarEstadoCompleto();
   });
 
 }
@@ -2129,7 +2129,7 @@ function atualizarParcelasVisuais(){
 
   fecharTela("telaDetalheDesafio");
   atualizarListaDesafios();
-
+  salvarEstadoCompleto();
 }
  async function confirmarRenda(){
 
@@ -2476,6 +2476,7 @@ else if(porcentagem >= 80){
   });
 
   atualizarSubcategorias();
+  salvarEstadoCompleto();
 }
 
   function excluirSubcategoria(){
@@ -2503,6 +2504,7 @@ else if(porcentagem >= 80){
   categorias[indexCategoria].subcategorias.splice(indexSub, 1);
 
   atualizarSubcategorias();
+  salvarEstadoCompleto();
 }
 
   function confirmarEntrada(){
@@ -2746,6 +2748,7 @@ salvarEstadoCompleto();
   categorias[index].piso = novoValor;
 
   atualizarTelaCategorias();
+  salvarEstadoCompleto();
 }
  function gerarPDF(){
 
@@ -3203,7 +3206,7 @@ console.log("clicou pagarConta");
     contas.splice(index, 1);
     atualizarListaContas();
     atualizarResumoContas();
-    autoSalvar();
+    salvarEstadoCompleto();
   }
 }
   function atualizarProgresso(){
@@ -3262,6 +3265,7 @@ console.log("clicou pagarConta");
     alert("Sistema 10% ativado.");
   } else {
     alert("Sistema 10% desativado.");
+    salvarEstadoCompleto();
   }
 
 }
@@ -4316,10 +4320,6 @@ onAuthStateChanged(auth, async (user) => {
   }
 
 });
-    
-    function autoSalvar(){
-  salvarEstadoCompleto();
-}
     
 async function createAccount(){
 
