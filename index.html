@@ -390,7 +390,23 @@ button{
 
 
 <!-- HOME -->
-<div id="home" class="hidden" style="margin-top:40px;">
+<div id="home" class="hidden" style="margin-top:40px; position:relative;">
+  <button onclick="logout()" 
+  style="
+    position:absolute;
+    top:10px;
+    right:10px;
+    background:#ff4d4f;
+    border:none;
+    padding:6px 12px;
+    border-radius:6px;
+    color:white;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:bold;
+  ">
+  Sair
+</button>
 
   <!-- 🔔 BANNER DO MENTOR (fica acima de tudo) -->
   <div id="mentorBanner" 
@@ -4188,6 +4204,7 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserLocalPersistence
+  signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
@@ -4374,6 +4391,11 @@ async function createAccount(){
 }
 
 window.createAccount = createAccount;
+async function logout(){
+  await signOut(auth);
+}
+
+window.logout = logout;
 
 </script>
 </body>
