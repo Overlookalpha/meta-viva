@@ -1643,11 +1643,13 @@ async function createAccount(){
 
   try {
 
-    // TENTA CRIAR USUÁRIO
-   const userCredential = await window.signInWithEmailAndPassword(window.auth, email, password);
+    // 🔥 TENTA CRIAR USUÁRIO
+    const userCredential =
+      await createUserWithEmailAndPassword(window.auth, email, password);
+
     const user = userCredential.user;
 
-    await setDoc(doc(db, "usuarios", user.uid), {
+    await setDoc(doc(window.db, "usuarios", user.uid), {
       nome: name,
       email: email,
       criadoEm: new Date()
@@ -1659,8 +1661,9 @@ async function createAccount(){
 
     if(error.code === "auth/email-already-in-use"){
 
-      // SE JÁ EXISTE → FAZ LOGIN
-      await window.createUserWithEmailAndPassword(window.auth, email, password);
+      // 🔥 SE JÁ EXISTE → FAZ LOGIN
+      await signInWithEmailAndPassword(window.auth, email, password);
+
       alert("Login realizado com sucesso!");
 
     } else {
@@ -1672,7 +1675,6 @@ async function createAccount(){
   document.getElementById("login").classList.add("hidden");
   document.getElementById("setupRenda").classList.remove("hidden");
 }
-
 function abrirDesafios(){
   document.getElementById("areaDesafios").classList.remove("hidden");
 
