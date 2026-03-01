@@ -3924,14 +3924,18 @@ input.addEventListener("change", function(event){
 
   const leitor = new FileReader();
 
-  leitor.onload = function(e){
-    foto.src = e.target.result;
-    localStorage.setItem("fotoPerfilSalva", e.target.result);
-  };
+ leitor.onload = async function(e){
 
-  leitor.readAsDataURL(arquivo);
-});
+  foto.src = e.target.result;
 
+  const user = auth.currentUser;
+  if(user){
+    await updateDoc(doc(db, "usuarios", user.uid), {
+      foto: e.target.result
+    });
+  }
+
+};
 // carregar foto salva
 const fotoSalva = localStorage.getItem("fotoPerfilSalva");
 if(fotoSalva){
