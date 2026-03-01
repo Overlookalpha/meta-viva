@@ -3911,31 +3911,25 @@ verificarContasVencendo();
 
 });
   // torna a foto clicável
-const foto = document.getElementById("fotoPerfil");
-const input = document.getElementById("inputFoto");
-
-foto.addEventListener("click", function(){
-  input.click();
-});
-
 input.addEventListener("change", function(event){
   const arquivo = event.target.files[0];
   if(!arquivo) return;
 
   const leitor = new FileReader();
 
- leitor.onload = async function(e){
+  leitor.onload = function(e){
+    foto.src = e.target.result;
+    localStorage.setItem("fotoPerfilSalva", e.target.result);
+  };
 
-  foto.src = e.target.result;
+  leitor.readAsDataURL(arquivo);
+});
 
-  const user = auth.currentUser;
-  if(user){
-    await updateDoc(doc(db, "usuarios", user.uid), {
-      foto: e.target.result
-    });
-  }
-
-};
+// carregar foto salva
+const fotoSalva = localStorage.getItem("fotoPerfilSalva");
+if(fotoSalva){
+  foto.src = fotoSalva;
+}
 // carregar foto salva
 const fotoSalva = localStorage.getItem("fotoPerfilSalva");
 if(fotoSalva){
