@@ -3187,6 +3187,11 @@ console.log("clicou pagarConta");
   // 💸 Baixa do saldo
   saldo -= conta.valor;
   saidasTotal += conta.valor;
+  // 🔥 SISTEMA 10%
+if(sistema10Ativo){
+  pendenteSaidas += conta.valor * 0.10;
+  atualizarSistema10Visual();
+}
 
   document.getElementById("saldoValor").innerText =
     moedaUsuario + " " + saldo.toFixed(2);
