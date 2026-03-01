@@ -6,6 +6,7 @@
 
 
 
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -3911,6 +3912,13 @@ verificarContasVencendo();
 
 });
   // torna a foto clicável
+const foto = document.getElementById("fotoPerfil");
+const input = document.getElementById("inputFoto");
+
+foto.addEventListener("click", function(){
+  input.click();
+});
+
 input.addEventListener("change", function(event){
   const arquivo = event.target.files[0];
   if(!arquivo) return;
@@ -3925,11 +3933,6 @@ input.addEventListener("change", function(event){
   leitor.readAsDataURL(arquivo);
 });
 
-// carregar foto salva
-const fotoSalva = localStorage.getItem("fotoPerfilSalva");
-if(fotoSalva){
-  foto.src = fotoSalva;
-}
 // carregar foto salva
 const fotoSalva = localStorage.getItem("fotoPerfilSalva");
 if(fotoSalva){
