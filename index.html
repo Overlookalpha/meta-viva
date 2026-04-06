@@ -2642,23 +2642,29 @@ salvarEstadoCompleto();
   html += "<h3>Histórico de Entradas</h3>";
 
   let entradasFiltradas = historicoEntradas.filter(function(item){
-    let passaMes = (mesSelecionado === "todos" || item.mes == mesSelecionado);
-    return passaMes;
+  let passaMes = (mesSelecionado === "todos" || item.mes == mesSelecionado);
+  return passaMes;
+});
+
+// ✅ AGORA SIM — fora do filter
+let totalEntradasFiltradas = entradasFiltradas.reduce((acc, item) => acc + item.valor, 0);
+
+if(entradasFiltradas.length === 0){
+  html += "Nenhuma entrada encontrada.<br>";
+} else {
+
+  entradasFiltradas.forEach(function(item){
+
+    html += item.data + " " + item.hora + " — " +
+            "Cliente: " + item.cliente +
+            " — " + moedaUsuario + " " + item.valor.toFixed(2) + "<br>";
+
   });
 
-  if(entradasFiltradas.length === 0){
-    html += "Nenhuma entrada encontrada.<br>";
-  } else {
+}
 
-    entradasFiltradas.forEach(function(item){
-
-      html += item.data + " " + item.hora + " — " +
-              "Cliente: " + item.cliente +
-              " — " + moedaUsuario + " " + item.valor.toFixed(2) + "<br>";
-
-    });
-
-  }
+// ✅ TOTAL APARECE AQUI
+html += "<strong>Total Entradas: " + moedaUsuario + " " + totalEntradasFiltradas.toFixed(2) + "</strong><br>";
 
   html += "<br>";
   html += "<h3>Categorias</h3>";
@@ -2672,15 +2678,33 @@ salvarEstadoCompleto();
     return cat.nome === categoriaSelecionada;
   });
 
-  categoriasFiltradas.forEach(function(cat){
+  let saidasCategoria = saidasFiltradas.filter(function(item){
 
-    let total = cat.subcategorias.reduce(function(acc, sub){
-      return acc + sub.total;
-    }, 0);
+  if(categoriaSelecionada === "todas") return true;
 
-    html += cat.nome + ": " + moedaUsuario + " " + total.toFixed(2) + "<br>";
+  return item.categoria === categoriaSelecionada;
+});
 
-  });
+let agrupado = {};
+
+saidasCategoria.forEach(function(item){
+
+  if(!agrupado[item.subcategoria]){
+    agrupado[item.subcategoria] = 0;
+  }
+
+  agrupado[item.subcategoria] += item.valor;
+
+});
+
+let totalCategoria = 0;
+
+for(let sub in agrupado){
+  html += sub + ": " + moedaUsuario + " " + agrupado[sub].toFixed(2) + "<br>";
+  totalCategoria += agrupado[sub];
+}
+
+html += "<strong>Total Categoria: " + moedaUsuario + " " + totalCategoria.toFixed(2) + "</strong><br>";
 
   html += "<br><h3>Histórico de Saídas</h3>";
 
@@ -2688,17 +2712,29 @@ salvarEstadoCompleto();
     html += "Nenhuma saída registrada.<br>";
   } else {
 
-    historicoSaidas.forEach(item => {
+  let saidasFiltradas = historicoSaidas.filter(function(item){
 
-      html += `
-        ${item.data} ${item.hora} —
-        ${item.categoria} > ${item.subcategoria}
-        — ${moedaUsuario} ${item.valor.toFixed(2)}<br>
-      `;
+  if(mesSelecionado === "todos") return true;
 
-    });
+  let partes = item.data.split("/");
+  let mesItem = parseInt(partes[1]);
 
-  }
+  return mesItem == mesSelecionado;
+});
+
+if(saidasFiltradas.length === 0){
+  html += "Nenhuma saída registrada.<br>";
+} else {
+
+  saidasFiltradas.forEach(function(item){
+
+    html += item.data + " " + item.hora + " — " +
+            item.categoria + " > " + item.subcategoria +
+            " — " + moedaUsuario + " " + item.valor.toFixed(2) + "<br>";
+
+  });
+
+}  
 
   html += "<br><h3>Desafios</h3>";
 
