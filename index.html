@@ -2747,6 +2747,15 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   let mesAnoSelecionado = document.getElementById("filtroMes").value;
   let categoriaSelecionada = document.getElementById("filtroCategoria").value;
 
+  // 🔥 O filtro de categoria agora tem 3 modos:
+  // "todas"    -> mostra entradas E saídas de todas as categorias, normal
+  // "Entradas" -> mostra SÓ entradas, nada de saída/categoria de gasto junto
+  // qualquer outro valor -> é uma categoria de gasto específica (Essencial,
+  //                         Fixos, Lazer, Esporádicos...): mostra SÓ aquela
+  //                         categoria, sem entradas junto
+  let mostrarEntradas = (categoriaSelecionada === "todas" || categoriaSelecionada === "Entradas");
+  let mostrarSaidas = (categoriaSelecionada === "todas" || categoriaSelecionada !== "Entradas");
+
   // 🔥 BLOCO DÍVIDA
   if(dividaAtual > 0){
     html += "<h3>Dívida Atual</h3>";
@@ -2774,13 +2783,13 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   // 🔥 Filtra entradas e saídas pelo período (mês+ano) E categoria selecionados.
   // Esses dois arrays filtrados são a base de TODO o resto do relatório,
   // pra não ter blocos que respeitam o filtro e blocos que ignoram.
-  let entradasFiltradas = historicoEntradas.filter(function(item){
+  let entradasFiltradas = !mostrarEntradas ? [] : historicoEntradas.filter(function(item){
     return itemPassaFiltroMes(item, mesAnoSelecionado);
   });
 
-  let saidasFiltradas = historicoSaidas.filter(function(item){
+  let saidasFiltradas = !mostrarSaidas ? [] : historicoSaidas.filter(function(item){
     let passaMes = itemPassaFiltroMes(item, mesAnoSelecionado);
-    let passaCategoria = (categoriaSelecionada === "todas" || item.categoria === categoriaSelecionada);
+    let passaCategoria = (categoriaSelecionada === "todas" || categoriaSelecionada === "Entradas" || item.categoria === categoriaSelecionada);
     return passaMes && passaCategoria;
   });
 
@@ -2789,85 +2798,164 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
 
   html += "<h3>Resumo do Período</h3>";
   html += "Saldo atual: " + moedaUsuario + " " + saldo.toFixed(2) + "<br>";
-  html += "Entradas no período: " + moedaUsuario + " " + totalEntradasFiltradas.toFixed(2) + "<br>";
-  html += "Saídas no período: " + moedaUsuario + " " + totalSaidasFiltradas.toFixed(2) + "<br>";
+  if(mostrarEntradas){
+    html += "Entradas no período: " + moedaUsuario + " " + totalEntradasFiltradas.toFixed(2) + "<br>";
+  }
+  if(mostrarSaidas){
+    html += "Saídas no período: " + moedaUsuario + " " + totalSaidasFiltradas.toFixed(2) + "<br>";
+  }
   html += "Reserva: " + moedaUsuario + " " + valorGuardado.toFixed(2) + "<br><br>";
 
-  html += "<h3>Histórico de Entradas</h3>";
+  if(mostrarEntradas){
 
-  if(entradasFiltradas.length === 0){
-    html += "Nenhuma entrada encontrada neste período.<br>";
-  } else {
+    html += "<h3>Histórico de Entradas</h3>";
 
-    entradasFiltradas.forEach(function(item){
+    if(entradasFiltradas.length === 0){
+      html += "Nenhuma entrada encontrada neste período.<br>";
+    } else {
 
-      html += item.data + " " + item.hora + " — " +
-              "Cliente: " + item.cliente +
-              " — " + moedaUsuario + " " + item.valor.toFixed(2) + "<br>";
+      entradasFiltradas.forEach(function(item){
 
-    });
+        html += item.data + " " + item.hora + " — " +
+                "Cliente: " + item.cliente +
+                " — " + moedaUsuario + " " + item.valor.toFixed(2) + "<br>";
 
-  }
-
-  html += "<br>";
-  html += "<h3>Gastos por Categoria (no período)</h3>";
-
-  // 🔥 Agrupa as saídas filtradas por categoria > subcategoria.
-  // Isso é calculado em cima do histórico (que já tem mês/ano/categoria
-  // de cada lançamento), então funciona pra qualquer mês, passado ou atual —
-  // diferente do card de "Categorias" da Home, que só mostra o mês corrente.
-  let totalPorCategoria = {};
-
-  saidasFiltradas.forEach(function(item){
-    if(!totalPorCategoria[item.categoria]){
-      totalPorCategoria[item.categoria] = { total: 0, subcategorias: {} };
-    }
-    totalPorCategoria[item.categoria].total += item.valor;
-
-    let sub = item.subcategoria || "(sem subcategoria)";
-    if(!totalPorCategoria[item.categoria].subcategorias[sub]){
-      totalPorCategoria[item.categoria].subcategorias[sub] = 0;
-    }
-    totalPorCategoria[item.categoria].subcategorias[sub] += item.valor;
-  });
-
-  let nomesCategoriasComGasto = Object.keys(totalPorCategoria);
-
-  if(nomesCategoriasComGasto.length === 0){
-    html += "Nenhum gasto encontrado neste período.<br>";
-  } else {
-
-    nomesCategoriasComGasto.forEach(function(nomeCat){
-
-      let dadosCat = totalPorCategoria[nomeCat];
-      html += "<strong>" + nomeCat + "</strong>: " + moedaUsuario + " " + dadosCat.total.toFixed(2) + "<br>";
-
-      Object.keys(dadosCat.subcategorias).forEach(function(nomeSub){
-        html += "&nbsp;&nbsp;↳ " + nomeSub + ": " + moedaUsuario + " " +
-                dadosCat.subcategorias[nomeSub].toFixed(2) + "<br>";
       });
 
+    }
+
+    html += "<br>";
+  }
+
+  if(mostrarSaidas){
+
+    html += "<h3>Gastos por Categoria (no período)</h3>";
+
+    // 🔥 Agrupa as saídas filtradas por categoria > subcategoria.
+    // Isso é calculado em cima do histórico (que já tem mês/ano/categoria
+    // de cada lançamento), então funciona pra qualquer mês, passado ou atual —
+    // diferente do card de "Categorias" da Home, que só mostra o mês corrente.
+    let totalPorCategoria = {};
+
+    saidasFiltradas.forEach(function(item){
+      if(!totalPorCategoria[item.categoria]){
+        totalPorCategoria[item.categoria] = { total: 0, subcategorias: {} };
+      }
+      totalPorCategoria[item.categoria].total += item.valor;
+
+      let sub = item.subcategoria || "(sem subcategoria)";
+      if(!totalPorCategoria[item.categoria].subcategorias[sub]){
+        totalPorCategoria[item.categoria].subcategorias[sub] = 0;
+      }
+      totalPorCategoria[item.categoria].subcategorias[sub] += item.valor;
     });
+
+    let nomesCategoriasComGasto = Object.keys(totalPorCategoria);
+
+    if(nomesCategoriasComGasto.length === 0){
+      html += "Nenhum gasto encontrado neste período.<br>";
+    } else {
+
+      nomesCategoriasComGasto.forEach(function(nomeCat){
+
+        let dadosCat = totalPorCategoria[nomeCat];
+        html += "<strong>" + nomeCat + "</strong>: " + moedaUsuario + " " + dadosCat.total.toFixed(2) + "<br>";
+
+        Object.keys(dadosCat.subcategorias).forEach(function(nomeSub){
+          html += "&nbsp;&nbsp;↳ " + nomeSub + ": " + moedaUsuario + " " +
+                  dadosCat.subcategorias[nomeSub].toFixed(2) + "<br>";
+        });
+
+      });
+
+    }
+
+    html += "<br><h3>Histórico de Saídas</h3>";
+
+    if(saidasFiltradas.length === 0){
+      html += "Nenhuma saída encontrada neste período.<br>";
+    } else {
+
+      saidasFiltradas.forEach(item => {
+
+        html += `
+          ${item.data} ${item.hora} —
+          ${item.categoria} > ${item.subcategoria}
+          — ${moedaUsuario} ${item.valor.toFixed(2)}<br>
+        `;
+
+      });
+
+    }
 
   }
 
-  html += "<br><h3>Histórico de Saídas</h3>";
+  // 🔥 BLOCO "TOTAIS POR MÊS" — quanto foi cada mês, e o total geral
+  // de tudo desde o início. Não usa o filtro de mês (senão só apareceria
+  // um mês), mas RESPEITA o filtro de categoria/entradas selecionado,
+  // pra ficar consistente com o resto do relatório.
+  html += "<br><h3>📅 Totais por Mês</h3>";
 
-  if(saidasFiltradas.length === 0){
-    html += "Nenhuma saída encontrada neste período.<br>";
+  let entradasParaTotais = mostrarEntradas ? historicoEntradas : [];
+  let saidasParaTotais = !mostrarSaidas ? [] : historicoSaidas.filter(function(item){
+    return categoriaSelecionada === "todas" || categoriaSelecionada === "Entradas" || item.categoria === categoriaSelecionada;
+  });
+
+  let totaisPorMes = {};
+
+  entradasParaTotais.forEach(function(item){
+    if(!item.mes || !item.ano) return;
+    let chave = item.ano + "-" + item.mes;
+    if(!totaisPorMes[chave]){
+      totaisPorMes[chave] = { mes: item.mes, ano: item.ano, entradas: 0, saidas: 0 };
+    }
+    totaisPorMes[chave].entradas += item.valor;
+  });
+
+  saidasParaTotais.forEach(function(item){
+    if(!item.mes || !item.ano) return;
+    let chave = item.ano + "-" + item.mes;
+    if(!totaisPorMes[chave]){
+      totaisPorMes[chave] = { mes: item.mes, ano: item.ano, entradas: 0, saidas: 0 };
+    }
+    totaisPorMes[chave].saidas += item.valor;
+  });
+
+  let chavesOrdenadas = Object.keys(totaisPorMes).sort(function(a, b){
+    let ma = totaisPorMes[a], mb = totaisPorMes[b];
+    if(ma.ano !== mb.ano) return mb.ano - ma.ano;
+    return mb.mes - ma.mes;
+  });
+
+  let totalGeralEntradas = 0;
+  let totalGeralSaidas = 0;
+
+  if(chavesOrdenadas.length === 0){
+    html += "Nenhum lançamento encontrado ainda.<br>";
   } else {
 
-    saidasFiltradas.forEach(item => {
+    chavesOrdenadas.forEach(function(chave){
 
-      html += `
-        ${item.data} ${item.hora} —
-        ${item.categoria} > ${item.subcategoria}
-        — ${moedaUsuario} ${item.valor.toFixed(2)}<br>
-      `;
+      let m = totaisPorMes[chave];
+      totalGeralEntradas += m.entradas;
+      totalGeralSaidas += m.saidas;
+
+      html += "<strong>" + nomesMeses[m.mes - 1] + "/" + m.ano + "</strong>: ";
+
+      let partes = [];
+      if(mostrarEntradas) partes.push("Entradas " + moedaUsuario + " " + m.entradas.toFixed(2));
+      if(mostrarSaidas) partes.push("Saídas " + moedaUsuario + " " + m.saidas.toFixed(2));
+
+      html += partes.join(" | ") + "<br>";
 
     });
-
   }
+
+  html += "<br><strong>Total geral (todos os meses até agora)</strong>: ";
+  let partesGeral = [];
+  if(mostrarEntradas) partesGeral.push("Entradas " + moedaUsuario + " " + totalGeralEntradas.toFixed(2));
+  if(mostrarSaidas) partesGeral.push("Saídas " + moedaUsuario + " " + totalGeralSaidas.toFixed(2));
+  html += partesGeral.join(" | ") + "<br>";
 
   html += "<br><h3>Desafios</h3>";
 
@@ -2891,7 +2979,7 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   const selectCategoria = document.getElementById("filtroCategoria");
 
   selectMes.innerHTML = '<option value="todos">Todos os Meses</option>';
-  selectCategoria.innerHTML = '<option value="todas">Todas Categorias</option>';
+  selectCategoria.innerHTML = '<option value="todas">Todas Categorias</option><option value="Entradas">💰 Entradas</option>';
 
   // Meses (chave "ano-mes", pra não misturar o mesmo mês em anos diferentes)
   let mesesMap = new Map();
