@@ -25,7 +25,9 @@ body{
   padding:12px;
   box-sizing:border-box;
   position:relative;
-  overflow:hidden;
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
 }
 
 .container{
@@ -115,14 +117,14 @@ button{
     background: none;
     border: none;
 
-    width: 50px;
-    height: 50px;
+    width: 38px;
+    height: 38px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 40px;
+    font-size: 28px;
 
     /* 🔥 Corrige bug do iOS: emoji grande sendo tratado como texto
        selecionável, abrindo o menu "Copiar/Procurar" em vez do clique */
@@ -198,8 +200,8 @@ button{
 }
   @media (max-width:768px){
   .cardResumo{
-    padding:12px;
-    min-height:95px;
+    padding:10px;
+    min-height:70px;
   }
 }
  @media (max-width:768px){
@@ -258,7 +260,7 @@ button{
 }
 .btnLogout{
   position:absolute;
-  top:-45px;
+  top:-20px;
   right:40px;
   background:#ff4d4f;
   border:none;
@@ -426,7 +428,7 @@ button{
 
 
 <!-- HOME -->
-<div id="home" class="hidden" style="margin-top:40px; position:relative;">
+<div id="home" class="hidden" style="margin-top:15px; position:relative;">
  <button onclick="logout()" class="btnLogout">
   Sair
 </button>
@@ -450,7 +452,7 @@ button{
     <!-- COLUNA 1 - MENU -->
     <div style="width:30%;">
 
-  <div style="display:flex; flex-direction:column; gap:10px;">
+  <div style="display:flex; flex-direction:column; gap:6px;">
 
   <button class="menuBtn"
 onclick="abrirTela('telaHome')">
@@ -600,7 +602,7 @@ onclick="abrirAba('configuracoes')">
 </div>
 </div>
       <!-- RESUMO -->
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:30px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:15px;">
 
         <div class="cardResumo">
           <p>Saldo</p>
@@ -627,7 +629,7 @@ onclick="abrirAba('configuracoes')">
       <!-- BOTÕES -->
       
       <!-- META MENSAL -->
-<div style="margin-top:25px;">
+<div style="margin-top:12px;">
 
   <p style="margin:5px 0; font-size:14px; opacity:0.8;">
     Meta do mês: <span id="moedaMeta"></span><span id="metaValor">0</span>
@@ -647,7 +649,7 @@ onclick="abrirAba('configuracoes')">
   </p>
   </div>
   <!-- BOTÕES -->
-<div style="display:flex; gap:15px; margin-top:15px;">
+<div style="display:flex; gap:15px; margin-top:8px;">
 
   <button class="btnAcao btnEntrada" style="flex:1;" onclick="abrirTela('telaEntrada')">
     + Entrada
