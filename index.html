@@ -3009,10 +3009,21 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   });
 
   // Categorias
-  categorias.forEach(cat => {
+  // 🔥 Junta as categorias "oficiais" (Essencial, Fixos, Lazer, Esporádicos...)
+  // com qualquer nome de categoria que já apareça nos lançamentos salvos
+  // (ex: contas antigas gravadas como "Contas"), pra nada ficar escondido
+  // do filtro por não ser uma das categorias padrão.
+  let nomesCategoriasSet = new Set();
+
+  categorias.forEach(cat => nomesCategoriasSet.add(cat.nome));
+  historicoSaidas.forEach(item => {
+    if(item.categoria) nomesCategoriasSet.add(item.categoria);
+  });
+
+  Array.from(nomesCategoriasSet).sort().forEach(nomeCat => {
     let option = document.createElement("option");
-    option.value = cat.nome;
-    option.text = cat.nome;
+    option.value = nomeCat;
+    option.text = nomeCat;
     selectCategoria.appendChild(option);
   });
 
