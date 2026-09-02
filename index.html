@@ -117,14 +117,17 @@ button{
     background: none;
     border: none;
 
-    width: 38px;
-    height: 38px;
+    width: 56px;
+    height: auto;
 
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 2px;
 
     font-size: 28px;
+    padding: 2px 0;
 
     /* 🔥 Corrige bug do iOS: emoji grande sendo tratado como texto
        selecionável, abrindo o menu "Copiar/Procurar" em vez do clique */
@@ -132,6 +135,14 @@ button{
     user-select: none;
     -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
+}
+
+.menuLabel {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.1;
+  opacity: 0.85;
+  text-align: center;
 }
 
 .menuBtn:hover{
@@ -456,39 +467,39 @@ button{
 
   <button class="menuBtn"
 onclick="abrirTela('telaHome')">
-🧑‍🏫
+🧑‍🏫<span class="menuLabel">Painel</span>
 </button>
 
 <button class="menuBtn"
 onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
-🎯
+🎯<span class="menuLabel">Desafios</span>
 </button>
 
-<button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">📁</button>
+<button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">📁<span class="menuLabel">Categorias</span></button>
 
 <button class="menuBtn"
 onclick="abrirTela('telaRelatorio'); preencherFiltrosRelatorio(); gerarRelatorio();">
-📊
+📊<span class="menuLabel">Histórico</span>
 </button>
 
 <button class="menuBtn"
 onclick="abrirAba('reserva')">
-💰
+💰<span class="menuLabel">Reserva</span>
 </button>
 
 <button class="menuBtn"
 onclick="abrirAba('emprestimo')">
-🏦
+🏦<span class="menuLabel">Empréstimo</span>
 </button>
 
 <button class="menuBtn"
 onclick="abrirAba('contas')">
-🧾
+🧾<span class="menuLabel">Contas</span>
 </button>
 
 <button class="menuBtn"
 onclick="abrirAba('configuracoes')">
-⚙️
+⚙️<span class="menuLabel">Config</span>
 </button>
 
   </div>
