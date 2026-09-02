@@ -51,6 +51,13 @@ button{
   margin-top:20px;
   cursor:pointer;
   font-size:16px;
+  /* 🔥 Impede que o iOS trate o texto/emoji do botão como
+     conteúdo selecionável — sem isso, o toque às vezes abre
+     o menu "Copiar/Procurar" em vez de disparar o clique. */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
 }
 .btnAcao{
   padding:10px 15px;
@@ -92,14 +99,21 @@ button{
     background: none;
     border: none;
 
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    font-size: 45px;
+    font-size: 40px;
+
+    /* 🔥 Corrige bug do iOS: emoji grande sendo tratado como texto
+       selecionável, abrindo o menu "Copiar/Procurar" em vez do clique */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .menuBtn:hover{
