@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -931,7 +922,7 @@ onclick="abrirAba('configuracoes')">
     ← Voltar
   </button>
   <button 
-  onclick="abrirTela('telaNovaConta')" 
+  onclick="abrirTelaNovaConta()" 
   style="
     margin-bottom:15px;
     background:#00c896;
@@ -1075,17 +1066,7 @@ onclick="abrirAba('configuracoes')">
   <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
   
 
-    <button onclick="criarDesafioPersonalizado()" 
-      style="
-        margin-top:20px;
-        background:#00c896;
-        border:none;
-        padding:10px 15px;
-        border-radius:8px;
-        color:white;
-        cursor:pointer;
-      ">
-      Criar Desafio<div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:10px;">
+    <div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:10px;">
 
 <button type="button" onclick="selecionarEmoji('✈️')" style="font-size:40px; background:none; border:none; cursor:pointer;">✈️</button>
 
@@ -1108,6 +1089,18 @@ onclick="abrirAba('configuracoes')">
 <button type="button" onclick="selecionarEmoji('🎯')" style="font-size:40px; background:none; border:none; cursor:pointer;">🎯</button>
 
 </div>
+
+    <button type="button" onclick="criarDesafioPersonalizado()" 
+      style="
+        margin-top:20px;
+        background:#00c896;
+        border:none;
+        padding:10px 15px;
+        border-radius:8px;
+        color:white;
+        cursor:pointer;
+      ">
+      Criar Desafio
     </button>
 
   </div>
@@ -1228,6 +1221,12 @@ onclick="abrirAba('configuracoes')">
   <input type="date" id="vencimentoContaInput"
     style="width:100%;padding:8px;border-radius:6px;border:none;">
 
+  <p style="margin-top:15px;">Categoria:</p>
+  <select id="selectCategoriaConta" style="width:100%;padding:8px;border-radius:6px;border:none;"></select>
+
+  <p style="margin-top:15px;">Subcategoria:</p>
+  <select id="selectSubcategoriaConta" style="width:100%;padding:8px;border-radius:6px;border:none;"></select>
+
   <label style="margin-top:10px;">Repetir por (meses):</label>
   <input type="number" id="repetirMeses" min="1" value="1"
        style="width:100%;padding:8px;margin-top:5px;border-radius:6px;border:none;">
@@ -1303,6 +1302,32 @@ let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
 let contas = [];
+// 🔥 Controle de reset mensal das categorias (piso/gasto do mês)
+let mesReferenciaCategorias = new Date().getMonth() + 1;
+let anoReferenciaCategorias = new Date().getFullYear();
+
+function verificarResetMensalCategorias(){
+
+  const agora = new Date();
+  const mesAtual = agora.getMonth() + 1;
+  const anoAtual = agora.getFullYear();
+
+  if(mesAtual === mesReferenciaCategorias && anoAtual === anoReferenciaCategorias){
+    return; // ainda estamos no mesmo mês, nada a fazer
+  }
+
+  // 🔁 Virou o mês: zera o gasto acumulado de cada subcategoria.
+  // O histórico (historicoSaidas/historicoEntradas) continua guardando tudo,
+  // então nada se perde — só o "contador do mês" reinicia.
+  categorias.forEach(function(cat){
+    cat.subcategorias.forEach(function(sub){
+      sub.total = 0;
+    });
+  });
+
+  mesReferenciaCategorias = mesAtual;
+  anoReferenciaCategorias = anoAtual;
+}
 async function salvarEstadoCompleto(){
 
   const user = auth.currentUser;
@@ -2194,6 +2219,8 @@ function atualizarParcelasVisuais(){
 }
   function atualizarTelaCategorias(){
 
+  verificarResetMensalCategorias();
+
   const container = document.getElementById("listaCategorias");
   container.innerHTML = "";
 
@@ -2406,9 +2433,56 @@ document.addEventListener("change", function(e){
   if(e.target.id === "selectCategoria"){
     atualizarSubcategorias();
   }
+  if(e.target.id === "selectCategoriaConta"){
+    atualizarSubcategoriasConta();
+  }
 });
 
+function abrirTelaNovaConta(){
+
+  if(categorias.length === 0){
+    alert("Nenhuma categoria criada.");
+    return;
+  }
+
+  abrirTela("telaNovaConta");
+
+  const selectCategoria = document.getElementById("selectCategoriaConta");
+  const selectSub = document.getElementById("selectSubcategoriaConta");
+
+  selectCategoria.innerHTML = "";
+  selectSub.innerHTML = "";
+
+  categorias.forEach(function(cat, index){
+    let option = document.createElement("option");
+    option.value = index;
+    option.text = cat.nome;
+    selectCategoria.appendChild(option);
+  });
+
+  atualizarSubcategoriasConta();
+}
+
+function atualizarSubcategoriasConta(){
+
+  const indexCategoria = document.getElementById("selectCategoriaConta").value;
+  const selectSub = document.getElementById("selectSubcategoriaConta");
+
+  selectSub.innerHTML = "";
+
+  if(!categorias[indexCategoria]) return;
+
+  categorias[indexCategoria].subcategorias.forEach(function(sub, i){
+    let option = document.createElement("option");
+    option.value = i;
+    option.text = sub.nome;
+    selectSub.appendChild(option);
+  });
+}
+
 function confirmarSaida(){
+
+  verificarResetMensalCategorias();
 
   const indexCategoria = document.getElementById("selectCategoria").value;
   const indexSub = document.getElementById("selectSubcategoria").value;
@@ -2437,11 +2511,13 @@ if(sistema10Ativo){
 let agora = new Date();
 
 historicoSaidas.push({
-  data: agora.toLocaleDateString(),
-  hora: agora.toLocaleTimeString(),
+  data: agora.toLocaleDateString("pt-PT"),
+  hora: agora.toLocaleTimeString("pt-PT"),
   categoria: categorias[indexCategoria].nome,
   subcategoria: categorias[indexCategoria].subcategorias[indexSub].nome,
-  valor: valor
+  valor: valor,
+  mes: agora.getMonth() + 1,
+  ano: agora.getFullYear()
 });
 
 let categoria = categorias[indexCategoria];
@@ -2471,7 +2547,9 @@ else if(porcentagem >= 80){
 
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
-  analisarSituacaoFinanceira();
+  // Atualiza estado financeiro antes da Evellyn falar (mesmo fluxo da entrada)
+  diagnosticoHome();
+  analisarSituacaoFinanceira(true);
   fecharTela("telaSaida");
   atualizarTelaCategorias();
   salvarEstadoCompleto();
@@ -2587,10 +2665,22 @@ abrirAba("home");
 salvarEstadoCompleto();  
 }
 
+const nomesMeses = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+
+// Um item "passa" no filtro de mês só se bater mês E ano (evita misturar
+// setembro de anos diferentes). mesAnoSelecionado vem no formato "ano-mes".
+function itemPassaFiltroMes(item, mesAnoSelecionado){
+  if(mesAnoSelecionado === "todos") return true;
+  const partes = mesAnoSelecionado.split("-");
+  const anoSel = parseInt(partes[0]);
+  const mesSel = parseInt(partes[1]);
+  return item.mes == mesSel && item.ano == anoSel;
+}
+
  function gerarRelatorio(){
 
   let html = "";
-  let mesSelecionado = document.getElementById("filtroMes").value;
+  let mesAnoSelecionado = document.getElementById("filtroMes").value;
   let categoriaSelecionada = document.getElementById("filtroCategoria").value;
 
   // 🔥 BLOCO DÍVIDA
@@ -2617,37 +2707,32 @@ salvarEstadoCompleto();
   html += "Guardado: " + moedaUsuario + " " + valorGuardado.toFixed(2) +
           " (" + porcentagemMeta.toFixed(0) + "%)<br><br>";
 
-  html += "<h3>Resumo Geral</h3>";
+  // 🔥 Filtra entradas e saídas pelo período (mês+ano) E categoria selecionados.
+  // Esses dois arrays filtrados são a base de TODO o resto do relatório,
+  // pra não ter blocos que respeitam o filtro e blocos que ignoram.
+  let entradasFiltradas = historicoEntradas.filter(function(item){
+    return itemPassaFiltroMes(item, mesAnoSelecionado);
+  });
 
-  let totalSaidasFiltradas = 0;
+  let saidasFiltradas = historicoSaidas.filter(function(item){
+    let passaMes = itemPassaFiltroMes(item, mesAnoSelecionado);
+    let passaCategoria = (categoriaSelecionada === "todas" || item.categoria === categoriaSelecionada);
+    return passaMes && passaCategoria;
+  });
 
-  if(categoriaSelecionada === "todas"){
-    totalSaidasFiltradas = saidasTotal;
-  } else {
+  let totalEntradasFiltradas = entradasFiltradas.reduce((acc, item) => acc + item.valor, 0);
+  let totalSaidasFiltradas = saidasFiltradas.reduce((acc, item) => acc + item.valor, 0);
 
-    totalSaidasFiltradas = historicoSaidas
-      .filter(function(item){
-        return item.categoria === categoriaSelecionada;
-      })
-      .reduce(function(acc, item){
-        return acc + item.valor;
-      }, 0);
-  }
-
-  html += "Saldo: " + moedaUsuario + " " + saldo.toFixed(2) + "<br>";
-  html += "Entradas: " + moedaUsuario + " " + entradasTotal.toFixed(2) + "<br>";
-  html += "Saídas: " + moedaUsuario + " " + totalSaidasFiltradas.toFixed(2) + "<br>";
+  html += "<h3>Resumo do Período</h3>";
+  html += "Saldo atual: " + moedaUsuario + " " + saldo.toFixed(2) + "<br>";
+  html += "Entradas no período: " + moedaUsuario + " " + totalEntradasFiltradas.toFixed(2) + "<br>";
+  html += "Saídas no período: " + moedaUsuario + " " + totalSaidasFiltradas.toFixed(2) + "<br>";
   html += "Reserva: " + moedaUsuario + " " + valorGuardado.toFixed(2) + "<br><br>";
 
   html += "<h3>Histórico de Entradas</h3>";
 
-  let entradasFiltradas = historicoEntradas.filter(function(item){
-    let passaMes = (mesSelecionado === "todos" || item.mes == mesSelecionado);
-    return passaMes;
-  });
-
   if(entradasFiltradas.length === 0){
-    html += "Nenhuma entrada encontrada.<br>";
+    html += "Nenhuma entrada encontrada neste período.<br>";
   } else {
 
     entradasFiltradas.forEach(function(item){
@@ -2661,34 +2746,54 @@ salvarEstadoCompleto();
   }
 
   html += "<br>";
-  html += "<h3>Categorias</h3>";
+  html += "<h3>Gastos por Categoria (no período)</h3>";
 
-  let categoriasFiltradas = categorias.filter(function(cat){
+  // 🔥 Agrupa as saídas filtradas por categoria > subcategoria.
+  // Isso é calculado em cima do histórico (que já tem mês/ano/categoria
+  // de cada lançamento), então funciona pra qualquer mês, passado ou atual —
+  // diferente do card de "Categorias" da Home, que só mostra o mês corrente.
+  let totalPorCategoria = {};
 
-    if(categoriaSelecionada === "todas"){
-      return true;
+  saidasFiltradas.forEach(function(item){
+    if(!totalPorCategoria[item.categoria]){
+      totalPorCategoria[item.categoria] = { total: 0, subcategorias: {} };
     }
+    totalPorCategoria[item.categoria].total += item.valor;
 
-    return cat.nome === categoriaSelecionada;
+    let sub = item.subcategoria || "(sem subcategoria)";
+    if(!totalPorCategoria[item.categoria].subcategorias[sub]){
+      totalPorCategoria[item.categoria].subcategorias[sub] = 0;
+    }
+    totalPorCategoria[item.categoria].subcategorias[sub] += item.valor;
   });
 
-  categoriasFiltradas.forEach(function(cat){
+  let nomesCategoriasComGasto = Object.keys(totalPorCategoria);
 
-    let total = cat.subcategorias.reduce(function(acc, sub){
-      return acc + sub.total;
-    }, 0);
+  if(nomesCategoriasComGasto.length === 0){
+    html += "Nenhum gasto encontrado neste período.<br>";
+  } else {
 
-    html += cat.nome + ": " + moedaUsuario + " " + total.toFixed(2) + "<br>";
+    nomesCategoriasComGasto.forEach(function(nomeCat){
 
-  });
+      let dadosCat = totalPorCategoria[nomeCat];
+      html += "<strong>" + nomeCat + "</strong>: " + moedaUsuario + " " + dadosCat.total.toFixed(2) + "<br>";
+
+      Object.keys(dadosCat.subcategorias).forEach(function(nomeSub){
+        html += "&nbsp;&nbsp;↳ " + nomeSub + ": " + moedaUsuario + " " +
+                dadosCat.subcategorias[nomeSub].toFixed(2) + "<br>";
+      });
+
+    });
+
+  }
 
   html += "<br><h3>Histórico de Saídas</h3>";
 
-  if(historicoSaidas.length === 0){
-    html += "Nenhuma saída registrada.<br>";
+  if(saidasFiltradas.length === 0){
+    html += "Nenhuma saída encontrada neste período.<br>";
   } else {
 
-    historicoSaidas.forEach(item => {
+    saidasFiltradas.forEach(item => {
 
       html += `
         ${item.data} ${item.hora} —
@@ -2724,19 +2829,30 @@ salvarEstadoCompleto();
   selectMes.innerHTML = '<option value="todos">Todos os Meses</option>';
   selectCategoria.innerHTML = '<option value="todas">Todas Categorias</option>';
 
-  // Meses
-  let meses = new Set();
+  // Meses (chave "ano-mes", pra não misturar o mesmo mês em anos diferentes)
+  let mesesMap = new Map();
 
-  historicoEntradas.forEach(e => meses.add(e.mes));
+  historicoEntradas.forEach(e => {
+    if(e.mes && e.ano){
+      mesesMap.set(e.ano + "-" + e.mes, { mes: e.mes, ano: e.ano });
+    }
+  });
   historicoSaidas.forEach(s => {
-    let partes = s.data.split("/");
-    meses.add(parseInt(partes[1]));
+    if(s.mes && s.ano){
+      mesesMap.set(s.ano + "-" + s.mes, { mes: s.mes, ano: s.ano });
+    }
   });
 
-  meses.forEach(m => {
+  // Ordena do mais recente pro mais antigo
+  let mesesOrdenados = Array.from(mesesMap.values()).sort(function(a, b){
+    if(a.ano !== b.ano) return b.ano - a.ano;
+    return b.mes - a.mes;
+  });
+
+  mesesOrdenados.forEach(m => {
     let option = document.createElement("option");
-    option.value = m;
-    option.text = "Mês " + m;
+    option.value = m.ano + "-" + m.mes;
+    option.text = nomesMeses[m.mes - 1] + "/" + m.ano;
     selectMes.appendChild(option);
   });
 
@@ -2954,7 +3070,9 @@ salvarEstadoCompleto();
     hora: agora.toLocaleTimeString("pt-PT"),
     categoria: "Reserva",
     subcategoria: "Saque - " + motivo,
-    valor: valor
+    valor: valor,
+    mes: agora.getMonth() + 1,
+    ano: agora.getFullYear()
   });
 
   // 🔔 Mensagem da Evelyn
@@ -3139,11 +3257,21 @@ function salvarNovaConta(){
   const valor = parseFloat(document.getElementById("valorContaInput").value);
   const vencimento = document.getElementById("vencimentoContaInput").value;
   const repetirMeses = parseInt(document.getElementById("repetirMeses").value) || 1;
+  const indexCategoria = document.getElementById("selectCategoriaConta").value;
+  const indexSub = document.getElementById("selectSubcategoriaConta").value;
 
   if(!nome || isNaN(valor) || !vencimento){
     alert("Preencha todos os campos corretamente.");
     return;
   }
+
+  if(indexCategoria === "" || indexSub === "" || !categorias[indexCategoria]){
+    alert("Selecione a categoria da conta.");
+    return;
+  }
+
+  const nomeCategoria = categorias[indexCategoria].nome;
+  const nomeSubcategoria = categorias[indexCategoria].subcategorias[indexSub].nome;
 
   for(let i = 0; i < repetirMeses; i++){
 
@@ -3155,6 +3283,8 @@ function salvarNovaConta(){
     valor: valor,
     vencimento: dataBase.toISOString().split("T")[0],
     paga: false,
+    categoria: nomeCategoria,
+    subcategoria: nomeSubcategoria,
     alertas: {
     d3: false,
     d2: false,
@@ -3176,6 +3306,8 @@ function salvarNovaConta(){
 }
  function pagarConta(index){
 console.log("clicou pagarConta");
+
+  verificarResetMensalCategorias();
 
   const conta = contas[index];
 
@@ -3199,16 +3331,34 @@ if(sistema10Ativo){
   document.getElementById("saidaValor").innerText =
     moedaUsuario + " " + saidasTotal.toFixed(2);
 
+  // 🔥 Dá baixa na categoria/subcategoria certa, pra contar no relatório
+  const nomeCategoriaConta = conta.categoria || "Contas";
+  const nomeSubcategoriaConta = conta.subcategoria || conta.nome;
+
+  let categoriaConta = categorias.find(c => c.nome === nomeCategoriaConta);
+  if(categoriaConta){
+    let subConta = categoriaConta.subcategorias.find(s => s.nome === nomeSubcategoriaConta);
+    if(subConta){
+      subConta.total += conta.valor;
+    }
+  }
+
   // 📊 Registra no histórico
   let agora = new Date();
 
   historicoSaidas.push({
     data: agora.toLocaleDateString("pt-PT"),
     hora: agora.toLocaleTimeString("pt-PT"),
-    categoria: "Contas",
-    subcategoria: conta.nome,
-    valor: conta.valor
+    categoria: nomeCategoriaConta,
+    subcategoria: nomeSubcategoriaConta,
+    valor: conta.valor,
+    mes: agora.getMonth() + 1,
+    ano: agora.getFullYear()
   });
+
+  atualizarTelaCategorias();
+  diagnosticoHome();
+  analisarSituacaoFinanceira(true);
 
   // 🔁 Se for conta recorrente, cria próxima automaticamente
   if(conta.recorrente){
@@ -4279,7 +4429,10 @@ async function salvarEstadoCompleto(){
         pendenteSaidas: pendenteSaidas
       },
 
-      divida: dividaAtual
+      divida: dividaAtual,
+
+      mesReferenciaCategorias: mesReferenciaCategorias,
+      anoReferenciaCategorias: anoReferenciaCategorias
 
     });
 
@@ -4341,6 +4494,10 @@ onAuthStateChanged(auth, async (user) => {
     gerarCategoriasBase();
    await salvarEstadoCompleto();
   }
+    // 🔥 Se mudou o mês desde o último acesso, zera o gasto do mês nas categorias
+    mesReferenciaCategorias = dados.mesReferenciaCategorias || (new Date().getMonth() + 1);
+    anoReferenciaCategorias = dados.anoReferenciaCategorias || new Date().getFullYear();
+    verificarResetMensalCategorias();
     atualizarTelaCategorias();
     contas = dados.contas || [];
     desafios = dados.desafios || [];
