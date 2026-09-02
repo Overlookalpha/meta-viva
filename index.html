@@ -571,7 +571,7 @@ onclick="abrirAba('configuracoes')">
   <!-- BLOCO DIREITA (ações) -->
   <div style="display:flex; gap:12px;">
     <!-- 🧠 MENTOR -->
-  <button onclick="analisarSituacaoFinanceira(true)"
+  <button onclick="diagnosticoHome(); analisarSituacaoFinanceira(true);"
   style="
     background:transparent !important;
     border:none;
@@ -2730,6 +2730,11 @@ document.getElementById("valorEntradaInput").value = "";
 // Atualiza estado financeiro (CÉREBRO PRINCIPAL)
 diagnosticoHome();
 
+// 🔥 Se essa foi a primeira entrada registrada, é um momento de início
+if(historicoEntradas.length === 1){
+  estadoFinanceiroAtual = "inicio";
+}
+
 // Agora sim a Evellyn fala com base no novo estado
 analisarSituacaoFinanceira(true);
 
@@ -3168,7 +3173,7 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   salvarEstadoCompleto();
 }
   function pagarEmprestimo(){
-  alert("Função pagar chamada");
+
   let valor = parseFloat(document.getElementById("valorPagamentoInput").value);
 
   if(isNaN(valor) || valor <= 0){
@@ -3188,8 +3193,6 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
 
   // Sai do saldo
   saldo -= valor;
-  estadoFinanceiroAtual = "risco";
-  analisarSituacaoFinanceira(true);
 
   // Volta para reserva
   valorGuardado += valor;
@@ -3212,7 +3215,7 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   // Limpa campo
   document.getElementById("valorPagamentoInput").value = "";
   diagnosticoHome();
-  analisarSituacaoFinanceira(false);
+  analisarSituacaoFinanceira(true);
   salvarEstadoCompleto();
 }
   function sacarDaReserva(){
@@ -3895,120 +3898,104 @@ function falar(texto){
   // 🟡 ATENÇÃO
   return "atencao";
 }
-const blocosMentor = {
+// 🔥 Variáveis que guardam o último cálculo financeiro do mês (feito em
+// diagnosticoHome), pra Evellyn poder montar um parecer com números reais
+// em vez de sortear frases genéricas.
+let mentorTotalEntradas = 0;
+let mentorTotalSaidas = 0;
+let mentorMaiorCategoria = null;
+let mentorMaiorValor = 0;
+let mentorSaldoReal = 0;
+let mentorContasVencendo = 0;
+let mentorTotalContasPendentes = 0;
 
-  inicio: {
-    observacao: [
-      "Que bom que entrou dinheiro 💛",
-      "Entrada confirmada.",
-      "Dinheiro na conta é sempre um bom começo."
-    ],
-    interpretacao: [
-      "Agora é o momento ideal para organizar.",
-      "Você está no controle agora.",
-      "Esse é o ponto de partida."
-    ],
-    orientacao: [
-      "Que tal separar um pouquinho para você?",
-      "Antes de gastar, pensa na sua reserva.",
-      "Uma pequena decisão agora faz diferença depois."
-    ]
-  },
+// 🔥 Monta um parecer financeiro com os números reais do mês, no tom de
+// uma assessora financeira: observação objetiva + leitura da situação +
+// recomendação prática. Nunca repete igual, porque os números mudam.
+function gerarParecerFinanceiro(estado){
 
-  neutro: {
-    observacao: [
-      "Você está se mantendo estável.",
-      "Seu fluxo está sob controle.",
-      "Nada crítico acontecendo."
-    ],
-    interpretacao: [
-      "Isso mostra equilíbrio.",
-      "Você está administrando bem.",
-      "Está tudo caminhando normalmente."
-    ],
-    orientacao: [
-      "Se começar a guardar, você evolui rápido.",
-      "Talvez seja hora de fortalecer sua reserva.",
-      "Pequenos ajustes podem melhorar ainda mais."
-    ]
-  },
+  let pctSaidasSobreEntradas = mentorTotalEntradas > 0
+    ? (mentorTotalSaidas / mentorTotalEntradas) * 100
+    : 0;
 
-  atencao: {
-    observacao: [
-      "Seus gastos estão começando a pesar.",
-      "Sua margem está diminuindo.",
-      "O ritmo pode apertar mais adiante."
-    ],
-    interpretacao: [
-      "Isso pode comprometer sua segurança.",
-      "Vale revisar alguns pontos.",
-      "Talvez esteja gastando mais do que deveria."
-    ],
-    orientacao: [
-      "Reduz um pouco essa semana.",
-      "Reveja despesas variáveis.",
-      "Organiza antes que vire problema."
-    ]
-  },
+  let pctMeta = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
+  if(pctMeta > 999) pctMeta = 999;
 
-  risco: {
-    observacao: [
-      "Sua estrutura ficou frágil.",
-      "O dinheiro está saindo rápido demais.",
-      "Sua margem de segurança está muito baixa."
-    ],
-    interpretacao: [
-      "Isso não é sustentável.",
-      "Você precisa ajustar agora.",
-      "A situação exige atenção imediata."
-    ],
-    orientacao: [
-      "Pause gastos desnecessários.",
-      "Reorganize suas prioridades.",
-      "Foque em estabilizar primeiro."
-    ]
-  },
+  let partes = [];
 
-  consolidando: {
-    observacao: [
-      "Sua reserva já está tomando forma.",
-      "Você está fortalecendo sua base.",
-      "Seu comportamento está mais consciente."
-    ],
-    interpretacao: [
-      "Isso mostra disciplina.",
-      "Você está construindo segurança real.",
-      "Seu padrão está melhorando."
-    ],
-    orientacao: [
-      "Continue assim.",
-      "Mantendo esse ritmo você evolui rápido.",
-      "Agora é manter consistência."
-    ]
-  },
+  if(estado === "inicio"){
 
-  crescimento: {
-    observacao: [
-      "Seu padrão financeiro está forte.",
-      "Você está construindo estabilidade real.",
-      "Seu comportamento mudou de nível."
-    ],
-    interpretacao: [
-      "Isso é maturidade financeira.",
-      "Você está à frente da maioria.",
-      "Sua estrutura está saudável."
-    ],
-    orientacao: [
-      "Agora é pensar em crescer.",
-      "Considere metas maiores.",
-      "Você está pronto para o próximo passo."
-    ]
+    partes.push("Entrada registrada. Seu saldo atual é " + moedaUsuario + " " + saldo.toFixed(2) + ".");
+    partes.push("Este é o ponto de partida da sua organização financeira.");
+    partes.push("Recomendo destinar uma parte desta entrada à reserva antes de novos gastos.");
+
   }
 
-};
-  function escolherAleatorio(lista){
-  return lista[Math.floor(Math.random() * lista.length)];
+  else if(estado === "risco"){
+
+    partes.push("Sua margem real está negativa em " + moedaUsuario + " " + Math.abs(mentorSaldoReal).toFixed(2) + " neste mês.");
+
+    if(mentorMaiorCategoria && mentorTotalEntradas > 0){
+      let pctCategoria = (mentorMaiorValor / mentorTotalEntradas) * 100;
+      partes.push("O maior peso vem de " + mentorMaiorCategoria + ", que já representa " + pctCategoria.toFixed(0) + "% das suas entradas.");
+    }
+
+    if(dividaAtual > 0){
+      partes.push("Some a isso " + moedaUsuario + " " + dividaAtual.toFixed(2) + " em dívida ativa pesando na sua margem.");
+    }
+
+    partes.push("Recomendo suspender novas saídas até estabilizar o saldo.");
+
+  }
+
+  else if(estado === "atencao"){
+
+    partes.push("Sua margem real neste mês é de " + moedaUsuario + " " + mentorSaldoReal.toFixed(2) +
+      ", com suas saídas já consumindo " + pctSaidasSobreEntradas.toFixed(0) + "% das entradas.");
+
+    if(mentorContasVencendo > 0){
+      partes.push("Você tem " + mentorContasVencendo + " conta(s) vencendo nos próximos dias.");
+    }
+
+    if(dividaAtual > 0){
+      partes.push("A dívida ativa de " + moedaUsuario + " " + dividaAtual.toFixed(2) + " também está reduzindo sua margem.");
+    }
+
+    partes.push("Recomendo revisar despesas variáveis antes do fechamento do mês.");
+
+  }
+
+  else if(estado === "neutro"){
+
+    partes.push("Sua margem real está positiva em " + moedaUsuario + " " + mentorSaldoReal.toFixed(2) + " neste mês.");
+    partes.push("Suas saídas representam " + pctSaidasSobreEntradas.toFixed(0) + "% das entradas — dentro de um padrão saudável.");
+    partes.push("Bom momento para reforçar sua reserva ou avançar em algum desafio.");
+
+  }
+
+  else if(estado === "consolidando"){
+
+    partes.push("Sua reserva está em " + pctMeta.toFixed(0) + "% da meta mensal, sem dívidas ativas.");
+    partes.push("Esse padrão de acumulação consistente reduz sua exposição a imprevistos.");
+    partes.push("Mantenha o ritmo — é o que sustenta a evolução do seu perfil financeiro.");
+
+  }
+
+  else if(estado === "crescimento"){
+
+    partes.push("Sua reserva superou a meta mensal (" + pctMeta.toFixed(0) + "% cumprido) e você está sem dívidas ativas.");
+    partes.push("Esse é um perfil financeiro sólido, acima da média.");
+    partes.push("Considere direcionar o excedente para metas de médio prazo ou investimentos.");
+
+  }
+
+  else{
+    partes.push("Sua situação financeira está estável no momento.");
+  }
+
+  return partes.join(" ");
 }
+
  function analisarSituacaoFinanceira(forcar = false){
    
   let novoEstado = estadoFinanceiroAtual;
@@ -4018,15 +4005,7 @@ const blocosMentor = {
     return;
   }
 
-  let blocos = blocosMentor[novoEstado];
-
-  if(!blocos) return;
-
-  let observacao = escolherAleatorio(blocos.observacao);
-  let interpretacao = escolherAleatorio(blocos.interpretacao);
-  let orientacao = escolherAleatorio(blocos.orientacao);
-
-  let mensagem = observacao + " " + interpretacao + " " + orientacao;
+  let mensagem = gerarParecerFinanceiro(novoEstado);
 
   estadoMentorAtual = novoEstado;
 
@@ -4446,17 +4425,35 @@ function diagnosticoHome(){
   let saldoReal = saldo - totalContasPendentes;
   saldoRealGlobal = saldoReal;
 
+  // 🔥 Alimenta as variáveis que a Evellyn usa pra montar o parecer com
+  // números reais (ver gerarParecerFinanceiro)
+  mentorTotalEntradas = totalEntradas;
+  mentorTotalSaidas = totalSaidas;
+  mentorMaiorCategoria = maiorCategoria;
+  mentorMaiorValor = maiorValor;
+  mentorSaldoReal = saldoReal;
+  mentorContasVencendo = contasVencendo;
+  mentorTotalContasPendentes = totalContasPendentes;
+
+  let percentualMetaAtual = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
+
   if (dividaAtual > 0 && saldoReal <= 0) {
+    estadoFinanceiroAtual = "risco";
+  }
+  else if (saldoReal <= 0) {
     estadoFinanceiroAtual = "risco";
   }
   else if (dividaAtual > 0) {
     estadoFinanceiroAtual = "atencao";
   }
-  else if (saldoReal <= 0) {
-    estadoFinanceiroAtual = "risco";
-  }
   else if (saldoReal < totalEntradas * 0.3) {
     estadoFinanceiroAtual = "atencao";
+  }
+  else if (percentualMetaAtual >= 100) {
+    estadoFinanceiroAtual = "crescimento";
+  }
+  else if (percentualMetaAtual >= 50) {
+    estadoFinanceiroAtual = "consolidando";
   }
   else {
     estadoFinanceiroAtual = "neutro";
