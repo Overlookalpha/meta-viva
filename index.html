@@ -1348,27 +1348,44 @@ let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
 let contas = [];
-// 🔥 Controle de reset mensal das categorias (piso/gasto do mês)
+// 🔥 Controle de qual mês está refletido nos totais de categoria
+// (mantido só pra referência/salvar no Firestore; a lógica de baixo
+// agora recalcula tudo do zero, não depende mais desse valor pra decidir
+// se reseta ou não)
 let mesReferenciaCategorias = new Date().getMonth() + 1;
 let anoReferenciaCategorias = new Date().getFullYear();
 
+// 🔥 Recalcula o gasto de cada subcategoria DO ZERO, direto do histórico
+// real de saídas filtrado pelo mês/ano atual. Substitui o modelo antigo
+// de "ir somando e zerar quando vira o mês", que podia ficar dessincronizado
+// (ex: contas antigas nunca zeradas corretamente). Chamando essa função,
+// o total sempre reflete a realidade, não importa o que aconteceu antes.
 function verificarResetMensalCategorias(){
 
   const agora = new Date();
   const mesAtual = agora.getMonth() + 1;
   const anoAtual = agora.getFullYear();
 
-  if(mesAtual === mesReferenciaCategorias && anoAtual === anoReferenciaCategorias){
-    return; // ainda estamos no mesmo mês, nada a fazer
-  }
-
-  // 🔁 Virou o mês: zera o gasto acumulado de cada subcategoria.
-  // O histórico (historicoSaidas/historicoEntradas) continua guardando tudo,
-  // então nada se perde — só o "contador do mês" reinicia.
+  // Zera tudo primeiro
   categorias.forEach(function(cat){
     cat.subcategorias.forEach(function(sub){
       sub.total = 0;
     });
+  });
+
+  // Soma de novo, só as saídas do mês/ano atual, direto do histórico real
+  historicoSaidas.forEach(function(item){
+
+    let ma = obterMesAno(item);
+    if(!ma || ma.mes !== mesAtual || ma.ano !== anoAtual) return;
+
+    let cat = categorias.find(c => c.nome === item.categoria);
+    if(!cat) return;
+
+    let sub = cat.subcategorias.find(s => s.nome === item.subcategoria);
+    if(sub){
+      sub.total += item.valor;
+    }
   });
 
   mesReferenciaCategorias = mesAtual;
