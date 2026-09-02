@@ -44,6 +44,22 @@ h2{
   margin-top:20px;
 }
 
+*{
+  /* 🔥 Reforço global: nenhum elemento do app deve ser tratado como
+     texto selecionável pelo iOS (evita o menu "Copiar/Procurar"
+     aparecendo em vez do toque disparar o clique) */
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Campos de formulário PRECISAM permitir seleção/digitação normal */
+input, textarea, select{
+  -webkit-user-select: text !important;
+  user-select: text !important;
+  -webkit-touch-callout: default !important;
+}
+
 button{
   padding:12px 25px;
   border:none;
@@ -1045,6 +1061,8 @@ onclick="abrirAba('configuracoes')">
 </div>
 </div>
 
+</div>
+
  <!-- TELA NOVO DESAFIO -->
 <div id="telaNovoDesafio" class="screen">
 
@@ -1251,6 +1269,7 @@ onclick="abrirAba('configuracoes')">
     Salvar Conta
   </button>
 
+</div>
 </div>
   
 <script>
