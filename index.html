@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f2027">
-<title>TESTE 999</title> 
+<title>TESTE 999</title>
 <style>
 
 body{
@@ -432,7 +432,7 @@ onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
 🎯
 </button>
 
-<button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">📁
+<button class="menuBtn" onclick="abrirTela('telaCategorias'); setTimeout(atualizarTelaCategorias, 10);">📁</button>
 
 <button class="menuBtn"
 onclick="abrirTela('telaRelatorio'); preencherFiltrosRelatorio(); gerarRelatorio();">
@@ -1328,6 +1328,35 @@ function verificarResetMensalCategorias(){
   mesReferenciaCategorias = mesAtual;
   anoReferenciaCategorias = anoAtual;
 }
+
+// 🔥 Totais de entradas/saídas SÓ do mês/ano atual (não é o valor vitalício).
+// Usado nos cards da Home e no diagnóstico da Evellyn, pra não misturar
+// meses/anos diferentes num número só.
+function calcularTotaisMesAtual(){
+
+  const agora = new Date();
+  const mesAtual = agora.getMonth() + 1;
+  const anoAtual = agora.getFullYear();
+
+  let entradas = historicoEntradas
+    .filter(item => item.mes === mesAtual && item.ano === anoAtual)
+    .reduce((acc, item) => acc + item.valor, 0);
+
+  let saidas = historicoSaidas
+    .filter(item => item.mes === mesAtual && item.ano === anoAtual)
+    .reduce((acc, item) => acc + item.valor, 0);
+
+  return { entradas, saidas };
+}
+
+// 🔥 Atualiza os cards "Entradas" e "Saídas" da Home com o total do MÊS ATUAL
+function atualizarCardsHome(){
+  const totais = calcularTotaisMesAtual();
+  const elEntrada = document.getElementById("entradaValor");
+  const elSaida = document.getElementById("saidaValor");
+  if(elEntrada) elEntrada.innerText = moedaUsuario + " " + totais.entradas.toFixed(2);
+  if(elSaida) elSaida.innerText = moedaUsuario + " " + totais.saidas.toFixed(2);
+}
 async function salvarEstadoCompleto(){
 
   const user = auth.currentUser;
@@ -1663,6 +1692,8 @@ function goToHome(){
 
   document.getElementById("saidaValor").innerText =
   moedaUsuario + " " + saidasTotal.toFixed(2);
+
+  atualizarCardsHome();
 
   // 🔥 PROTEÇÃO PARA answers (evita erro quando não veio do quiz)
   let objetivo = (typeof answers !== "undefined" && answers[0])
@@ -2546,7 +2577,7 @@ else if(porcentagem >= 80){
 }
 
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
-  document.getElementById("saidaValor").innerText = moedaUsuario + " " + saidasTotal.toFixed(2);
+  atualizarCardsHome();
   // Atualiza estado financeiro antes da Evellyn falar (mesmo fluxo da entrada)
   diagnosticoHome();
   analisarSituacaoFinanceira(true);
@@ -2635,7 +2666,7 @@ let registroEntrada = {
 historicoEntradas.push(registroEntrada);
   // 🔥 Atualiza meta baseada no perfil
   // Atualiza UI principal
-  document.getElementById("entradaValor").innerText = moedaUsuario + " " + entradasTotal.toFixed(2);
+  atualizarCardsHome();
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
   if(!userProfile){
   generateProfile();
@@ -3328,9 +3359,6 @@ if(sistema10Ativo){
   document.getElementById("saldoValor").innerText =
     moedaUsuario + " " + saldo.toFixed(2);
 
-  document.getElementById("saidaValor").innerText =
-    moedaUsuario + " " + saidasTotal.toFixed(2);
-
   // 🔥 Dá baixa na categoria/subcategoria certa, pra contar no relatório
   const nomeCategoriaConta = conta.categoria || "Contas";
   const nomeSubcategoriaConta = conta.subcategoria || conta.nome;
@@ -3357,6 +3385,7 @@ if(sistema10Ativo){
   });
 
   atualizarTelaCategorias();
+  atualizarCardsHome();
   diagnosticoHome();
   analisarSituacaoFinanceira(true);
 
@@ -4145,15 +4174,13 @@ if(nomeSalvo){
 
 function diagnosticoHome(){
 
-  // 1️⃣ Somar entradas pelo histórico
-  let totalEntradas = historicoEntradas.reduce((acc, item) => {
-    return acc + item.valor;
-  }, 0);
-
   // 📅 Data atual (usada no sistema inteiro)
   const hoje = new Date();
   const mesAtual = hoje.getMonth();
   const anoAtual = hoje.getFullYear();
+
+  // 1️⃣ Somar entradas do MÊS ATUAL (antes somava o histórico inteiro)
+  let totalEntradas = 0;
 
   // 🔥 Calcular principal origem de receita (mês atual)
   let mapaEntradas = {};
@@ -4166,6 +4193,8 @@ function diagnosticoHome(){
 
     if(dataEntrada.getMonth() === mesAtual &&
        dataEntrada.getFullYear() === anoAtual){
+
+      totalEntradas += item.valor;
 
       if(!mapaEntradas[item.cliente]){
         mapaEntradas[item.cliente] = 0;
@@ -4182,15 +4211,18 @@ function diagnosticoHome(){
     }
   }
 
-  // 2️⃣ Somar saídas pelo histórico
-  let totalSaidas = historicoSaidas.reduce((acc, item) => {
-    return acc + item.valor;
-  }, 0);
+  // 2️⃣ Somar saídas do MÊS ATUAL (antes somava o histórico inteiro)
+  let totalSaidas = 0;
 
-  // 3️⃣ Agrupar saídas por categoria
+  // 3️⃣ Agrupar saídas por categoria, também só do mês atual
   let mapaCategorias = {};
 
   historicoSaidas.forEach(item => {
+
+    if(item.mes !== (mesAtual + 1) || item.ano !== anoAtual) return;
+
+    totalSaidas += item.valor;
+
     if(!mapaCategorias[item.categoria]){
       mapaCategorias[item.categoria] = 0;
     }
@@ -4269,7 +4301,7 @@ function diagnosticoHome(){
   // 7️⃣ Montar mensagem
   let mensagem = "";
 
-  mensagem += "💰 Entradas registradas: " + moedaUsuario + " " + totalEntradas.toFixed(2) + "<br>";
+  mensagem += "💰 Entradas neste mês: " + moedaUsuario + " " + totalEntradas.toFixed(2) + "<br>";
 
   if(principalOrigem){
     mensagem += "🏆 Principal origem de receita neste mês: <strong>" 
@@ -4277,10 +4309,10 @@ function diagnosticoHome(){
                 + moedaUsuario + " " + maiorEntrada.toFixed(2) + "<br>";
   }
 
-  mensagem += "📉 Saídas registradas: " + moedaUsuario + " " + totalSaidas.toFixed(2) + "<br><br>";
+  mensagem += "📉 Saídas neste mês: " + moedaUsuario + " " + totalSaidas.toFixed(2) + "<br><br>";
 
   if(maiorCategoria){
-    mensagem += "📊 Maior gasto: <strong>" + maiorCategoria + "</strong> — "
+    mensagem += "📊 Maior gasto do mês: <strong>" + maiorCategoria + "</strong> — "
                 + moedaUsuario + " " + maiorValor.toFixed(2) + "<br>";
   }
 
