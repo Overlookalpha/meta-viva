@@ -3298,8 +3298,18 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
     return;
   }
 
-  contas.forEach((conta, index) => {
+  // 🔥 Ordena por data de vencimento (mais próxima primeiro), sem perder
+  // o índice original — os botões "Pagar"/"Excluir" precisam continuar
+  // apontando pra posição certa dentro do array `contas` de verdade.
+  let indicesOrdenados = contas.map((c, i) => i);
 
+  indicesOrdenados.sort(function(a, b){
+    return new Date(contas[a].vencimento) - new Date(contas[b].vencimento);
+  });
+
+  indicesOrdenados.forEach((index) => {
+
+    const conta = contas[index];
     const div = document.createElement("div");
 
     div.style.background = "rgba(255,255,255,0.08)";
