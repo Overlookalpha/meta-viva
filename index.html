@@ -4044,10 +4044,12 @@ function gerarParecerFinanceiro(estado){
 
   banner.style.display = "block";
 
-  // Voz
-  if ('speechSynthesis' in window) {
+  // Voz — sempre em Português do Brasil, igual as outras falas da Evellyn
+  if ('speechSynthesis' in window && !document.getElementById("mutarEvellyn")?.checked) {
     const fala = new SpeechSynthesisUtterance(texto);
-    fala.lang = 'pt-PT';
+    const vozBR = vozesDisponiveis.find(v => v.lang === "pt-BR");
+    if(vozBR) fala.voice = vozBR;
+    fala.lang = 'pt-BR';
     fala.rate = 0.95;
     fala.pitch = 0.9; // mais robótico
     speechSynthesis.cancel();
