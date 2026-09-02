@@ -1372,11 +1372,11 @@ function calcularTotaisMesAtual(){
   const anoAtual = agora.getFullYear();
 
   let entradas = historicoEntradas
-    .filter(item => item.mes === mesAtual && item.ano === anoAtual)
+    .filter(item => { let ma = obterMesAno(item); return ma && ma.mes === mesAtual && ma.ano === anoAtual; })
     .reduce((acc, item) => acc + item.valor, 0);
 
   let saidas = historicoSaidas
-    .filter(item => item.mes === mesAtual && item.ano === anoAtual)
+    .filter(item => { let ma = obterMesAno(item); return ma && ma.mes === mesAtual && ma.ano === anoAtual; })
     .reduce((acc, item) => acc + item.valor, 0);
 
   return { entradas, saidas };
@@ -2731,6 +2731,25 @@ salvarEstadoCompleto();
 
 const nomesMeses = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
 
+// Alguns lançamentos antigos foram salvos antes de existir o campo
+// mes/ano interno — pra esses, tenta extrair mês/ano direto da data em
+// texto ("DD/MM/YYYY"), que sempre existe. Sem essa rede de segurança,
+// esses lançamentos ficam invisíveis pra qualquer filtro por mês.
+function obterMesAno(item){
+  if(item.mes && item.ano) return { mes: item.mes, ano: item.ano };
+  if(item.data){
+    let partes = item.data.split("/");
+    if(partes.length === 3){
+      let mes = parseInt(partes[1]);
+      let ano = parseInt(partes[2]);
+      if(!isNaN(mes) && !isNaN(ano)){
+        return { mes: mes, ano: ano };
+      }
+    }
+  }
+  return null;
+}
+
 // Um item "passa" no filtro de mês só se bater mês E ano (evita misturar
 // setembro de anos diferentes). mesAnoSelecionado vem no formato "ano-mes".
 function itemPassaFiltroMes(item, mesAnoSelecionado){
@@ -2738,7 +2757,9 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   const partes = mesAnoSelecionado.split("-");
   const anoSel = parseInt(partes[0]);
   const mesSel = parseInt(partes[1]);
-  return item.mes == mesSel && item.ano == anoSel;
+  const ma = obterMesAno(item);
+  if(!ma) return false;
+  return ma.mes == mesSel && ma.ano == anoSel;
 }
 
  function gerarRelatorio(){
@@ -2904,19 +2925,21 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   let totaisPorMes = {};
 
   entradasParaTotais.forEach(function(item){
-    if(!item.mes || !item.ano) return;
-    let chave = item.ano + "-" + item.mes;
+    let ma = obterMesAno(item);
+    if(!ma) return;
+    let chave = ma.ano + "-" + ma.mes;
     if(!totaisPorMes[chave]){
-      totaisPorMes[chave] = { mes: item.mes, ano: item.ano, entradas: 0, saidas: 0 };
+      totaisPorMes[chave] = { mes: ma.mes, ano: ma.ano, entradas: 0, saidas: 0 };
     }
     totaisPorMes[chave].entradas += item.valor;
   });
 
   saidasParaTotais.forEach(function(item){
-    if(!item.mes || !item.ano) return;
-    let chave = item.ano + "-" + item.mes;
+    let ma = obterMesAno(item);
+    if(!ma) return;
+    let chave = ma.ano + "-" + ma.mes;
     if(!totaisPorMes[chave]){
-      totaisPorMes[chave] = { mes: item.mes, ano: item.ano, entradas: 0, saidas: 0 };
+      totaisPorMes[chave] = { mes: ma.mes, ano: ma.ano, entradas: 0, saidas: 0 };
     }
     totaisPorMes[chave].saidas += item.valor;
   });
@@ -2985,14 +3008,12 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   let mesesMap = new Map();
 
   historicoEntradas.forEach(e => {
-    if(e.mes && e.ano){
-      mesesMap.set(e.ano + "-" + e.mes, { mes: e.mes, ano: e.ano });
-    }
+    let ma = obterMesAno(e);
+    if(ma) mesesMap.set(ma.ano + "-" + ma.mes, ma);
   });
   historicoSaidas.forEach(s => {
-    if(s.mes && s.ano){
-      mesesMap.set(s.ano + "-" + s.mes, { mes: s.mes, ano: s.ano });
-    }
+    let ma = obterMesAno(s);
+    if(ma) mesesMap.set(ma.ano + "-" + ma.mes, ma);
   });
 
   // Ordena do mais recente pro mais antigo
@@ -4321,10 +4342,10 @@ function diagnosticoHome(){
 
   historicoEntradas.forEach(item => {
 
-    const dataEntrada = new Date(item.ano, item.mes - 1);
+    const ma = obterMesAno(item);
+    if(!ma) return;
 
-    if(dataEntrada.getMonth() === mesAtual &&
-       dataEntrada.getFullYear() === anoAtual){
+    if(ma.mes === (mesAtual + 1) && ma.ano === anoAtual){
 
       totalEntradas += item.valor;
 
@@ -4351,7 +4372,8 @@ function diagnosticoHome(){
 
   historicoSaidas.forEach(item => {
 
-    if(item.mes !== (mesAtual + 1) || item.ano !== anoAtual) return;
+    const ma = obterMesAno(item);
+    if(!ma || ma.mes !== (mesAtual + 1) || ma.ano !== anoAtual) return;
 
     totalSaidas += item.valor;
 
