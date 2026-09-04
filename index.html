@@ -1496,10 +1496,6 @@ async function salvarEstadoCompleto(){
   });
 
 }
-const contasSalvas = localStorage.getItem("contasSalvas");
-if (contasSalvas) {
-    contas = JSON.parse(contasSalvas);
-}
 function selecionarEmoji(emoji){
 
   emojiSelecionado = emoji;
@@ -1638,6 +1634,64 @@ const questions = [
 }
 
 ];
+
+// 🔥 Zera TODA a memória do app (estado de um usuário/conta) — chamado
+// sempre que a autenticação muda (login, logout, ou nova conta), pra
+// nunca misturar dados de uma conta com o que sobrou de outra no mesmo
+// navegador. Se algum dia adicionar uma variável nova de dados do
+// usuário, ela também precisa ser zerada aqui.
+function resetarEstadoLocal(){
+
+  progresso = 0;
+  currentQuestion = 0;
+  answers = [];
+  userProfile = "";
+  emojiSelecionado = "🎯";
+  desafios = [];
+
+  saldo = 0;
+  dividaAtual = 0;
+  sistema10Ativo = false;
+  estadoMentorAtual = "estavel";
+  pendenteEntradas = 0;
+  pendenteSaidas = 0;
+  saldoRealGlobal = 0;
+  estadoFinanceiroAtual = "neutro";
+
+  notificacoes = [];
+  notificacoesNaoLidas = 0;
+  desafioAtualIndex = null;
+
+  rendaMensalBase = 0;
+  moedaUsuario = "€";
+  categorias = [];
+  historicoSaidas = [];
+  historicoReserva = [];
+  contas = [];
+
+  mesReferenciaCategorias = new Date().getMonth() + 1;
+  anoReferenciaCategorias = new Date().getFullYear();
+
+  metaMensal = 0;
+  valorGuardado = 0;
+
+  entradasTotal = 0;
+  saidasTotal = 0;
+  historicoEntradas = [];
+
+  mentorTotalEntradas = 0;
+  mentorTotalSaidas = 0;
+  mentorMaiorCategoria = null;
+  mentorMaiorValor = 0;
+  mentorSaldoReal = 0;
+  mentorContasVencendo = 0;
+  mentorTotalContasPendentes = 0;
+
+  // Limpa também qualquer coisa visível na tela que já tenha ficado
+  // da sessão anterior
+  const banner = document.getElementById("mentorBanner");
+  if(banner) banner.style.display = "none";
+}
 
 function start() {
 
@@ -3501,45 +3555,6 @@ div.innerHTML =
   }
 
 }
-  function salvarConta(){
-
-  const nome = document.getElementById("novaContaNome").value;
-  const valor = parseFloat(document.getElementById("novaContaValor").value);
-  const vencimento = document.getElementById("novaContaVencimento").value;
- 
-
-  if(!nome || isNaN(valor) || !vencimento){
-    alert("Preencha todos os campos.");
-    return;
-  }
-
-  const repetirMeses = parseInt(document.getElementById("repetirMeses").value) || 1;
-
-for(let i = 0; i < repetirMeses; i++){
-
-  const dataOriginal = new Date(vencimento);
-  dataOriginal.setMonth(dataOriginal.getMonth() + i);
-
-  contas.push({
-    nome: nome,
-    valor: valor,
-    vencimento: novaData,
-    paga: false,
-    parcelaAtual: i + 1,
-    totalParcelas: repetirMeses
-  });
-
-}
-  localStorage.setItem("contasSalvas", JSON.stringify(contas));
-  document.getElementById("repetirMeses").value = 1;
-  document.getElementById("novaContaNome").value = "";
-  document.getElementById("novaContaValor").value = "";
-  document.getElementById("novaContaVencimento").value = "";
-
-  fecharTela("telaNovaConta");
-  atualizarListaContas();
-  atualizarResumoContas();
-}
 function salvarNovaConta(){
 
   console.log("Repetir meses:", document.getElementById("repetirMeses").value);
@@ -4356,17 +4371,16 @@ input.addEventListener("change", function(event){
 
   leitor.onload = function(e){
     foto.src = e.target.result;
-    localStorage.setItem("fotoPerfilSalva", e.target.result);
+    // 🔥 Salva a foto amarrada ao UID da conta logada, pra não vazar
+    // pra outra conta que logue depois no mesmo aparelho.
+    if(auth.currentUser){
+      localStorage.setItem("fotoPerfilSalva_" + auth.currentUser.uid, e.target.result);
+    }
   };
 
   leitor.readAsDataURL(arquivo);
 });
 
-// carregar foto salva
-const fotoSalva = localStorage.getItem("fotoPerfilSalva");
-if(fotoSalva){
-  foto.src = fotoSalva;
-}
   const nomeEl = document.getElementById("nomeUsuario");
 const inputNome = document.getElementById("inputNome");
 
@@ -4383,17 +4397,31 @@ inputNome.addEventListener("blur", function(){
   const novoNome = inputNome.value.trim();
   if(novoNome !== ""){
     nomeEl.textContent = novoNome;
-    localStorage.setItem("nomeUsuarioSalvo", novoNome);
+    // 🔥 Salva o nome amarrado ao UID da conta logada, mesmo motivo da foto
+    if(auth.currentUser){
+      localStorage.setItem("nomeUsuarioSalvo_" + auth.currentUser.uid, novoNome);
+    }
   }
   inputNome.style.display = "none";
   nomeEl.style.display = "block";
 });
 
-// carregar nome salvo
-const nomeSalvo = localStorage.getItem("nomeUsuarioSalvo");
-if(nomeSalvo){
-  nomeEl.textContent = nomeSalvo;
+// 🔥 Carrega foto/nome salvos SÓ dessa conta (chamado de dentro do
+// onAuthStateChanged, depois que já se sabe qual UID está logado —
+// nunca no carregamento da página, pra não herdar dado de outra conta).
+function carregarPerfilLocalDoNavegador(uid){
+
+  const fotoSalva = localStorage.getItem("fotoPerfilSalva_" + uid);
+  if(fotoSalva){
+    foto.src = fotoSalva;
+  } else {
+    foto.src = "https://via.placeholder.com/60";
+  }
+
+  const nomeSalvo = localStorage.getItem("nomeUsuarioSalvo_" + uid);
+  nomeEl.textContent = nomeSalvo || "Nome do Usuário";
 }
+
   const frasesDiagnostico = {
 
   critico: [
@@ -4747,6 +4775,14 @@ onAuthStateChanged(auth, async (user) => {
 
     appInicializado = true;
 
+    // 🔥 Sempre que uma conta autentica, começa do zero na memória —
+    // evita que dados de uma conta anterior usada neste mesmo navegador
+    // vazem pra essa sessão (ex: sair de uma conta e entrar/criar outra
+    // sem recarregar a página).
+    resetarEstadoLocal();
+
+    carregarPerfilLocalDoNavegador(user.uid);
+
     const userRef = doc(db, "usuarios", user.uid);
     const snap = await getDoc(userRef);
 
@@ -4813,6 +4849,10 @@ onAuthStateChanged(auth, async (user) => {
 
   } else {
 
+    // 🔥 Saiu da conta (ou nunca logou) — limpa a memória também aqui,
+    // pra landing/quiz/login sempre começarem do zero.
+    resetarEstadoLocal();
+
     document.getElementById("home").classList.add("hidden");
     document.getElementById("setupRenda").classList.add("hidden");
     document.getElementById("login").classList.add("hidden");
@@ -4866,6 +4906,7 @@ async function createAccount(){
 window.createAccount = createAccount;
 async function logout(){
   await signOut(auth);
+  resetarEstadoLocal();
 }
 
 window.logout = logout;
