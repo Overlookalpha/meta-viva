@@ -2128,7 +2128,15 @@ function abrirTela(id){
     }
   });
 
-  document.getElementById(id).classList.add("active");
+  const elementoAlvo = document.getElementById(id);
+  console.log("🔎 abrirTela chamado com id:", id, "elemento encontrado:", elementoAlvo);
+
+  if(!elementoAlvo){
+    console.log("🔎 ERRO: não existe elemento com esse id!");
+    return;
+  }
+
+  elementoAlvo.classList.add("active");
   if(id === "telaHome"){
     diagnosticoHome();
   }
