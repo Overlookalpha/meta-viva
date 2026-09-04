@@ -402,16 +402,16 @@ button{
 <!-- LOGIN -->
 <div id="login" class="hidden">
 
-  <h2>Crie sua conta para acessar seu painel</h2>
+  <h2>Crie sua conta ou entre na já existente</h2>
 
-  <input type="text" id="name" placeholder="Seu nome" style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;">
+  <input type="text" id="name" placeholder="Seu nome (só se for criar conta nova)" style="width:100%; padding:10px; margin-top:15px; border-radius:6px; border:none;">
 
   <input type="email" id="email" placeholder="Seu e-mail" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
 
   <input type="password" id="password" placeholder="Sua senha" style="width:100%; padding:10px; margin-top:10px; border-radius:6px; border:none;">
 
   <button class="primary" style="margin-top:20px;" onclick="createAccount()">
-    Criar Conta e Acessar Painel
+    Entrar / Criar Conta
   </button>
 
 </div>
@@ -4827,8 +4827,11 @@ async function createAccount(){
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  if(!name || !email || !password){
-    alert("Preencha todos os campos.");
+  // 🔥 Nome só é obrigatório pra quem está criando conta nova — quem já
+  // tem conta e só quer entrar (via "Já tenho conta — Entrar") não
+  // precisa preencher esse campo de novo.
+  if(!email || !password){
+    alert("Preencha e-mail e senha.");
     return;
   }
 
@@ -4840,7 +4843,7 @@ async function createAccount(){
     const user = userCredential.user;
 
     await setDoc(doc(db, "usuarios", user.uid), {
-      nome: name,
+      nome: name || "Usuário",
       email: email,
       criadoEm: new Date()
     });
@@ -4850,8 +4853,21 @@ async function createAccount(){
   } catch(error) {
 
     if(error.code === "auth/email-already-in-use"){
-      await signInWithEmailAndPassword(auth, email, password);
-      alert("Login realizado com sucesso!");
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("Login realizado com sucesso!");
+      } catch(loginError){
+        alert("Essa conta já existe, mas a senha digitada está incorreta. Verifique a senha e tente novamente.");
+        return;
+      }
+
+    } else if(error.code === "auth/weak-password"){
+      alert("Senha muito curta. Use pelo menos 6 caracteres.");
+      return;
+    } else if(error.code === "auth/invalid-email"){
+      alert("E-mail inválido. Confira e tente novamente.");
+      return;
     } else {
       alert("Erro: " + error.message);
       return;
