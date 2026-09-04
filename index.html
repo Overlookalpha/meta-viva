@@ -332,6 +332,21 @@ button{
       Criar Meu Plano Gratuito
   </button>
 
+  <div style="margin-top:20px;">
+    <button onclick="irParaLogin()" style="
+        background:none;
+        border:none;
+        color:white;
+        opacity:0.7;
+        font-size:14px;
+        text-decoration:underline;
+        cursor:pointer;
+        padding:8px;
+      ">
+      Já tenho conta — Entrar
+    </button>
+  </div>
+
   <div style="
       position:absolute;
       bottom:-80px;
@@ -1757,6 +1772,14 @@ function showResult(){
 function goToLogin(){
 
   document.getElementById("result").classList.add("hidden");
+  document.getElementById("login").classList.remove("hidden");
+
+}
+
+// 🔥 Pra quem já tem conta e só quer entrar, sem passar pelo questionário
+function irParaLogin(){
+
+  document.getElementById("landing").classList.add("hidden");
   document.getElementById("login").classList.remove("hidden");
 
 }
@@ -4792,7 +4815,8 @@ onAuthStateChanged(auth, async (user) => {
 
     document.getElementById("home").classList.add("hidden");
     document.getElementById("setupRenda").classList.add("hidden");
-    document.getElementById("login").classList.remove("hidden");
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("landing").classList.remove("hidden");
 
   }
 
