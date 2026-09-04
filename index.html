@@ -2118,6 +2118,16 @@ function abrirTela(id){
     document.getElementById("valorSaidaInput").value = "";
   }
 
+  // 🔥 Só pode ter UMA tela ativa por vez — fecha qualquer outra que
+  // tenha ficado aberta (ex: navegou de um ícone do menu pra outro sem
+  // apertar "Voltar"), senão ela fica escondida por baixo cobrindo a
+  // tela nova, mesmo a nova estando 100% funcional.
+  document.querySelectorAll(".screen.active").forEach(function(tela){
+    if(tela.id !== id){
+      tela.classList.remove("active");
+    }
+  });
+
   document.getElementById(id).classList.add("active");
   if(id === "telaHome"){
     diagnosticoHome();
@@ -2237,8 +2247,6 @@ for (let palavra in mapaEmojis) {
 }
  function abrirDesafio(index){
 
-  console.log("🔎 abrirDesafio chamado, index:", index, "desafios:", desafios);
-
   desafioAtualIndex = index;
   const desafio = desafios[index];
 
@@ -2254,8 +2262,6 @@ for (let palavra in mapaEmojis) {
 
   // Desenha as parcelas
   atualizarParcelasVisuais();
-
-  console.log("🔎 abrirDesafio terminou, indo abrir a tela");
 
   // Abre tela
   abrirTela("telaDetalheDesafio");
