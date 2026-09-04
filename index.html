@@ -656,7 +656,7 @@ onclick="abrirAba('configuracoes')">
   </div>
 
   <p style="margin-top:5px; font-size:13px; opacity:0.7;">
-    Guardado: <span id="moedaGuardado"></span><span id="guardadoValor">0</span>
+    Guardado este mês: <span id="moedaGuardado"></span><span id="guardadoValor">0</span>
   </p>
   </div>
   <!-- BOTÕES -->
@@ -805,11 +805,15 @@ onclick="abrirAba('configuracoes')">
   </p>
 
   <p>
-    Guardado até agora: <span id="reservaGuardadoTexto">0</span>
+    Guardado neste mês: <span id="reservaGuardadoTexto">0</span>
   </p>
 
   <p>
     Falta: <span id="reservaFaltaTexto">0</span>
+  </p>
+
+  <p style="opacity:0.7; font-size:13px;">
+    Total na reserva (todos os meses): <span id="reservaTotalTexto">0</span>
   </p>
 
   <!-- 🔹 BLOCO GUARDAR NORMAL (perfil) -->
@@ -1347,6 +1351,34 @@ let rendaMensalBase = 0;
 let moedaUsuario = "€";
 let categorias = [];
 let historicoSaidas = [];
+// 🔥 Histórico de movimentos da reserva (depósitos e saques, com data),
+// separado do saldo total da reserva (valorGuardado), que é vitalício.
+// É a partir daqui que a gente sabe quanto foi guardado SÓ neste mês,
+// pra comparar com a meta mensal.
+let historicoReserva = [];
+
+function registrarMovimentoReserva(valor){
+  const agora = new Date();
+  historicoReserva.push({
+    data: agora.toLocaleDateString("pt-PT"),
+    hora: agora.toLocaleTimeString("pt-PT"),
+    mes: agora.getMonth() + 1,
+    ano: agora.getFullYear(),
+    valor: valor
+  });
+}
+
+// 🔥 Quanto foi guardado (líquido) na reserva DESTE MÊS — é isso que deve
+// ser comparado com a meta mensal, não o total histórico (valorGuardado).
+function calcularGuardadoMesAtual(){
+  const agora = new Date();
+  const mesAtual = agora.getMonth() + 1;
+  const anoAtual = agora.getFullYear();
+
+  return historicoReserva
+    .filter(item => item.mes === mesAtual && item.ano === anoAtual)
+    .reduce((acc, item) => acc + item.valor, 0);
+}
 let contas = [];
 // 🔥 Controle de qual mês está refletido nos totais de categoria
 // (mantido só pra referência/salvar no Firestore; a lógica de baixo
@@ -1937,15 +1969,18 @@ function abrirAba(id){
 
   if(id === "reserva"){
 
-    document.getElementById("reservaGuardadoTexto").innerText = valorGuardado.toFixed(2);
+    let guardadoMes = calcularGuardadoMesAtual();
+
+    document.getElementById("reservaGuardadoTexto").innerText = guardadoMes.toFixed(2);
     document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
+    document.getElementById("reservaTotalTexto").innerText = moedaUsuario + " " + valorGuardado.toFixed(2);
     if(sistema10Ativo){
     document.getElementById("blocoSistema10").style.display = "block";
     atualizarTelaSistema10();
     } else {
     document.getElementById("blocoSistema10").style.display = "none";
     }
-    let falta = metaMensal - valorGuardado;
+    let falta = metaMensal - guardadoMes;
     if(falta < 0) falta = 0;
 
     document.getElementById("reservaFaltaTexto").innerText = falta.toFixed(2);
@@ -1978,6 +2013,7 @@ function guardarNaReserva(){
   // Move dinheiro do saldo para reserva oficial
   saldo -= valor;
   valorGuardado += valor;
+  registrarMovimentoReserva(valor);
 
   // Atualiza UI principal
   document.getElementById("saldoValor").innerText = moedaUsuario + " " + saldo.toFixed(2);
@@ -1985,10 +2021,11 @@ function guardarNaReserva(){
 
   atualizarProgresso();
 
-  // Atualiza tela da reserva
-  document.getElementById("reservaGuardadoTexto").innerText = valorGuardado.toFixed(2);
+  // Atualiza tela da reserva (com base no guardado SÓ deste mês, não o total vitalício)
+  let guardadoMes = calcularGuardadoMesAtual();
+  document.getElementById("reservaGuardadoTexto").innerText = guardadoMes.toFixed(2);
 
-  let falta = metaMensal - valorGuardado;
+  let falta = metaMensal - guardadoMes;
   if(falta < 0) falta = 0;
 
   document.getElementById("reservaMetaTexto").innerText = metaMensal.toFixed(2);
@@ -1997,9 +2034,7 @@ function guardarNaReserva(){
   document.getElementById("valorGuardarInput").value = "";
   atualizarProgresso();
   abrirAba("home");
-  console.log("ANTES DE SALVAR:", valorGuardado);
   salvarEstadoCompleto();
-  console.log("DEPOIS DE SALVAR:", valorGuardado);
 }
 
 function carregarPlanoDesafio(){
@@ -2236,6 +2271,7 @@ function atualizarParcelasVisuais(){
 
   // 🐷 Adiciona na reserva
   valorGuardado += desafio.valorParcela;
+  registrarMovimentoReserva(desafio.valorParcela);
 
   // Marca parcela como paga
   desafio.parcelasPagas++;
@@ -2249,6 +2285,8 @@ function atualizarParcelasVisuais(){
 
   // Atualiza lista principal
   atualizarListaDesafios();
+  atualizarProgresso();
+  salvarEstadoCompleto();
 
 }
   function encerrarDesafio(){
@@ -3168,6 +3206,7 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
 
   // Sai da reserva
   valorGuardado -= valor;
+  registrarMovimentoReserva(-valor);
 
   // Entra no saldo
   saldo += valor;
@@ -3213,6 +3252,7 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
 
   // Volta para reserva
   valorGuardado += valor;
+  registrarMovimentoReserva(valor);
 
   // Reduz dívida
   dividaAtual -= valor;
@@ -3274,6 +3314,7 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
 
   // 💸 Executa saque
   valorGuardado -= valor;
+  registrarMovimentoReserva(-valor);
 
   // 🔄 Atualiza interface
   document.getElementById("reservaValor").innerText =
@@ -3620,17 +3661,24 @@ if(sistema10Ativo){
 }
   function atualizarProgresso(){
 
-  // Atualiza texto счита na Home
-  document.getElementById("guardadoValor").innerText = valorGuardado.toFixed(2);
+  // Atualiza texto da meta na Home — com base no que foi guardado SÓ
+  // neste mês, não o total vitalício da reserva (esse já aparece no
+  // card "Reserva" separado).
+  let guardadoMes = calcularGuardadoMesAtual();
+
+  document.getElementById("guardadoValor").innerText = guardadoMes.toFixed(2);
   document.getElementById("metaValor").innerText = metaMensal.toFixed(2);
   document.getElementById("moedaMeta").innerText = moedaUsuario + " ";
   document.getElementById("moedaGuardado").innerText = moedaUsuario + " ";
   let porcentagem = 0;
 
   if(metaMensal > 0){
-    porcentagem = (valorGuardado / metaMensal) * 100;
+    porcentagem = (guardadoMes / metaMensal) * 100;
     if(porcentagem > 100){
       porcentagem = 100;
+    }
+    if(porcentagem < 0){
+      porcentagem = 0;
     }
   }
 
@@ -3935,7 +3983,7 @@ function gerarParecerFinanceiro(estado){
     ? (mentorTotalSaidas / mentorTotalEntradas) * 100
     : 0;
 
-  let pctMeta = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
+  let pctMeta = metaMensal > 0 ? (calcularGuardadoMesAtual() / metaMensal) * 100 : 0;
   if(pctMeta > 999) pctMeta = 999;
 
   let partes = [];
@@ -4159,7 +4207,7 @@ function verificarEvolucaoPerfil(){
   });
 
   // Verificar se já guardou pelo menos 1 meta completa
-  let metaCumprida = metaMensal > 0 && valorGuardado >= metaMensal;
+  let metaCumprida = metaMensal > 0 && calcularGuardadoMesAtual() >= metaMensal;
 
   // ✅ Condição de evolução
   if(
@@ -4454,7 +4502,7 @@ function diagnosticoHome(){
   mentorContasVencendo = contasVencendo;
   mentorTotalContasPendentes = totalContasPendentes;
 
-  let percentualMetaAtual = metaMensal > 0 ? (valorGuardado / metaMensal) * 100 : 0;
+  let percentualMetaAtual = metaMensal > 0 ? (calcularGuardadoMesAtual() / metaMensal) * 100 : 0;
 
   if (dividaAtual > 0 && saldoReal <= 0) {
     estadoFinanceiroAtual = "risco";
@@ -4644,6 +4692,7 @@ async function salvarEstadoCompleto(){
 
       entradas: historicoEntradas,
       saidas: historicoSaidas,
+      reservaHistorico: historicoReserva,
       categorias: categorias,
       contas: contas,
       desafios: desafios,
@@ -4712,6 +4761,7 @@ onAuthStateChanged(auth, async (user) => {
 
     historicoEntradas = dados.entradas || [];
     historicoSaidas = dados.saidas || [];
+    historicoReserva = dados.reservaHistorico || [];
     entradasTotal = historicoEntradas.reduce((acc, item) => acc + item.valor, 0);
     saidasTotal = historicoSaidas.reduce((acc, item) => acc + item.valor, 0);
     categorias = dados.categorias || [];
