@@ -2173,6 +2173,7 @@ for (let palavra in mapaEmojis) {
   fecharTela("telaNovoDesafio");
 
   atualizarListaDesafios();
+  salvarEstadoCompleto();
 }
   function atualizarListaDesafios(){
 
@@ -2236,6 +2237,8 @@ for (let palavra in mapaEmojis) {
 }
  function abrirDesafio(index){
 
+  console.log("🔎 abrirDesafio chamado, index:", index, "desafios:", desafios);
+
   desafioAtualIndex = index;
   const desafio = desafios[index];
 
@@ -2251,6 +2254,8 @@ for (let palavra in mapaEmojis) {
 
   // Desenha as parcelas
   atualizarParcelasVisuais();
+
+  console.log("🔎 abrirDesafio terminou, indo abrir a tela");
 
   // Abre tela
   abrirTela("telaDetalheDesafio");
