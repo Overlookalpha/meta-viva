@@ -486,7 +486,7 @@ onclick="abrirTela('telaHome')">
 </button>
 
 <button class="menuBtn"
-onclick="abrirTela('telaDesafios'); carregarPlanoDesafio();">
+onclick="abrirTela('telaDesafios');">
 🎯<span class="menuLabel">Desafios</span>
 </button>
 
@@ -1074,23 +1074,7 @@ onclick="abrirAba('configuracoes')">
   <div style="margin-top:20px; text-align:left;">
   
   <div id="listaDesafios" style="margin-top:20px;"></div>
-  <h3 id="tituloPlano"></h3>
 
-  <ul id="etapasPlano" style="margin-top:15px; line-height:1.6;"></ul>
-
-  <div style="margin-top:20px;">
-    <p>Meta atual: <span id="desafioMeta">0</span></p>
-    <p>Progresso: <span id="desafioProgresso">0</span>%</p>
-  <div style="background:#333; border-radius:10px; height:18px; overflow:hidden; margin-top:10px;">
-  <div id="barraDesafio" style="
-    height:18px;
-    width:0%;
-    background:#00c896;
-    transition:0.4s;
-  "></div>
-  </div>
-
-</div>
 </div>
 
 </div>
@@ -2114,42 +2098,6 @@ function guardarNaReserva(){
   salvarEstadoCompleto();
 }
 
-function carregarPlanoDesafio(){
-
-  if(!planosPerfil[userProfile]) return;
-
-  const plano = planosPerfil[userProfile];
-
-  // Título
-  document.getElementById("tituloPlano").innerText = plano.titulo;
-
-  // Etapas
-  const lista = document.getElementById("etapasPlano");
-  lista.innerHTML = "";
-
-  plano.etapas.forEach(etapa => {
-    const li = document.createElement("li");
-    li.innerText = etapa;
-    lista.appendChild(li);
-  });
-
-  // Meta baseada nas entradas
-  metaMensal = rendaMensalBase * plano.porcentagem;
-
-  document.getElementById("desafioMeta").innerText = metaMensal.toFixed(2);
-
-  progresso = 0;
-
-  if(metaMensal > 0){
-    progresso = (valorGuardado / metaMensal) * 100;
-  }
-
-  if(progresso > 100) progresso = 100;
-
-  document.getElementById("desafioProgresso").innerText = progresso.toFixed(0);
-  document.getElementById("barraDesafio").style.width = progresso + "%";
-}
-  
 function abrirTela(id){
 
   // 🔹 Limpa campos da tela de entrada
@@ -2851,9 +2799,6 @@ historicoEntradas.push(registroEntrada);
 }
  // Atualiza barra da meta
 atualizarProgresso();
-
-// Se tela de desafios estiver aberta, atualiza
-carregarPlanoDesafio();
 
 // Limpa campos
 document.getElementById("nomeClienteInput").value = "";
