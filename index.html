@@ -1175,7 +1175,7 @@ onclick="abrirAba('configuracoes')">
 
   <div id="areaParcelas" style="margin-top:20px; font-size:28px;"></div>
 
-  <button onclick="pagarParcela()" style="
+  <button type="button" onclick="pagarParcela()" style="
     margin-top:25px;
     background:#00c896;
     border:none;
@@ -1185,7 +1185,7 @@ onclick="abrirAba('configuracoes')">
     cursor:pointer;">
     💸 Pagar Parcela
   </button>
-  <button onclick="encerrarDesafio()" style="
+  <button type="button" onclick="encerrarDesafio()" style="
   margin-top:15px;
   background:#444;
   border:none;
@@ -2215,7 +2215,7 @@ for (let palavra in mapaEmojis) {
           </strong><br>
           ${moedaUsuario} ${desafio.valorTotal.toFixed(2)}
         </div>
-        <button onclick="abrirDesafio(${index})"
+        <button type="button" onclick="abrirDesafio(${index})"
           style="
             background:#00c896;
             border:none;
