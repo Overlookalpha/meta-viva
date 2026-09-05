@@ -1015,6 +1015,20 @@ onclick="abrirAba('configuracoes')">
     cursor:pointer;">
   ➕ Nova Conta
 </button>
+  <button
+  id="botaoTelegram"
+  onclick="conectarTelegram()"
+  style="
+    margin-bottom:15px;
+    margin-left:10px;
+    background:#229ED9;
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    color:white;
+    cursor:pointer;">
+  📨 Acompanhar no Telegram
+</button>
  <div id="listaContas" class="areaRolavel"></div>
 
 </div>
@@ -1506,6 +1520,7 @@ function calcularGuardadoMesAtual(){
     .reduce((acc, item) => acc + item.valor, 0);
 }
 let contas = [];
+let telegramChatIdAtual = null;
 // 🔥 Controle de qual mês está refletido nos totais de categoria
 // (mantido só pra referência/salvar no Firestore; a lógica de baixo
 // agora recalcula tudo do zero, não depende mais desse valor pra decidir
@@ -2184,6 +2199,7 @@ function abrirAba(id){
 
   if(id === "contas"){
     atualizarListaContas();
+    atualizarBotaoTelegram();
   }
 
   atualizarResumoContas();
@@ -4992,6 +5008,7 @@ onAuthStateChanged(auth, async (user) => {
     verificarResetMensalCategorias();
     atualizarTelaCategorias();
     contas = dados.contas || [];
+    telegramChatIdAtual = dados.telegramChatId || null;
     desafios = dados.desafios || [];
 
     if (dados.sistema10) {
@@ -5084,6 +5101,86 @@ async function logout(){
 }
 
 window.logout = logout;
+
+function gerarCodigoTelegram(){
+  const caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let codigo = "";
+  for(let i = 0; i < 8; i++){
+    codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+  }
+  return codigo;
+}
+
+async function conectarTelegram(){
+  const user = auth.currentUser;
+  if(!user) return;
+
+  if(telegramChatIdAtual){
+    alert("Sua conta ja esta ligada ao Telegram! Voce recebe avisos automaticos sobre contas a vencer.");
+    return;
+  }
+
+  const codigo = gerarCodigoTelegram();
+
+  try{
+    await updateDoc(doc(db, "usuarios", user.uid), {
+      telegramLinkCode: codigo
+    });
+  } catch(error){
+    alert("Nao foi possivel gerar o codigo agora. Tente novamente em instantes.");
+    return;
+  }
+
+  const linkBot = "https://t.me/Meta_Viva_bot?start=" + codigo;
+  window.open(linkBot, "_blank");
+
+  alert("Uma nova aba do Telegram vai abrir. Toque em Iniciar (Start) por la. A ligacao pode levar alguns minutos para ser confirmada - pode fechar esta tela, o botao vai mostrar Conectado quando voce voltar aqui.");
+
+  aguardarConexaoTelegram(user.uid);
+}
+
+function aguardarConexaoTelegram(uid){
+  const botao = document.getElementById("botaoTelegram");
+  if(botao) botao.innerText = "⏳ Aguardando conexao...";
+
+  let tentativas = 0;
+  const intervalo = setInterval(async () => {
+    tentativas++;
+
+    try{
+      const snap = await getDoc(doc(db, "usuarios", uid));
+      const dados = snap.data() || {};
+
+      if(dados.telegramChatId){
+        telegramChatIdAtual = dados.telegramChatId;
+        clearInterval(intervalo);
+        atualizarBotaoTelegram();
+        alert("Telegram ligado com sucesso! Voce ja vai receber os avisos de contas por la.");
+      }
+    } catch(error){
+      console.log("Erro ao verificar conexao do Telegram:", error);
+    }
+
+    if(tentativas >= 60){
+      clearInterval(intervalo);
+      atualizarBotaoTelegram();
+    }
+  }, 5000);
+}
+
+function atualizarBotaoTelegram(){
+  const botao = document.getElementById("botaoTelegram");
+  if(!botao) return;
+
+  if(telegramChatIdAtual){
+    botao.innerText = "✅ Telegram Conectado";
+  } else {
+    botao.innerText = "📨 Acompanhar no Telegram";
+  }
+}
+
+window.conectarTelegram = conectarTelegram;
+window.atualizarBotaoTelegram = atualizarBotaoTelegram;
 
 </script>
 </body>
