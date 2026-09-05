@@ -5190,6 +5190,8 @@ async function conectarTelegram(){
     return;
   }
 
+  const janela = window.open("", "_blank");
+
   const codigo = gerarCodigoTelegram();
 
   try{
@@ -5197,12 +5199,13 @@ async function conectarTelegram(){
       telegramLinkCode: codigo
     });
   } catch(error){
+    if(janela){ janela.close(); }
     alert("Nao foi possivel gerar o codigo agora. Tente novamente em instantes.");
     return;
   }
 
   const linkBot = "https://t.me/Meta_Viva_bot?start=" + codigo;
-  window.open(linkBot, "_blank");
+  if(janela){ janela.location.href = linkBot; } else { window.open(linkBot, "_blank"); }
 
       alert("Uma nova aba do Telegram vai abrir. Se nao abrir sozinha, procure por Meta_Viva_bot na busca do Telegram e abra a conversa. Toque no botao Iniciar (Start) por la. Se o botao Iniciar nao aparecer (porque voce ja usou o bot antes), copie e envie esta mensagem para o bot, exatamente assim e sem adicionar mais nada: /start " + codigo);
   aguardarConexaoTelegram(user.uid);
