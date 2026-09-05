@@ -5204,8 +5204,7 @@ async function conectarTelegram(){
   const linkBot = "https://t.me/Meta_Viva_bot?start=" + codigo;
   window.open(linkBot, "_blank");
 
-  alert("Uma nova aba do Telegram vai abrir. Toque em Iniciar (Start) por la. A ligacao pode levar alguns minutos para ser confirmada - pode fechar esta tela, o botao vai mostrar Conectado quando voce voltar aqui.");
-
+      alert("Uma nova aba do Telegram vai abrir. Toque em Iniciar (Start) por la. Se o botao Iniciar nao aparecer (porque voce ja usou o bot antes), digite esta mensagem e envie para o bot: /start " + codigo + " -- A ligacao pode levar alguns minutos para ser confirmada - pode fechar esta tela, o botao vai mostrar Conectado quando voce voltar aqui.");
   aguardarConexaoTelegram(user.uid);
 }
 
