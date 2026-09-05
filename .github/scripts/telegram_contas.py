@@ -86,8 +86,11 @@ def processar_conexoes(db):
         if chat_id is None or not texto.startswith("/start"):
             continue
 
-        partes = texto.split(maxsplit=1)
-        if len(partes) < 2:
+        # Aceita tanto "/start CODIGO" quanto "/startCODIGO" (sem espaco),
+        # ja que e facil perder o espaco ao copiar/colar manualmente a
+        # mensagem de fallback no celular.
+        resto = texto[len("/start"):].strip()
+        if not resto:
             enviar_mensagem(
                 chat_id,
                 "Ola! Para ligar sua conta, toque no botao 'Acompanhar no Telegram' "
@@ -95,7 +98,7 @@ def processar_conexoes(db):
             )
             continue
 
-        codigo = partes[1].strip()
+        codigo = resto.split(maxsplit=1)[0].strip()
         consulta = (
             db.collection("usuarios")
             .where("telegramLinkCode", "==", codigo)
