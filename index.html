@@ -41,6 +41,16 @@ body{
   overflow:hidden;
   text-align:center;
 }
+#fundoPersonalizado{
+  position:fixed;
+  inset:0;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s ease;
+}
 .app{
   width:100%;
   max-width:500px;
@@ -312,6 +322,7 @@ button{
 <body>
 
 <div id="temaIconeFundo" aria-hidden="true"></div>
+<div id="fundoPersonalizado" aria-hidden="true"></div>
 <div class="app">
 
 <!-- LANDING -->
@@ -1319,6 +1330,27 @@ onclick="abrirAba('configuracoes')">
     gap:12px;
   "></div>
 
+  <button
+    type="button"
+    onclick="escolherFotoFundo()"
+    style="
+      margin-top:15px;
+      width:100%;
+      background:rgba(255,255,255,0.08);
+      border:2px dashed rgba(255,255,255,0.3);
+      padding:14px;
+      border-radius:12px;
+      color:white;
+      cursor:pointer;
+      font-size:14px;
+      box-sizing:border-box;">
+    🖼️ Personalizar com foto da galeria
+  </button>
+  <input type="file"
+    id="inputFundoPersonalizado"
+    accept="image/*"
+    style="display:none">
+
 </div>
 
 <!-- TELA NOVA CONTA -->
@@ -1437,6 +1469,7 @@ let fotoPerfilAtual = "";
 // 🔥 Temas de cor disponíveis. "destaque" é a cor dos botões/barras de
 // progresso; fundo1/2/3 formam o degradê de fundo do app inteiro.
 let nomeTemaAtual = "verde";
+let fundoPersonalizadoAtual = "";
 
 const temasDisponiveis = {
   verde:  { nome: "Verde (padrão)", destaque: "#00c896", fundo1: "#0f2027", fundo2: "#203a43", fundo3: "#2c5364" },
@@ -1469,6 +1502,13 @@ function aplicarTema(chave, salvar = true){
   if(iconeFundo){
     iconeFundo.textContent = tema.icone || "";
   }
+
+  const camadaFoto = document.getElementById("fundoPersonalizado");
+  if(camadaFoto){
+    camadaFoto.style.backgroundImage = "none";
+    camadaFoto.style.opacity = "0";
+  }
+  fundoPersonalizadoAtual = "";
 
   nomeTemaAtual = chave;
 
@@ -4926,6 +4966,7 @@ async function salvarEstadoCompleto(){
       nome: nomeUsuarioAtual,
       foto: fotoPerfilAtual,
       tema: nomeTemaAtual,
+      fundoPersonalizado: fundoPersonalizadoAtual,
 
       entradas: historicoEntradas,
       saidas: historicoSaidas,
@@ -5018,7 +5059,11 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("fotoPerfil").src = fotoPerfilAtual || "https://via.placeholder.com/60";
 
     // 🔥 Tema — mesma lógica: Firestore é a fonte de verdade
-    aplicarTema(dados.tema && temasDisponiveis[dados.tema] ? dados.tema : "verde", false);
+    if(dados.tema === "personalizado" && dados.fundoPersonalizado){
+      aplicarFundoPersonalizado(dados.fundoPersonalizado, false);
+    } else {
+      aplicarTema(dados.tema && temasDisponiveis[dados.tema] ? dados.tema : "verde", false);
+    }
 
     entradasTotal = historicoEntradas.reduce((acc, item) => acc + item.valor, 0);
     saidasTotal = historicoSaidas.reduce((acc, item) => acc + item.valor, 0);
@@ -5206,6 +5251,72 @@ function atualizarBotaoTelegram(){
 
 window.conectarTelegram = conectarTelegram;
 window.atualizarBotaoTelegram = atualizarBotaoTelegram;
+
+function escolherFotoFundo(){
+  const input = document.getElementById("inputFundoPersonalizado");
+  if(input) input.click();
+}
+
+function aplicarFundoPersonalizado(dataUrl, salvar = true){
+  fundoPersonalizadoAtual = dataUrl;
+  nomeTemaAtual = "personalizado";
+
+  const iconeFundo = document.getElementById("temaIconeFundo");
+  if(iconeFundo) iconeFundo.textContent = "";
+
+  const camadaFoto = document.getElementById("fundoPersonalizado");
+  if(camadaFoto){
+    camadaFoto.style.backgroundImage = "url(" + dataUrl + ")";
+    camadaFoto.style.opacity = "0.18";
+  }
+
+  if(salvar && typeof salvarEstadoCompleto === "function"){
+    salvarEstadoCompleto();
+  }
+
+  renderizarListaTemas();
+}
+
+const inputFundoPersonalizadoEl = document.getElementById("inputFundoPersonalizado");
+if(inputFundoPersonalizadoEl){
+  inputFundoPersonalizadoEl.addEventListener("change", function(evento){
+    const arquivo = evento.target.files[0];
+    if(!arquivo) return;
+
+    const leitor = new FileReader();
+
+    leitor.onload = function(e){
+
+      const img = new Image();
+      img.onload = function(){
+
+        const larguraMax = 900;
+        let largura = img.width;
+        let altura = img.height;
+
+        if(largura > larguraMax){
+          altura = Math.round(altura * (larguraMax / largura));
+          largura = larguraMax;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = largura;
+        canvas.height = altura;
+        canvas.getContext("2d").drawImage(img, 0, 0, largura, altura);
+
+        const dataUrlComprimido = canvas.toDataURL("image/jpeg", 0.6);
+
+        aplicarFundoPersonalizado(dataUrlComprimido);
+      };
+      img.src = e.target.result;
+    };
+
+    leitor.readAsDataURL(arquivo);
+  });
+}
+
+window.escolherFotoFundo = escolherFotoFundo;
+window.aplicarFundoPersonalizado = aplicarFundoPersonalizado;
 
 </script>
 </body>
