@@ -978,6 +978,11 @@ onclick="abrirAba('configuracoes')">
     ← Voltar
   </button>
 
+  <button onclick="abrirEmprestimoExterno()"
+    style="background:linear-gradient(135deg,#ffb300,#ff6f00);border:none;color:white;font-size:14px;font-weight:600;padding:9px 16px;border-radius:20px;margin-bottom:20px;margin-left:10px;cursor:pointer;">
+    ✨ Empréstimo Externo (IsaCred)
+  </button>
+
   <p>Dívida Atual: <span id="dividaAtualTexto">0.00</span></p>
 
   <p style="margin-top:20px;">Valor para pegar emprestado:</p>
@@ -1017,6 +1022,156 @@ onclick="abrirAba('configuracoes')">
   style="margin-top:15px;background:#3b82f6;border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
   Sacar da Reserva
 </button>
+
+</div>
+
+<!-- ISACRED: APRESENTACAO -->
+<div id="telaIsaCredIntro" class="hidden"
+     style="
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 1100;
+     ">
+
+  <style>
+    @keyframes isacredGradiente {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    @keyframes isacredSubir {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      12% { opacity: 0.85; }
+      88% { opacity: 0.85; }
+      100% { transform: translateY(-640px) rotate(30deg); opacity: 0; }
+    }
+    .isacredFundoAnimado {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, #1a1005, #7a4a00, #ffb300, #7a4a00, #1a1005);
+      background-size: 300% 300%;
+      animation: isacredGradiente 16s ease infinite;
+    }
+    .isacredParticula {
+      position: absolute;
+      bottom: -60px;
+      font-size: 24px;
+      opacity: 0;
+      animation-name: isacredSubir;
+      animation-timing-function: ease-in;
+      animation-iteration-count: infinite;
+    }
+  </style>
+
+  <div class="isacredFundoAnimado"></div>
+
+  <span class="isacredParticula" style="left:8%; animation-duration:9s; animation-delay:0s;">🪙</span>
+  <span class="isacredParticula" style="left:22%; animation-duration:12s; animation-delay:2s;">✨</span>
+  <span class="isacredParticula" style="left:38%; animation-duration:10s; animation-delay:4s;">🪙</span>
+  <span class="isacredParticula" style="left:55%; animation-duration:13s; animation-delay:1s;">💰</span>
+  <span class="isacredParticula" style="left:70%; animation-duration:11s; animation-delay:5s;">✨</span>
+  <span class="isacredParticula" style="left:85%; animation-duration:14s; animation-delay:3s;">🪙</span>
+
+  <div style="position:relative; z-index:2; height:100%; overflow-y:auto; padding:24px; box-sizing:border-box; color:white;">
+
+    <button onclick="fecharTelaIsaCredIntro()"
+      style="background:none;border:none;color:white;font-size:16px;margin-bottom:16px;cursor:pointer;">
+      ← Voltar
+    </button>
+
+    <div style="text-align:center; margin-bottom:18px;">
+      <div style="font-size:42px;">💬</div>
+      <div style="font-weight:700; font-size:18px;">Evelyn está te contando sobre o IsaCred</div>
+    </div>
+
+    <div style="background:rgba(0,0,0,0.35); border-radius:14px; padding:18px; line-height:1.55; font-size:15px;">
+
+      <p>Oi! Eu sou a Evelyn 👋 — enquanto cuido das suas contas aqui no Meta Viva, também acompanho outra novidade que pode te interessar: o <b>IsaCred</b>.</p>
+
+      <p>O IsaCred é um clube de crédito de verdade — diferente do Empréstimo Interno daqui, que só move seu próprio dinheiro guardado, no IsaCred você pode solicitar um empréstimo externo, com dinheiro de verdade caindo na sua conta.</p>
+
+      <p><b>🪙 ISAcoin:</b> toda vez que você pega um empréstimo no IsaCred, ganha ISAcoins — e ganha ainda mais se pagar rapidinho. Ao juntar <b>10.000 ISAcoins</b>, você já pode sacar dinheiro de verdade no Clube ISAcoin.</p>
+
+      <p><b>🏅 Níveis:</b> conforme você paga em dia, seu score sobe e você sobe de nível — 🍀 Essencial, 🥉 Bronze, 🥈 Prata, 🥇 Ouro e 💎 Black — e cada nível libera um limite de crédito maior.</p>
+
+      <p>Se quiser, eu já te ajudo a criar sua conta agora mesmo, usando o mesmo e-mail que você já usa aqui no Meta Viva. Bora?</p>
+
+    </div>
+
+    <div style="display:flex; gap:10px; margin-top:22px;">
+      <button onclick="avancarParaFormularioIsaCred()"
+        style="flex:1; background:linear-gradient(135deg,#ffd54f,#ff8f00); border:none; color:#3a2100; font-weight:700; font-size:15px; padding:14px; border-radius:12px; cursor:pointer;">
+        Sim, quero criar minha conta
+      </button>
+      <button onclick="fecharTelaIsaCredIntro()"
+        style="flex:1; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.4); color:white; font-weight:600; font-size:15px; padding:14px; border-radius:12px; cursor:pointer;">
+        Agora não
+      </button>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ISACRED: CADASTRO -->
+<div id="telaIsaCredForm" class="hidden"
+     style="
+        position: fixed;
+        inset: 0;
+        background: linear-gradient(160deg, #201405, #3d2405, #201405);
+        overflow-y: auto;
+        padding: 20px;
+        box-sizing: border-box;
+        z-index: 1100;
+        color: white;
+     ">
+
+  <button onclick="voltarParaIntroIsaCred()"
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:16px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2 style="margin-top:0;">✨ Criar conta no IsaCred</h2>
+  <p style="opacity:0.8; font-size:13px; margin-top:-8px;">Pede só o essencial — leva menos de um minuto.</p>
+
+  <p style="margin-top:18px;">E-mail:</p>
+  <input type="email" id="isacredEmail" disabled
+    style="width:100%;padding:10px;border-radius:8px;border:none;opacity:0.7;">
+
+  <p style="margin-top:14px;">Nome completo:</p>
+  <input type="text" id="isacredNome" placeholder="Seu nome completo"
+    style="width:100%;padding:10px;border-radius:8px;border:none;">
+
+  <p style="margin-top:14px;">Telefone (com WhatsApp):</p>
+  <input type="tel" id="isacredTelefone" placeholder="(xx) xxxxx-xxxx"
+    style="width:100%;padding:10px;border-radius:8px;border:none;">
+
+  <p style="margin-top:14px;">País:</p>
+  <select id="isacredPais" onchange="atualizarCamposPorPaisIsaCred()"
+    style="width:100%;padding:10px;border-radius:8px;border:none;">
+    <option value="BR">🇧🇷 Brasil</option>
+    <option value="PT">🇵🇹 Portugal</option>
+  </select>
+
+  <p style="margin-top:14px;"><span id="isacredLabelDocumento">CPF:</span></p>
+  <input type="text" id="isacredDocumento" placeholder="000.000.000-00"
+    style="width:100%;padding:10px;border-radius:8px;border:none;">
+
+  <p style="margin-top:14px;"><span id="isacredLabelPix">Chave Pix:</span></p>
+  <input type="text" id="isacredPix" placeholder="Sua chave Pix"
+    style="width:100%;padding:10px;border-radius:8px;border:none;">
+
+  <p style="margin-top:14px;">Crie uma senha para entrar no IsaCred:</p>
+  <input type="password" id="isacredSenha" placeholder="Mínimo 6 caracteres"
+    style="width:100%;padding:10px;border-radius:8px;border:none;">
+
+  <button onclick="criarContaIsaCred()"
+    style="margin-top:22px;width:100%;background:linear-gradient(135deg,#ffd54f,#ff8f00);border:none;color:#3a2100;font-weight:700;font-size:15px;padding:14px;border-radius:12px;cursor:pointer;">
+    Criar minha conta no IsaCred
+  </button>
+
+  <p id="isacredStatusTexto" style="margin-top:14px; font-size:13px; opacity:0.85;"></p>
 
 </div>
 
@@ -1585,6 +1740,7 @@ function calcularGuardadoMesAtual(){
     .reduce((acc, item) => acc + item.valor, 0);
 }
 let contas = [];
+let contaMetaVivaCriadaEm = null;
 let telegramChatIdAtual = null;
 // 🔥 Controle de qual mês está refletido nos totais de categoria
 // (mantido só pra referência/salvar no Firestore; a lógica de baixo
@@ -2236,6 +2392,8 @@ function abrirAba(id){
   document.getElementById("relatorios").classList.add("hidden");
   document.getElementById("reserva").classList.add("hidden");
   document.getElementById("emprestimo").classList.add("hidden");
+  document.getElementById("telaIsaCredIntro").classList.add("hidden");
+  document.getElementById("telaIsaCredForm").classList.add("hidden");
   document.getElementById("configuracoes").classList.add("hidden");
   document.getElementById("contas").classList.add("hidden"); // 🔥 ESTA LINHA FALTAVA
 
@@ -4909,7 +5067,7 @@ function diagnosticoHome(){
 </script>
   <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -5078,6 +5236,7 @@ onAuthStateChanged(auth, async (user) => {
     verificarResetMensalCategorias();
     atualizarTelaCategorias();
     contas = dados.contas || [];
+    contaMetaVivaCriadaEm = dados.criadoEm || null;
     telegramChatIdAtual = dados.telegramChatId || null;
     desafios = dados.desafios || [];
 
@@ -5249,6 +5408,196 @@ function atualizarBotaoTelegram(){
 
 window.conectarTelegram = conectarTelegram;
 window.atualizarBotaoTelegram = atualizarBotaoTelegram;
+
+function abrirEmprestimoExterno(){
+  document.getElementById("telaIsaCredIntro").classList.remove("hidden");
+}
+
+function fecharTelaIsaCredIntro(){
+  document.getElementById("telaIsaCredIntro").classList.add("hidden");
+}
+
+function avancarParaFormularioIsaCred(){
+  document.getElementById("telaIsaCredIntro").classList.add("hidden");
+  document.getElementById("telaIsaCredForm").classList.remove("hidden");
+  const campoEmail = document.getElementById("isacredEmail");
+  if(campoEmail && auth.currentUser){
+    campoEmail.value = auth.currentUser.email || "";
+  }
+  atualizarCamposPorPaisIsaCred();
+}
+
+function voltarParaIntroIsaCred(){
+  document.getElementById("telaIsaCredForm").classList.add("hidden");
+  document.getElementById("telaIsaCredIntro").classList.remove("hidden");
+}
+
+function atualizarCamposPorPaisIsaCred(){
+  const pais = document.getElementById("isacredPais").value;
+  const labelDocumento = document.getElementById("isacredLabelDocumento");
+  const labelPix = document.getElementById("isacredLabelPix");
+  const campoDocumento = document.getElementById("isacredDocumento");
+  const campoPix = document.getElementById("isacredPix");
+  if(pais === "PT"){
+    labelDocumento.textContent = "NIF:";
+    labelPix.textContent = "MB Way:";
+    campoDocumento.placeholder = "000000000";
+    campoPix.placeholder = "Número do MB Way";
+  } else {
+    labelDocumento.textContent = "CPF:";
+    labelPix.textContent = "Chave Pix:";
+    campoDocumento.placeholder = "000.000.000-00";
+    campoPix.placeholder = "Sua chave Pix";
+  }
+}
+
+function calcularAnaliseClienteIsaCred(){
+
+  const hoje = new Date();
+
+  let diasDeUso = 0;
+  if(contaMetaVivaCriadaEm && typeof contaMetaVivaCriadaEm.toDate === "function"){
+    const criadoData = contaMetaVivaCriadaEm.toDate();
+    diasDeUso = Math.max(0, Math.floor((hoje - criadoData) / (1000 * 60 * 60 * 24)));
+  }
+
+  const contasAtrasadas = (contas || []).filter(function(c){
+    if(c.paga) return false;
+    const vencimento = new Date(c.vencimento + "T00:00:00");
+    return vencimento < hoje;
+  });
+
+  const totalTransacoes =
+    (historicoEntradas ? historicoEntradas.length : 0) +
+    (historicoSaidas ? historicoSaidas.length : 0);
+
+  let nota = 50;
+  nota += Math.min(diasDeUso / 3, 20);
+  nota += Math.min(totalTransacoes * 2, 20);
+  nota -= Math.min(contasAtrasadas.length * 15, 40);
+  nota = Math.max(0, Math.min(100, Math.round(nota)));
+
+  let classificacao;
+  if(nota >= 80){ classificacao = "Excelente"; }
+  else if(nota >= 60){ classificacao = "Bom"; }
+  else if(nota >= 40){ classificacao = "Regular"; }
+  else { classificacao = "Atenção"; }
+
+  return {
+    diasDeUso: diasDeUso,
+    contasAtrasadas: contasAtrasadas.length,
+    totalTransacoes: totalTransacoes,
+    nota: nota,
+    classificacao: classificacao
+  };
+
+}
+
+async function criarContaIsaCred(){
+
+  const nome = document.getElementById("isacredNome").value.trim();
+  const email = document.getElementById("isacredEmail").value.trim();
+  const telefone = document.getElementById("isacredTelefone").value.trim();
+  const pais = document.getElementById("isacredPais").value;
+  const documento = document.getElementById("isacredDocumento").value.trim();
+  const pix = document.getElementById("isacredPix").value.trim();
+  const senha = document.getElementById("isacredSenha").value;
+
+  const statusTexto = document.getElementById("isacredStatusTexto");
+
+  if(!nome || !email || !telefone || !documento || !pix || !senha){
+    if(statusTexto) statusTexto.textContent = "Preencha todos os campos para continuar.";
+    return;
+  }
+
+  if(senha.length < 6){
+    if(statusTexto) statusTexto.textContent = "A senha precisa ter pelo menos 6 caracteres.";
+    return;
+  }
+
+  if(statusTexto) statusTexto.textContent = "Criando sua conta, aguarde...";
+
+  const vivaCredConfig = {
+    apiKey: "AIzaSyDJHtQp7OUxgYqtcD_2eTqzh1BRpufvKrY",
+    authDomain: "vivacred-5a5b8.firebaseapp.com",
+    projectId: "vivacred-5a5b8",
+    storageBucket: "vivacred-5a5b8.firebasestorage.app",
+    messagingSenderId: "932933359706",
+    appId: "1:932933359706:web:59fd16618feea3b2fa6063"
+  };
+
+  try{
+
+    const appIsaCred = getApps().some(function(a){ return a.name === "isacredSecundario"; })
+      ? getApp("isacredSecundario")
+      : initializeApp(vivaCredConfig, "isacredSecundario");
+
+    const authIsaCred = getAuth(appIsaCred);
+    const dbIsaCred = getFirestore(appIsaCred);
+
+    const credencial = await createUserWithEmailAndPassword(authIsaCred, email, senha);
+    const novoUid = credencial.user.uid;
+
+    await setDoc(doc(dbIsaCred, "usuarios", novoUid), {
+      nome: nome,
+      email: email,
+      telefone: telefone,
+      cpf: documento,
+      pix: pix,
+      pais: pais,
+      moeda: pais === "PT" ? "€" : "R$",
+      score: 20,
+      status: "ativo",
+      isaCoins: 0,
+      origem: "meta-viva",
+      criadoEm: new Date()
+    });
+
+    await signOut(authIsaCred);
+
+    const analise = calcularAnaliseClienteIsaCred();
+
+    const mensagem =
+    "🌟 Nova conta IsaCred criada pelo Meta Viva!\n\n" +
+    "Nome: " + nome + "\n" +
+    "E-mail: " + email + "\n" +
+    "Telefone: " + telefone + "\n" +
+    "País: " + (pais === "PT" ? "Portugal" : "Brasil") + "\n\n" +
+    "📊 Análise do cliente (dados do Meta Viva):\n" +
+    "Tempo de uso: " + analise.diasDeUso + " dia(s)\n" +
+    "Contas atrasadas: " + analise.contasAtrasadas + "\n" +
+    "Transações registradas: " + analise.totalTransacoes + "\n" +
+    "Nota: " + analise.nota + "/100 (" + analise.classificacao + ")";
+
+    const numeroAdmin = "351931714823";
+    const linkWhatsapp =
+      "https://wa.me/" + numeroAdmin + "?text=" + encodeURIComponent(mensagem);
+
+    if(statusTexto) statusTexto.textContent = "Conta criada com sucesso! Redirecionando...";
+
+    window.location.href = linkWhatsapp;
+
+  } catch(erro){
+
+    console.error("Erro ao criar conta no IsaCred:", erro);
+
+    let mensagemErro = "Não foi possível criar sua conta agora. Tente novamente.";
+    if(erro && erro.code === "auth/email-already-in-use"){
+      mensagemErro = "Esse e-mail já tem uma conta no IsaCred. Tente entrar por lá.";
+    }
+
+    if(statusTexto) statusTexto.textContent = mensagemErro;
+
+  }
+
+}
+
+window.abrirEmprestimoExterno = abrirEmprestimoExterno;
+window.fecharTelaIsaCredIntro = fecharTelaIsaCredIntro;
+window.avancarParaFormularioIsaCred = avancarParaFormularioIsaCred;
+window.voltarParaIntroIsaCred = voltarParaIntroIsaCred;
+window.atualizarCamposPorPaisIsaCred = atualizarCamposPorPaisIsaCred;
+window.criarContaIsaCred = criarContaIsaCred;
 
 function escolherFotoFundo(){
   const input = document.getElementById("inputFundoPersonalizado");
