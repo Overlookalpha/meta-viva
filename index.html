@@ -5409,15 +5409,37 @@ function atualizarBotaoTelegram(){
 window.conectarTelegram = conectarTelegram;
 window.atualizarBotaoTelegram = atualizarBotaoTelegram;
 
+function falarApresentacaoIsaCred(){
+  const textoFalado =
+    "Oi! Eu sou a Evelyn. Enquanto cuido das suas contas aqui no Meta Viva, " +
+    "também acompanho outra novidade que pode te interessar: o IsaCred. " +
+    "O IsaCred é um clube de crédito de verdade. Diferente do Empréstimo Interno daqui, " +
+    "que só move o seu próprio dinheiro guardado, no IsaCred você pode solicitar um " +
+    "empréstimo externo, com dinheiro de verdade caindo na sua conta. " +
+    "Toda vez que você pega um empréstimo no IsaCred, ganha ISAcoins, e ganha ainda " +
+    "mais se pagar rapidinho. Ao juntar dez mil ISAcoins, você já pode sacar dinheiro " +
+    "de verdade no Clube ISAcoin. " +
+    "Conforme você paga em dia, seu score sobe e você sobe de nível: Essencial, Bronze, " +
+    "Prata, Ouro e Black, e cada nível libera um limite de crédito maior. " +
+    "Se quiser, eu já te ajudo a criar sua conta agora mesmo, usando o mesmo e-mail " +
+    "que você já usa aqui no Meta Viva. Bora?";
+  if(typeof falar === "function"){
+    falar(textoFalado);
+  }
+}
+
 function abrirEmprestimoExterno(){
   document.getElementById("telaIsaCredIntro").classList.remove("hidden");
+  falarApresentacaoIsaCred();
 }
 
 function fecharTelaIsaCredIntro(){
+  if(typeof speechSynthesis !== "undefined") speechSynthesis.cancel();
   document.getElementById("telaIsaCredIntro").classList.add("hidden");
 }
 
 function avancarParaFormularioIsaCred(){
+  if(typeof speechSynthesis !== "undefined") speechSynthesis.cancel();
   document.getElementById("telaIsaCredIntro").classList.add("hidden");
   document.getElementById("telaIsaCredForm").classList.remove("hidden");
   const campoEmail = document.getElementById("isacredEmail");
