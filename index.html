@@ -1569,8 +1569,41 @@ onclick="abrirAba('configuracoes')">
   <input type="number" id="repetirMeses" min="1" value="1"
        style="width:100%;padding:8px;margin-top:5px;border-radius:6px;border:none;">
 
+  <p style="margin-top:15px;">Como esta conta será paga?</p>
+  <div style="display:grid;grid-template-columns:1fr;gap:9px;">
+    <label style="display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:8px;background:rgba(255,255,255,0.14);cursor:pointer;">
+      <input type="radio" name="tipoPagamentoConta" value="manual" checked onchange="alternarTipoAnexoConta()">
+      👆 Pagamento manual
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:8px;background:rgba(255,255,255,0.14);cursor:pointer;">
+      <input type="radio" name="tipoPagamentoConta" value="debito_automatico" onchange="alternarTipoAnexoConta()">
+      🔄 Débito automático
+    </label>
+    <label style="display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:8px;background:rgba(255,255,255,0.14);cursor:pointer;">
+      <input type="radio" name="tipoPagamentoConta" value="upload" onchange="alternarTipoAnexoConta()">
+      📎 Fazer upload da conta
+    </label>
+  </div>
 
-  <button onclick="salvarNovaConta()"
+  <div id="areaUploadConta" style="display:none;margin-top:12px;">
+    <input
+      type="file"
+      id="arquivoContaInput"
+      accept="image/*,.pdf,application/pdf"
+      onchange="atualizarNomeArquivoConta()"
+      style="display:none;">
+    <button
+      type="button"
+      onclick="document.getElementById('arquivoContaInput').click()"
+      style="width:100%;background:#229ED9;border:none;padding:11px 15px;border-radius:8px;color:white;cursor:pointer;">
+      📄 Escolher foto ou PDF
+    </button>
+    <p id="nomeArquivoConta" style="margin:8px 0 0;font-size:13px;opacity:0.82;">
+      Nenhum arquivo selecionado.
+    </p>
+  </div>
+
+  <button id="botaoSalvarConta" onclick="salvarNovaConta()"
     style="margin-top:20px;background:var(--cor-destaque);border:none;padding:10px 15px;border-radius:8px;color:white;cursor:pointer;">
     Salvar Conta
   </button>
@@ -3017,6 +3050,14 @@ function abrirTelaNovaConta(){
 
   abrirTela("telaNovaConta");
 
+  const arquivoInput = document.getElementById("arquivoContaInput");
+  const nomeArquivo = document.getElementById("nomeArquivoConta");
+  const opcaoManual = document.querySelector('input[name="tipoPagamentoConta"][value="manual"]');
+  if(opcaoManual) opcaoManual.checked = true;
+  if(arquivoInput) arquivoInput.value = "";
+  if(nomeArquivo) nomeArquivo.innerText = "Nenhum arquivo selecionado.";
+  alternarTipoAnexoConta();
+
   const selectCategoria = document.getElementById("selectCategoriaConta");
   const selectSub = document.getElementById("selectSubcategoriaConta");
 
@@ -3814,6 +3855,51 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   }
 
 }
+  function alternarTipoAnexoConta(){
+  const selecionado = document.querySelector('input[name="tipoPagamentoConta"]:checked');
+  const areaUpload = document.getElementById("areaUploadConta");
+  const arquivoInput = document.getElementById("arquivoContaInput");
+  const nomeArquivo = document.getElementById("nomeArquivoConta");
+  const usarUpload = selecionado && selecionado.value === "upload";
+
+  if(areaUpload) areaUpload.style.display = usarUpload ? "block" : "none";
+
+  if(!usarUpload){
+    if(arquivoInput) arquivoInput.value = "";
+    if(nomeArquivo) nomeArquivo.innerText = "Nenhum arquivo selecionado.";
+  }
+}
+
+  function atualizarNomeArquivoConta(){
+  const input = document.getElementById("arquivoContaInput");
+  const texto = document.getElementById("nomeArquivoConta");
+  const arquivo = input && input.files ? input.files[0] : null;
+
+  if(!texto) return;
+
+  if(!arquivo){
+    texto.innerText = "Nenhum arquivo selecionado. Você pode salvar sem anexar.";
+    return;
+  }
+
+  const tamanhoMB = arquivo.size / (1024 * 1024);
+  texto.innerText = "Selecionado: " + arquivo.name + " (" + tamanhoMB.toFixed(1) + " MB)";
+}
+
+function abrirAnexoConta(index){
+  const conta = contas[index];
+
+  if(!conta || !conta.anexo || !conta.anexo.url){
+    alert("Esta conta não possui arquivo anexado.");
+    return;
+  }
+
+  const novaAba = window.open(conta.anexo.url, "_blank", "noopener,noreferrer");
+  if(!novaAba){
+    window.location.href = conta.anexo.url;
+  }
+}
+
   function atualizarListaContas(){
 
   const container = document.getElementById("listaContas");
@@ -3874,7 +3960,17 @@ div.innerHTML =
   "<span style='color:" + corStatus + "; font-weight:600;'>" +
   statusTexto +
   "</span>" +
+  (conta.tipoPagamento === "debito_automatico"
+    ? "<br><span style='display:inline-block;margin-top:8px;color:#7dd3fc;font-weight:600;'>🔄 Débito automático</span>"
+    : conta.tipoPagamento === "manual"
+      ? "<br><span style='display:inline-block;margin-top:8px;color:#e5e7eb;font-weight:600;'>👆 Pagamento manual</span>"
+      : "") +
   "<br><br>" +
+  (conta.anexo && conta.anexo.url
+    ? "<button onclick='abrirAnexoConta(" + index + ")' " +
+      "style='background:#229ED9;border:none;padding:6px 10px;border-radius:6px;color:white;'>" +
+      "📎 Visualizar conta</button><br><br>"
+    : "") +
   "<button onclick='pagarConta(" + index + ")' " +
 "style='background:var(--cor-destaque);border:none;padding:6px 10px;border-radius:6px;color:white;'>" +
 "✓ Marcar como Paga</button>" +
@@ -3932,7 +4028,7 @@ div.innerHTML =
   }
 
 }
-function salvarNovaConta(){
+async function salvarNovaConta(){
 
   console.log("Repetir meses:", document.getElementById("repetirMeses").value);
 
@@ -3955,6 +4051,41 @@ function salvarNovaConta(){
 
   const nomeCategoria = categorias[indexCategoria].nome;
   const nomeSubcategoria = categorias[indexCategoria].subcategorias[indexSub].nome;
+  const tipoSelecionado = document.querySelector('input[name="tipoPagamentoConta"]:checked');
+  const tipoPagamento = tipoSelecionado ? tipoSelecionado.value : "manual";
+  const arquivoInput = document.getElementById("arquivoContaInput");
+  const arquivo = arquivoInput && arquivoInput.files ? arquivoInput.files[0] : null;
+  const botaoSalvar = document.getElementById("botaoSalvarConta");
+  let anexo = null;
+
+  if(tipoPagamento === "upload" && !arquivo){
+    alert("Escolha a foto ou o PDF da conta antes de salvar.");
+    return;
+  }
+
+  if(arquivo){
+    if(arquivo.size > 10 * 1024 * 1024){
+      alert("O arquivo é muito grande. Escolha uma foto ou PDF de até 10 MB.");
+      return;
+    }
+
+    try{
+      if(botaoSalvar){
+        botaoSalvar.disabled = true;
+        botaoSalvar.innerText = "⏳ Enviando conta...";
+      }
+      anexo = await window.uploadArquivoConta(arquivo);
+    } catch(error){
+      console.log("Erro ao enviar a conta:", error);
+      alert("Não foi possível enviar o arquivo. A conta ainda não foi salva. Tente novamente ou retire o anexo para salvar sem ele.");
+      return;
+    } finally {
+      if(botaoSalvar){
+        botaoSalvar.disabled = false;
+        botaoSalvar.innerText = "Salvar Conta";
+      }
+    }
+  }
 
   for(let i = 0; i < repetirMeses; i++){
 
@@ -3968,6 +4099,8 @@ function salvarNovaConta(){
     paga: false,
     categoria: nomeCategoria,
     subcategoria: nomeSubcategoria,
+    tipoPagamento: tipoPagamento,
+    anexo: anexo,
     alertas: {
     d3: false,
     d2: false,
@@ -3978,6 +4111,10 @@ function salvarNovaConta(){
   });
 
   }
+
+  if(arquivoInput) arquivoInput.value = "";
+  const nomeArquivo = document.getElementById("nomeArquivoConta");
+  if(nomeArquivo) nomeArquivo.innerText = "Nenhum arquivo selecionado.";
 
   alert("Conta(s) adicionada(s) com sucesso!");
 
@@ -5115,6 +5252,13 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
   authDomain: "meta-viva.firebaseapp.com",
@@ -5128,6 +5272,32 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 await setPersistence(auth, browserLocalPersistence);
 const db = getFirestore(app);
+const storage = getStorage(app);
+
+async function uploadArquivoConta(arquivo){
+  const user = auth.currentUser;
+  if(!user) throw new Error("Usuário não autenticado.");
+
+  const nomeSeguro = arquivo.name.replace(/[^a-zA-Z0-9._-]/g, "_");
+  const caminho = "contas/" + user.uid + "/" + Date.now() + "_" + nomeSeguro;
+  const arquivoRef = ref(storage, caminho);
+
+  await uploadBytes(arquivoRef, arquivo, {
+    contentType: arquivo.type || "application/octet-stream"
+  });
+
+  const url = await getDownloadURL(arquivoRef);
+
+  return {
+    nome: arquivo.name,
+    tipo: arquivo.type || "",
+    tamanho: arquivo.size,
+    caminho: caminho,
+    url: url
+  };
+}
+
+window.uploadArquivoConta = uploadArquivoConta;
 window.auth = auth;
 window.db = db;
 window.setDoc = setDoc;
