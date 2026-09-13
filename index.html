@@ -8,6 +8,9 @@
 <title>Meta Viva</title>
 <link rel="icon" href="icons/icon-192-any.png">
 <link rel="apple-touch-icon" href="icons/icon-192-any.png">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 
 :root{
@@ -1609,6 +1612,31 @@ onclick="abrirAba('configuracoes')">
   </button>
 
 </div>
+
+<!-- LEITOR DE CONTA -->
+<div id="modalLeitorConta" class="screen" style="z-index:1200;background:linear-gradient(135deg,var(--cor-fundo-1),var(--cor-fundo-2),var(--cor-fundo-3));">
+  <button onclick="fecharLeitorConta()"
+    style="background:none;border:none;color:white;font-size:16px;margin-bottom:12px;cursor:pointer;">
+    ← Voltar
+  </button>
+
+  <h2 style="margin-top:0;">📄 Visualizar conta</h2>
+
+  <div id="previewAnexoConta" style="width:100%;height:42vh;min-height:280px;background:rgba(0,0,0,0.25);border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center;"></div>
+
+  <button onclick="lerDadosDaConta()" id="botaoLerConta"
+    style="width:100%;margin-top:14px;background:#229ED9;border:none;padding:12px 15px;border-radius:8px;color:white;font-weight:700;cursor:pointer;">
+    🔎 Identificar dados para pagamento
+  </button>
+
+  <button onclick="abrirArquivoOriginalConta()"
+    style="width:100%;margin-top:10px;background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.3);padding:11px 15px;border-radius:8px;color:white;cursor:pointer;">
+    ↗️ Abrir arquivo original
+  </button>
+
+  <p id="statusLeituraConta" style="font-size:13px;opacity:0.85;margin:12px 0;"></p>
+  <div id="camposPagamentoConta" style="padding-bottom:30px;"></div>
+</div>
   
 <script>
 
@@ -1802,6 +1830,7 @@ function calcularGuardadoMesAtual(){
     .reduce((acc, item) => acc + item.valor, 0);
 }
 let contas = [];
+let contaLeituraAtualIndex = null;
 let contaMetaVivaCriadaEm = null;
 let telegramChatIdAtual = null;
 // 🔥 Controle de qual mês está refletido nos totais de categoria
@@ -3894,9 +3923,262 @@ function abrirAnexoConta(index){
     return;
   }
 
+  contaLeituraAtualIndex = index;
+
+  const modal = document.getElementById("modalLeitorConta");
+  const preview = document.getElementById("previewAnexoConta");
+  const campos = document.getElementById("camposPagamentoConta");
+  const status = document.getElementById("statusLeituraConta");
+  const tipo = (conta.anexo.tipo || "").toLowerCase();
+  const nome = (conta.anexo.nome || "").toLowerCase();
+  const ehPdf = tipo.includes("pdf") || nome.endsWith(".pdf");
+
+  preview.innerHTML = "";
+  campos.innerHTML = "";
+  status.innerText = "Confira o documento original ou toque em identificar dados.";
+
+  if(ehPdf){
+    const frame = document.createElement("iframe");
+    frame.src = conta.anexo.url;
+    frame.title = "Conta anexada";
+    frame.style.cssText = "width:100%;height:100%;border:none;background:white;";
+    preview.appendChild(frame);
+  } else {
+    const imagem = document.createElement("img");
+    imagem.src = conta.anexo.url;
+    imagem.alt = "Conta anexada";
+    imagem.style.cssText = "width:100%;height:100%;object-fit:contain;";
+    preview.appendChild(imagem);
+  }
+
+  modal.classList.remove("hidden");
+  modal.style.display = "block";
+}
+
+function fecharLeitorConta(){
+  const modal = document.getElementById("modalLeitorConta");
+  const preview = document.getElementById("previewAnexoConta");
+  if(preview) preview.innerHTML = "";
+  if(modal){
+    modal.classList.add("hidden");
+    modal.style.display = "";
+  }
+  contaLeituraAtualIndex = null;
+}
+
+function abrirArquivoOriginalConta(){
+  const conta = contas[contaLeituraAtualIndex];
+  if(!conta || !conta.anexo || !conta.anexo.url) return;
+
   const novaAba = window.open(conta.anexo.url, "_blank", "noopener,noreferrer");
-  if(!novaAba){
-    window.location.href = conta.anexo.url;
+  if(!novaAba) window.location.href = conta.anexo.url;
+}
+
+async function copiarCampoPagamento(valor, botao){
+  try{
+    await navigator.clipboard.writeText(valor);
+  } catch(error){
+    const campo = document.createElement("textarea");
+    campo.value = valor;
+    campo.style.position = "fixed";
+    campo.style.opacity = "0";
+    document.body.appendChild(campo);
+    campo.select();
+    document.execCommand("copy");
+    campo.remove();
+  }
+
+  const textoOriginal = botao.innerText;
+  botao.innerText = "✅ Copiado";
+  setTimeout(function(){ botao.innerText = textoOriginal; }, 1600);
+}
+
+function adicionarCampoReconhecido(lista, rotulo, valor){
+  if(!valor) return;
+  const limpo = String(valor).replace(/\s+/g, " ").trim();
+  if(!limpo) return;
+  if(lista.some(function(item){ return item.rotulo === rotulo && item.valor === limpo; })) return;
+  lista.push({ rotulo: rotulo, valor: limpo });
+}
+
+function extrairDadosPagamento(texto, qrCodes){
+  const campos = [];
+  const textoLimpo = texto.replace(/\r/g, "");
+  let resultado;
+
+  qrCodes.forEach(function(codigo){
+    const ehPix = codigo.includes("BR.GOV.BCB.PIX") || codigo.startsWith("000201");
+    adicionarCampoReconhecido(campos, ehPix ? "Pix Copia e Cola" : "Conteúdo do QR Code", codigo);
+  });
+
+  resultado = textoLimpo.match(/entidade\s*[:\-]?\s*(\d{5})/i);
+  if(resultado) adicionarCampoReconhecido(campos, "Entidade", resultado[1]);
+
+  resultado = textoLimpo.match(/refer[eê]ncia(?:\s+multibanco|\s+mb)?\s*[:\-]?\s*([\d .]{9,20})/i);
+  if(resultado) adicionarCampoReconhecido(campos, "Referência", resultado[1].replace(/\D/g, ""));
+
+  resultado = textoLimpo.match(/\bPT50(?:[\s.-]*\d){21}\b/i);
+  if(resultado) adicionarCampoReconhecido(campos, "IBAN", resultado[0].replace(/[\s.-]/g, "").toUpperCase());
+
+  resultado = textoLimpo.match(/(?:chave\s+pix|pix\s+chave)\s*[:\-]?\s*([^\n]{5,100})/i);
+  if(resultado) adicionarCampoReconhecido(campos, "Chave Pix", resultado[1]);
+
+  const candidatosBoleto = textoLimpo.match(/[\d.\s-]{44,70}/g) || [];
+  candidatosBoleto.forEach(function(candidato){
+    const digitos = candidato.replace(/\D/g, "");
+    if(digitos.length === 44 || digitos.length === 47 || digitos.length === 48){
+      adicionarCampoReconhecido(campos, "Código do boleto", digitos);
+    }
+  });
+
+  resultado = textoLimpo.match(/(?:valor(?:\s+a\s+pagar)?|total)\s*[:\-]?\s*(?:(R\$|€|EUR)\s*)?([\d.]+[,]\d{2})/i);
+  if(resultado){
+    const moeda = resultado[1] ? resultado[1].toUpperCase().replace("EUR", "€") + " " : "";
+    adicionarCampoReconhecido(campos, "Valor", moeda + resultado[2]);
+  }
+
+  resultado = textoLimpo.match(/(?:vencimento|data\s+de\s+vencimento|vence\s+em)\s*[:\-]?\s*(\d{2}[\/.-]\d{2}[\/.-]\d{2,4})/i);
+  if(resultado) adicionarCampoReconhecido(campos, "Vencimento", resultado[1]);
+
+  return campos;
+}
+
+function mostrarCamposPagamento(campos){
+  const container = document.getElementById("camposPagamentoConta");
+  container.innerHTML = "";
+
+  if(campos.length === 0){
+    container.innerHTML =
+      "<div style='background:rgba(244,180,0,0.18);padding:13px;border-radius:9px;'>" +
+      "Não consegui identificar campos com segurança. Abra o arquivo original e confira os dados.</div>";
+    return;
+  }
+
+  const aviso = document.createElement("p");
+  aviso.innerText = "Confira cada número na conta original antes de pagar.";
+  aviso.style.cssText = "font-size:13px;color:#ffd166;margin:4px 0 10px;";
+  container.appendChild(aviso);
+
+  campos.forEach(function(campo){
+    const card = document.createElement("div");
+    card.style.cssText = "background:rgba(255,255,255,0.1);padding:12px;border-radius:9px;margin-bottom:9px;";
+
+    const titulo = document.createElement("strong");
+    titulo.innerText = campo.rotulo;
+
+    const valor = document.createElement("div");
+    valor.innerText = campo.valor;
+    valor.style.cssText = "font-size:15px;word-break:break-all;margin:7px 0;user-select:text;";
+
+    const botao = document.createElement("button");
+    botao.innerText = "📋 Copiar";
+    botao.style.cssText = "background:var(--cor-destaque);border:none;padding:7px 11px;border-radius:6px;color:white;cursor:pointer;";
+    botao.onclick = function(){ copiarCampoPagamento(campo.valor, botao); };
+
+    card.appendChild(titulo);
+    card.appendChild(valor);
+    card.appendChild(botao);
+    container.appendChild(card);
+  });
+}
+
+function carregarImagemNoCanvas(url){
+  return new Promise(function(resolve, reject){
+    const imagem = new Image();
+    imagem.crossOrigin = "anonymous";
+    imagem.onload = function(){
+      const canvas = document.createElement("canvas");
+      const limite = 1800;
+      const escala = Math.min(1, limite / Math.max(imagem.naturalWidth, imagem.naturalHeight));
+      canvas.width = Math.max(1, Math.round(imagem.naturalWidth * escala));
+      canvas.height = Math.max(1, Math.round(imagem.naturalHeight * escala));
+      canvas.getContext("2d").drawImage(imagem, 0, 0, canvas.width, canvas.height);
+      resolve(canvas);
+    };
+    imagem.onerror = reject;
+    imagem.src = url;
+  });
+}
+
+function lerQrDoCanvas(canvas){
+  if(typeof jsQR !== "function") return null;
+  const contexto = canvas.getContext("2d");
+  const imagem = contexto.getImageData(0, 0, canvas.width, canvas.height);
+  const resultado = jsQR(imagem.data, imagem.width, imagem.height, { inversionAttempts: "attemptBoth" });
+  return resultado && resultado.data ? resultado.data : null;
+}
+
+async function prepararPaginasDaConta(conta){
+  const tipo = (conta.anexo.tipo || "").toLowerCase();
+  const nome = (conta.anexo.nome || "").toLowerCase();
+  const ehPdf = tipo.includes("pdf") || nome.endsWith(".pdf");
+
+  if(!ehPdf) return [await carregarImagemNoCanvas(conta.anexo.url)];
+
+  if(typeof pdfjsLib === "undefined") throw new Error("Leitor de PDF indisponível.");
+  pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+  const pdf = await pdfjsLib.getDocument(conta.anexo.url).promise;
+  const paginas = [];
+  const total = Math.min(pdf.numPages, 3);
+
+  for(let numero = 1; numero <= total; numero++){
+    const pagina = await pdf.getPage(numero);
+    const viewportBase = pagina.getViewport({ scale: 1 });
+    const escala = Math.min(2, 1800 / Math.max(viewportBase.width, viewportBase.height));
+    const viewport = pagina.getViewport({ scale: escala });
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(viewport.width);
+    canvas.height = Math.round(viewport.height);
+    await pagina.render({ canvasContext: canvas.getContext("2d"), viewport: viewport }).promise;
+    paginas.push(canvas);
+  }
+
+  return paginas;
+}
+
+async function lerDadosDaConta(){
+  const conta = contas[contaLeituraAtualIndex];
+  if(!conta || !conta.anexo || !conta.anexo.url) return;
+
+  const botao = document.getElementById("botaoLerConta");
+  const status = document.getElementById("statusLeituraConta");
+  const camposContainer = document.getElementById("camposPagamentoConta");
+
+  botao.disabled = true;
+  botao.innerText = "⏳ Lendo a conta...";
+  status.innerText = "Procurando QR Code, Pix, Multibanco, boleto, valor e vencimento.";
+  camposContainer.innerHTML = "";
+
+  try{
+    const paginas = await prepararPaginasDaConta(conta);
+    const qrCodes = [];
+    let textoCompleto = "";
+
+    for(let i = 0; i < paginas.length; i++){
+      status.innerText = "Analisando página " + (i + 1) + " de " + paginas.length + "...";
+
+      const qr = lerQrDoCanvas(paginas[i]);
+      if(qr && !qrCodes.includes(qr)) qrCodes.push(qr);
+
+      if(typeof Tesseract === "undefined") throw new Error("Leitor de texto indisponível.");
+      const resultadoOcr = await Tesseract.recognize(paginas[i], "por");
+      textoCompleto += "\n" + (resultadoOcr.data.text || "");
+    }
+
+    const campos = extrairDadosPagamento(textoCompleto, qrCodes);
+    mostrarCamposPagamento(campos);
+    status.innerText = campos.length
+      ? "Dados encontrados. Use os botões Copiar abaixo."
+      : "Leitura concluída, mas nenhum campo foi reconhecido com segurança.";
+  } catch(error){
+    console.log("Erro ao ler a conta:", error);
+    status.innerText = "Não foi possível fazer a leitura automática deste arquivo.";
+    mostrarCamposPagamento([]);
+  } finally {
+    botao.disabled = false;
+    botao.innerText = "🔎 Identificar dados para pagamento";
   }
 }
 
