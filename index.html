@@ -11,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 
 :root{
@@ -1831,6 +1832,7 @@ function calcularGuardadoMesAtual(){
 }
 let contas = [];
 let contaLeituraAtualIndex = null;
+let urlAnexoContaAtual = "";
 let contaMetaVivaCriadaEm = null;
 let telegramChatIdAtual = null;
 // 🔥 Controle de qual mês está refletido nos totais de categoria
@@ -3915,10 +3917,10 @@ function itemPassaFiltroMes(item, mesAnoSelecionado){
   texto.innerText = "Selecionado: " + arquivo.name + " (" + tamanhoMB.toFixed(1) + " MB)";
 }
 
-function abrirAnexoConta(index){
+async function abrirAnexoConta(index){
   const conta = contas[index];
 
-  if(!conta || !conta.anexo || !conta.anexo.url){
+  if(!conta || !conta.anexo || (!conta.anexo.caminho && !conta.anexo.url)){
     alert("Esta conta não possui arquivo anexado.");
     return;
   }
@@ -3935,24 +3937,33 @@ function abrirAnexoConta(index){
 
   preview.innerHTML = "";
   campos.innerHTML = "";
-  status.innerText = "Confira o documento original ou toque em identificar dados.";
-
-  if(ehPdf){
-    const frame = document.createElement("iframe");
-    frame.src = conta.anexo.url;
-    frame.title = "Conta anexada";
-    frame.style.cssText = "width:100%;height:100%;border:none;background:white;";
-    preview.appendChild(frame);
-  } else {
-    const imagem = document.createElement("img");
-    imagem.src = conta.anexo.url;
-    imagem.alt = "Conta anexada";
-    imagem.style.cssText = "width:100%;height:100%;object-fit:contain;";
-    preview.appendChild(imagem);
-  }
-
+  status.innerText = "⏳ Abrindo arquivo protegido...";
   modal.classList.remove("hidden");
   modal.style.display = "block";
+
+  try{
+    urlAnexoContaAtual = conta.anexo.url || await window.obterUrlArquivoConta(conta.anexo.caminho);
+
+    if(ehPdf){
+      const frame = document.createElement("iframe");
+      frame.src = urlAnexoContaAtual;
+      frame.title = "Conta anexada";
+      frame.style.cssText = "width:100%;height:100%;border:none;background:white;";
+      preview.appendChild(frame);
+    } else {
+      const imagem = document.createElement("img");
+      imagem.src = urlAnexoContaAtual;
+      imagem.alt = "Conta anexada";
+      imagem.style.cssText = "width:100%;height:100%;object-fit:contain;";
+      preview.appendChild(imagem);
+    }
+
+    status.innerText = "Confira o documento original ou toque em identificar dados.";
+  } catch(error){
+    console.log("Erro ao abrir a conta:", error);
+    preview.innerHTML = "<p style='padding:20px;text-align:center;'>Não foi possível abrir este arquivo.</p>";
+    status.innerText = "Falha ao acessar o arquivo protegido. Entre novamente no aplicativo e tente de novo.";
+  }
 }
 
 function fecharLeitorConta(){
@@ -3964,14 +3975,14 @@ function fecharLeitorConta(){
     modal.style.display = "";
   }
   contaLeituraAtualIndex = null;
+  urlAnexoContaAtual = "";
 }
 
 function abrirArquivoOriginalConta(){
-  const conta = contas[contaLeituraAtualIndex];
-  if(!conta || !conta.anexo || !conta.anexo.url) return;
+  if(!urlAnexoContaAtual) return;
 
-  const novaAba = window.open(conta.anexo.url, "_blank", "noopener,noreferrer");
-  if(!novaAba) window.location.href = conta.anexo.url;
+  const novaAba = window.open(urlAnexoContaAtual, "_blank", "noopener,noreferrer");
+  if(!novaAba) window.location.href = urlAnexoContaAtual;
 }
 
 async function copiarCampoPagamento(valor, botao){
@@ -4108,18 +4119,18 @@ function lerQrDoCanvas(canvas){
   return resultado && resultado.data ? resultado.data : null;
 }
 
-async function prepararPaginasDaConta(conta){
+async function prepararPaginasDaConta(conta, urlArquivo){
   const tipo = (conta.anexo.tipo || "").toLowerCase();
   const nome = (conta.anexo.nome || "").toLowerCase();
   const ehPdf = tipo.includes("pdf") || nome.endsWith(".pdf");
 
-  if(!ehPdf) return [await carregarImagemNoCanvas(conta.anexo.url)];
+  if(!ehPdf) return [await carregarImagemNoCanvas(urlArquivo)];
 
   if(typeof pdfjsLib === "undefined") throw new Error("Leitor de PDF indisponível.");
   pdfjsLib.GlobalWorkerOptions.workerSrc =
     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-  const pdf = await pdfjsLib.getDocument(conta.anexo.url).promise;
+  const pdf = await pdfjsLib.getDocument(urlArquivo).promise;
   const paginas = [];
   const total = Math.min(pdf.numPages, 3);
 
@@ -4140,7 +4151,11 @@ async function prepararPaginasDaConta(conta){
 
 async function lerDadosDaConta(){
   const conta = contas[contaLeituraAtualIndex];
-  if(!conta || !conta.anexo || !conta.anexo.url) return;
+  if(!conta || !conta.anexo || (!conta.anexo.caminho && !conta.anexo.url)) return;
+  if(!urlAnexoContaAtual){
+    alert("Aguarde o arquivo terminar de abrir.");
+    return;
+  }
 
   const botao = document.getElementById("botaoLerConta");
   const status = document.getElementById("statusLeituraConta");
@@ -4152,7 +4167,7 @@ async function lerDadosDaConta(){
   camposContainer.innerHTML = "";
 
   try{
-    const paginas = await prepararPaginasDaConta(conta);
+    const paginas = await prepararPaginasDaConta(conta, urlAnexoContaAtual);
     const qrCodes = [];
     let textoCompleto = "";
 
@@ -4248,7 +4263,7 @@ div.innerHTML =
       ? "<br><span style='display:inline-block;margin-top:8px;color:#e5e7eb;font-weight:600;'>👆 Pagamento manual</span>"
       : "") +
   "<br><br>" +
-  (conta.anexo && conta.anexo.url
+  (conta.anexo && (conta.anexo.caminho || conta.anexo.url)
     ? "<button onclick='abrirAnexoConta(" + index + ")' " +
       "style='background:#229ED9;border:none;padding:6px 10px;border-radius:6px;color:white;'>" +
       "📎 Visualizar conta</button><br><br>"
@@ -4477,17 +4492,35 @@ if(sistema10Ativo){
   }
 
   // 🗑 Remove a conta atual (paga)
+  const anexoRemovido = conta.anexo || null;
   contas.splice(index, 1);
+  excluirAnexoSeNaoUsado(anexoRemovido);
 
   atualizarListaContas();
   atualizarResumoContas();
   salvarEstadoCompleto();
 }
+  function excluirAnexoSeNaoUsado(anexo){
+  if(!anexo || anexo.provedor !== "supabase" || !anexo.caminho) return;
+
+  const aindaUsado = contas.some(function(item){
+    return item.anexo && item.anexo.caminho === anexo.caminho;
+  });
+
+  if(aindaUsado || typeof window.excluirArquivoConta !== "function") return;
+
+  window.excluirArquivoConta(anexo.caminho).catch(function(error){
+    console.log("Não foi possível apagar o anexo:", error);
+  });
+}
+
   function excluirConta(index){
   console.log("Excluir index:", index);
 
   if(confirm("Tem certeza que deseja excluir esta conta?")){
+    const anexoRemovido = contas[index] ? contas[index].anexo : null;
     contas.splice(index, 1);
+    excluirAnexoSeNaoUsado(anexoRemovido);
     atualizarListaContas();
     atualizarResumoContas();
     salvarEstadoCompleto();
@@ -5534,13 +5567,6 @@ import {
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-import {
-  getStorage,
-  ref,
-  uploadBytes,
-  getDownloadURL
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyC1LKzVFQgGhn7D58wrf8PiimVKXAh_YlM",
   authDomain: "meta-viva.firebaseapp.com",
@@ -5554,32 +5580,62 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 await setPersistence(auth, browserLocalPersistence);
 const db = getFirestore(app);
-const storage = getStorage(app);
+
+const supabaseStorageClient = window.supabase.createClient(
+  "https://gmvvubhgokrvlirjefra.supabase.co",
+  "sb_publishable_zIe4KAbKD-tift2NGcwyAw_GIa6OUM5",
+  {
+    accessToken: async function(){
+      return auth.currentUser ? await auth.currentUser.getIdToken(false) : null;
+    }
+  }
+);
 
 async function uploadArquivoConta(arquivo){
   const user = auth.currentUser;
   if(!user) throw new Error("Usuário não autenticado.");
 
   const nomeSeguro = arquivo.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-  const caminho = "contas/" + user.uid + "/" + Date.now() + "_" + nomeSeguro;
-  const arquivoRef = ref(storage, caminho);
+  const caminho = user.uid + "/" + Date.now() + "_" + nomeSeguro;
 
-  await uploadBytes(arquivoRef, arquivo, {
-    contentType: arquivo.type || "application/octet-stream"
-  });
+  const resultado = await supabaseStorageClient.storage
+    .from("contas")
+    .upload(caminho, arquivo, {
+      contentType: arquivo.type || "application/octet-stream",
+      upsert: false
+    });
 
-  const url = await getDownloadURL(arquivoRef);
+  if(resultado.error) throw resultado.error;
 
   return {
+    provedor: "supabase",
     nome: arquivo.name,
     tipo: arquivo.type || "",
     tamanho: arquivo.size,
-    caminho: caminho,
-    url: url
+    caminho: resultado.data.path
   };
 }
 
+async function obterUrlArquivoConta(caminho){
+  const resultado = await supabaseStorageClient.storage
+    .from("contas")
+    .createSignedUrl(caminho, 600);
+
+  if(resultado.error) throw resultado.error;
+  return resultado.data.signedUrl;
+}
+
+async function excluirArquivoConta(caminho){
+  const resultado = await supabaseStorageClient.storage
+    .from("contas")
+    .remove([caminho]);
+
+  if(resultado.error) throw resultado.error;
+}
+
 window.uploadArquivoConta = uploadArquivoConta;
+window.obterUrlArquivoConta = obterUrlArquivoConta;
+window.excluirArquivoConta = excluirArquivoConta;
 window.auth = auth;
 window.db = db;
 window.setDoc = setDoc;
