@@ -4374,7 +4374,14 @@ async function salvarNovaConta(){
       anexo = await window.uploadArquivoConta(arquivo);
     } catch(error){
       console.log("Erro ao enviar a conta:", error);
-      alert("Não foi possível enviar o arquivo. A conta ainda não foi salva. Tente novamente ou retire o anexo para salvar sem ele.");
+      const detalheErro =
+        (error && (error.message || error.error || error.code || error.statusCode))
+          ? String(error.message || error.error || error.code || error.statusCode)
+          : "Erro desconhecido";
+      alert(
+        "Não foi possível enviar o arquivo. A conta ainda não foi salva.\n\n" +
+        "Motivo: " + detalheErro
+      );
       return;
     } finally {
       if(botaoSalvar){
