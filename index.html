@@ -8,6 +8,16 @@
 <title>Meta Viva</title>
 <link rel="icon" href="icons/icon-192-any.png">
 <link rel="apple-touch-icon" href="icons/icon-192-any.png">
+<script>
+  // Captura o evento de instalacao do PWA assim que possivel (precisa ser
+  // registrado cedo, antes do resto da pagina carregar, senao o navegador
+  // pode disparar o evento antes da gente conseguir escutar).
+  window.eventoInstalacaoPWA = null;
+  window.addEventListener("beforeinstallprompt", function(evento){
+    evento.preventDefault();
+    window.eventoInstalacaoPWA = evento;
+  });
+</script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" defer></script>
@@ -385,6 +395,20 @@ button{
         padding:8px;
       ">
       Já tenho conta — Entrar
+    </button>
+  </div>
+
+  <div style="margin-top:10px;">
+    <button id="botaoInstalarApp" onclick="instalarApp()" style="
+        background:rgba(255,255,255,0.12);
+        border:1px solid rgba(255,255,255,0.3);
+        color:white;
+        font-size:14px;
+        border-radius:8px;
+        cursor:pointer;
+        padding:10px 18px;
+      ">
+      📲 Instalar app
     </button>
   </div>
 
@@ -6008,6 +6032,59 @@ function abrirSuporteWhatsapp(){
   window.open(link, "_blank", "noopener,noreferrer");
 }
 window.abrirSuporteWhatsapp = abrirSuporteWhatsapp;
+
+// Botao "Instalar app" da tela inicial.
+// No Android/Chrome (e desktop Chrome/Edge) o navegador dispara o evento
+// "beforeinstallprompt", que a gente guardou em window.eventoInstalacaoPWA
+// la no <head>; nesse caso o clique so precisa chamar .prompt(). No
+// iPhone/Safari esse evento nao existe (o iOS nao permite instalar via
+// clique), entao mostramos uma instrucao explicando o caminho manual.
+function rodandoComoAppInstalado(){
+  return window.matchMedia && window.matchMedia("(display-mode: standalone)").matches
+    || window.navigator.standalone === true;
+}
+
+function ehIOS(){
+  return /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+}
+
+async function instalarApp(){
+  if(rodandoComoAppInstalado()){
+    alert("O Meta Viva ja esta instalado nesse aparelho! 🎉");
+    return;
+  }
+
+  if(window.eventoInstalacaoPWA){
+    window.eventoInstalacaoPWA.prompt();
+    const escolha = await window.eventoInstalacaoPWA.userChoice;
+    window.eventoInstalacaoPWA = null;
+    if(escolha && escolha.outcome === "accepted"){
+      const botao = document.getElementById("botaoInstalarApp");
+      if(botao) botao.classList.add("hidden");
+    }
+    return;
+  }
+
+  if(ehIOS()){
+    alert("Pra instalar no iPhone: toca no botao de compartilhar (o quadrado com a seta pra cima, na barra do Safari) e depois em \"Adicionar a Tela de Inicio\".");
+    return;
+  }
+
+  alert("Pra instalar: procura por \"Adicionar a tela inicial\" ou \"Instalar app\" no menu do seu navegador (geralmente nos tres pontinhos, no canto superior).");
+}
+window.instalarApp = instalarApp;
+
+window.addEventListener("appinstalled", function(){
+  const botao = document.getElementById("botaoInstalarApp");
+  if(botao) botao.classList.add("hidden");
+});
+
+document.addEventListener("DOMContentLoaded", function(){
+  if(rodandoComoAppInstalado()){
+    const botao = document.getElementById("botaoInstalarApp");
+    if(botao) botao.classList.add("hidden");
+  }
+});
 
 function falarApresentacaoIsaCred(){
   const textoFalado =
