@@ -339,6 +339,29 @@ button{
 
 <div id="temaIconeFundo" aria-hidden="true"></div>
 <div id="fundoPersonalizado" aria-hidden="true"></div>
+
+<!-- Bolha de ajuda flutuante - fica fixa no canto da tela, sempre visivel,
+independente de rolagem ou de qual tela do app esta aberta. -->
+<button onclick="abrirSuporteWhatsapp()" title="Ajuda" style="
+    position:fixed;
+    bottom:20px;
+    right:20px;
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    background:#25D366;
+    border:none;
+    box-shadow:0 4px 14px rgba(0,0,0,0.35);
+    font-size:24px;
+    cursor:pointer;
+    z-index:999;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  ">
+  💬
+</button>
+
 <div class="app">
 
 <!-- LANDING -->
@@ -607,11 +630,6 @@ onclick="abrirAba('contas')">
 <button class="menuBtn"
 onclick="abrirAba('configuracoes')">
 ⚙️<span class="menuLabel">Config</span>
-</button>
-
-<button class="menuBtn"
-onclick="abrirSuporteWhatsapp()">
-💬<span class="menuLabel">Ajuda</span>
 </button>
 
   </div>
