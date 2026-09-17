@@ -5746,14 +5746,31 @@ onAuthStateChanged(auth, async (user) => {
     const criadoEmBruto = dados.criadoEm;
     const dataCriacao = criadoEmBruto && criadoEmBruto.toDate ? criadoEmBruto.toDate() : new Date(criadoEmBruto || Date.now());
     const horasDesdeCriacao = (Date.now() - dataCriacao.getTime()) / (1000 * 60 * 60);
-    const assinaturaAtiva = dados.assinaturaAtiva === true;
+    let assinaturaAtiva = dados.assinaturaAtiva === true;
     const contaAnterioresAoCorte = dataCriacao.getTime() < CORTE_INICIO_COBRANCA.getTime();
+
+    // 🔥 Quem acabou de voltar do pagamento no Stripe: o webhook pode levar
+    // alguns segundos pra gravar assinaturaAtiva no Firestore, entao da uma
+    // segunda checada antes de mostrar o paywall de novo (evita susto de
+    // "paguei e continua bloqueado").
+    const voltouDoPagamento = new URLSearchParams(window.location.search).get("assinatura") === "sucesso";
+    if (!contaAnterioresAoCorte && !assinaturaAtiva && voltouDoPagamento) {
+      await new Promise(function(resolve){ setTimeout(resolve, 4000); });
+      const snapAtualizado = await getDoc(userRef);
+      if (snapAtualizado.exists() && snapAtualizado.data().assinaturaAtiva === true) {
+        assinaturaAtiva = true;
+        dados.assinaturaAtiva = true;
+      }
+    }
 
     if (!contaAnterioresAoCorte && !assinaturaAtiva && horasDesdeCriacao >= 24) {
       document.getElementById("login").classList.add("hidden");
       document.getElementById("setupRenda").classList.add("hidden");
       document.getElementById("home").classList.add("hidden");
       document.getElementById("paywall").classList.remove("hidden");
+      if (voltouDoPagamento) {
+        alert("Recebemos seu pagamento e ja estamos ativando sua assinatura. Se a tela nao liberar em alguns segundos, atualize a pagina.");
+      }
       return;
     }
 
@@ -6254,14 +6271,26 @@ if(inputFundoPersonalizadoEl){
 window.escolherFotoFundo = escolherFotoFundo;
 window.aplicarFundoPersonalizado = aplicarFundoPersonalizado;
 
-// TODO: ligar isso ao meio de pagamento definitivo (Google Play Billing
-// dentro do app Android, e/ou um checkout externo tipo Stripe pra quem usa
-// pelo navegador/iPhone). Por enquanto so avisa - quando o pagamento for
-// aprovado (pelo webhook do meio de pagamento, ou manualmente por voce),
+// Link de pagamento do Stripe (assinatura mensal do Meta Viva - EUR/BRL).
+// Quando o pagamento e aprovado, o webhook do Stripe (Netlify Function)
 // grava assinaturaAtiva: true no documento do usuario em "usuarios/<uid>"
-// no Firestore pra liberar o acesso de novo.
+// no Firestore automaticamente, usando o client_reference_id abaixo.
+var LINK_PAGAMENTO_STRIPE = "https://buy.stripe.com/test_28E00lgGne8IdvN97p5gc00";
+
 async function iniciarAssinatura(){
-  alert("Assinatura ainda nao configurada - em breve! Fala com a gente pra liberar seu acesso.");
+  var user = auth.currentUser;
+  if(!user){
+    alert("Voce precisa estar logado pra assinar.");
+    return;
+  }
+
+  var url = new URL(LINK_PAGAMENTO_STRIPE);
+  url.searchParams.set("client_reference_id", user.uid);
+  if(user.email){
+    url.searchParams.set("prefilled_email", user.email);
+  }
+
+  window.location.href = url.toString();
 }
 window.iniciarAssinatura = iniciarAssinatura;
 </script>
