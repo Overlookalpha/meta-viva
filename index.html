@@ -585,6 +585,11 @@ onclick="abrirAba('configuracoes')">
 ⚙️<span class="menuLabel">Config</span>
 </button>
 
+<button class="menuBtn"
+onclick="abrirSuporteWhatsapp()">
+💬<span class="menuLabel">Ajuda</span>
+</button>
+
   </div>
 
 </div>
@@ -5992,6 +5997,17 @@ function atualizarBotaoTelegram(){
 
 window.conectarTelegram = conectarTelegram;
 window.atualizarBotaoTelegram = atualizarBotaoTelegram;
+
+// Botao de ajuda/suporte - abre uma conversa no WhatsApp ja com uma
+// mensagem inicial preenchida, pra facilitar o contato do usuario.
+var NUMERO_SUPORTE_WHATSAPP = "351931714823";
+
+function abrirSuporteWhatsapp(){
+  var mensagem = "Oi! Preciso de ajuda com o Meta Viva.";
+  var link = "https://wa.me/" + NUMERO_SUPORTE_WHATSAPP + "?text=" + encodeURIComponent(mensagem);
+  window.open(link, "_blank", "noopener,noreferrer");
+}
+window.abrirSuporteWhatsapp = abrirSuporteWhatsapp;
 
 function falarApresentacaoIsaCred(){
   const textoFalado =
