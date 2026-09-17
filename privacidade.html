@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de Privacidade — Meta Viva</title>
+<link rel="icon" href="icons/icon-192-any.png">
+<style>
+  :root{
+    --cor-destaque: #00c896;
+    --cor-fundo-1: #0f2027;
+    --cor-fundo-2: #203a43;
+    --cor-fundo-3: #2c5364;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background: linear-gradient(135deg,var(--cor-fundo-1),var(--cor-fundo-2),var(--cor-fundo-3));
+    color:white;
+    line-height:1.6;
+  }
+  .container{
+    max-width:720px;
+    margin:0 auto;
+    padding:32px 20px 80px 20px;
+  }
+  a{ color:var(--cor-destaque); }
+  h1{ font-size:28px; margin-bottom:4px; }
+  .atualizado{ opacity:0.7; font-size:13px; margin-bottom:32px; }
+  h2{ font-size:19px; margin-top:34px; color:var(--cor-destaque); }
+  p, li{ font-size:15px; opacity:0.92; }
+  ul{ padding-left:20px; }
+  .voltar{
+    display:inline-block;
+    margin-bottom:24px;
+    color:white;
+    opacity:0.7;
+    text-decoration:none;
+    font-size:14px;
+  }
+  .aviso{
+    background:rgba(255,255,255,0.08);
+    border-left:3px solid var(--cor-destaque);
+    padding:14px 16px;
+    border-radius:6px;
+    font-size:13px;
+    opacity:0.85;
+    margin-bottom:28px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <a class="voltar" href="index.html">← Voltar pro Meta Viva</a>
+
+  <h1>Política de Privacidade</h1>
+  <div class="atualizado">Última atualização: setembro de 2026</div>
+
+  <div class="aviso">
+    Este documento explica de forma simples como o Meta Viva trata os seus dados. Não substitui aconselhamento jurídico — se você é uma empresa tratando dados em maior escala, recomendamos revisão por um profissional.
+  </div>
+
+  <h2>Quem somos</h2>
+  <p>O Meta Viva é um aplicativo de organização financeira pessoal, desenvolvido por Isaías Rodrigues (Overlock). Para dúvidas sobre privacidade, entre em contato pelo WhatsApp disponível no botão de ajuda dentro do app.</p>
+
+  <h2>Quais dados coletamos</h2>
+  <ul>
+    <li><b>Dados de conta:</b> e-mail e senha (a senha é gerenciada de forma segura pelo Firebase Authentication — nós não temos acesso a ela em texto simples).</li>
+    <li><b>Dados financeiros que você registra:</b> entradas, saídas, saldo, reservas, metas, categorias e contas a pagar que você mesmo cadastra no app.</li>
+    <li><b>Anexos de contas:</b> se você enviar um comprovante, boleto ou foto de conta, esse arquivo é guardado de forma privada.</li>
+    <li><b>Dados de pagamento da assinatura:</b> quando você assina o Meta Viva, o pagamento é processado inteiramente pelo Stripe — nós não recebemos nem armazenamos número de cartão. Recebemos apenas a confirmação de que o pagamento foi aprovado e um identificador de cliente do Stripe.</li>
+    <li><b>Telegram (opcional):</b> se você conectar sua conta ao nosso bot do Telegram, guardamos o identificador da conversa (chat ID) para poder te enviar avisos de contas a vencer.</li>
+    <li><b>IsaCred (opcional):</b> se você optar por criar uma conta no IsaCred (produto parceiro de crédito) a partir do Meta Viva, os dados que você preencher nesse formulário (nome, e-mail, telefone, documento, Pix) são enviados diretamente para o sistema do IsaCred, além de um resumo do seu uso do Meta Viva usado para uma análise de crédito.</li>
+  </ul>
+
+  <h2>Onde seus dados ficam guardados</h2>
+  <p>Usamos o Firebase (Google) para autenticação e para guardar seus dados financeiros em um banco de dados (Firestore), e o Supabase para guardar anexos de contas de forma privada. Esses provedores têm suas próprias políticas de segurança e privacidade.</p>
+
+  <h2>O que NÃO fazemos</h2>
+  <ul>
+    <li>Não vendemos seus dados para terceiros.</li>
+    <li>Não compartilhamos seus dados financeiros com anunciantes.</li>
+    <li>Não temos acesso ao número do seu cartão de crédito em nenhum momento.</li>
+  </ul>
+
+  <h2>Seus direitos</h2>
+  <p>Você pode pedir a exclusão da sua conta e dos seus dados a qualquer momento, entrando em contato pelo WhatsApp de suporte. Se você estiver na União Europeia (incluindo Portugal), isso também vale como seu direito ao abrigo do RGPD (acesso, correção, portabilidade e apagamento dos seus dados).</p>
+
+  <h2>Cancelamento da assinatura</h2>
+  <p>Você pode cancelar sua assinatura a qualquer momento diretamente pelo painel do Stripe (o link é enviado no e-mail de confirmação da assinatura) ou pedindo ajuda pelo WhatsApp de suporte. O cancelamento interrompe cobranças futuras; não há reembolso automático de período já pago, salvo quando exigido por lei.</p>
+
+  <h2>Alterações nesta política</h2>
+  <p>Podemos atualizar esta política de tempos em tempos. A data da última atualização sempre aparece no topo desta página.</p>
+
+</div>
+</body>
+</html>
